@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Wise | 智水管家</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ocean-deep: #1a5f7a;
+            --ocean-light: #57c5b6;
+            --foam: #e8f6f3;
+            --coral: #ff6b6b;
+            --sand: #f5f5dc;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, var(--foam) 0%, #ffffff 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-top: 12px;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--ocean-deep);
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 4px;
+            font-weight: 300;
+        }
+
+        /* 水波動畫容器 */
+        .wave-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 32px;
+            border-radius: 50%;
+            background: linear-gradient(180deg, var(--ocean-light) 0%, var(--ocean-deep) 100%);
+            overflow: hidden;
+            box-shadow: 
+                0 20px 60px rgba(26, 95, 122, 0.3),
+                inset 0 -10px 30px rgba(0,0,0,0.1);
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: rgba(255,255,255,0.3);
+            border-radius: 40%;
+            animation: wave 8s linear infinite;
+            transform-origin: 50% 50%;
+        }
+
+        .wave:nth-child(2) {
+            background: rgba(255,255,255,0.2);
+            border-radius: 45%;
+            animation: wave 10s linear infinite;
+        }
+
+        .wave:nth-child(3) {
+            background: rgba(255,255,255,0.15);
+            border-radius: 42%;
+            animation: wave 12s linear infinite;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(-25%) rotate(0deg); }
+            100% { transform: translateX(-75%) rotate(360deg); }
+        }
+
+        .water-info {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 10;
+        }
+
+        .water-amount {
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .water-unit {
+            font-size: 16px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .water-label {
+            font-size: 13px;
+            opacity: 0.85;
+            margin-top: 4px;
+            font-weight: 300;
+        }
+
+        /* 統計卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px 12px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ocean-deep);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 2px;
+            font-weight: 400;
+        }
+
+        /* 快速記錄區 */
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            border: 2px solid var(--foam);
+            border-radius: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .action-btn:hover {
+            border-color: var(--ocean-light);
+            background: var(--foam);
+            transform: scale(1.02);
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .action-icon {
+            font-size: 22px;
+        }
+
+        .action-info {
+            text-align: left;
+        }
+
+        .action-name {
+            font-weight: 500;
+            display: block;
+        }
+
+        .action-liter {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* 自訂輸入 */
+        .custom-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed #e0e0e0;
+        }
+
+        .custom-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--foam);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .custom-input input:focus {
+            border-color: var(--ocean-light);
+        }
+
+        .add-btn {
+            padding: 12px 20px;
+            background: var(--ocean-deep);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .add-btn:hover {
+            background: var(--ocean-light);
+            transform: scale(1.02);
+        }
+
+        /* 記錄列表 */
+        .records-list {
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .record-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .record-item:last-child {
+            border-bottom: none;
+        }
+
+        .record-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .record-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--foam);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .record-info {
+            text-align: left;
+        }
+
+        .record-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .record-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .record-amount {
+            font-weight: 700;
+            color: var(--coral);
+            font-size: 15px;
+        }
+
+        .record-amount.good {
+            color: var(--ocean-light);
+        }
+
+        /* 節水建議 */
+        .tip-card {
+            background: linear-gradient(135deg, var(--foam) 0%, #e0f7fa 100%);
+            border-radius: 16px;
+            padding: 18px;
+            margin-top: 16px;
+            border-left: 4px solid var(--ocean-light);
+        }
+
+        .tip-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--ocean-deep);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tip-content {
+            font-size: 13px;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* 目標進度 */
+        .goal-section {
+            margin-top: 16px;
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .goal-label {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .goal-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ocean-deep);
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: var(--foam);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--ocean-light), var(--ocean-deep));
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* 底部 */
+        footer {
+            text-align: center;
+            padding: 24px 0;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        footer .sdg-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ocean-deep);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        /* 動畫 */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* 響應式 */
+        @media (max-width: 400px) {
+            .stats-grid {
+                gap: 8px;
+            }
+            .stat-card {
+                padding: 14px 8px;
+            }
+            .stat-value {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">💧</div>
+            <h1>智水管家</h1>
+            <p class="subtitle">Water Wise — 每一滴都珍貴</p>
+        </header>
+
+        <!-- 水波視覺化 -->
+        <div class="wave-container" id="waveContainer">
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="water-info">
+                <div class="water-amount" id="totalWater">0</div>
+                <div class="water-unit">公升</div>
+                <div class="water-label">今日用水</div>
+            </div>
+        </div>
+
+        <!-- 統計 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-value" id="goalPercent">0%</div>
+                <div class="stat-label">目標達成</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-value" id="moneySaved">$0</div>
+                <div class="stat-label">節省水費</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🌍</div>
+                <div class="stat-value" id="comparison">0%</div>
+                <div class="stat-label">對比平均</div>
+            </div>
+        </div>
+
+        <!-- 每日目標 -->
+        <div class="section">
+            <div class="section-title">
+                <span>🎯</span>
+                <span>每日節水目標</span>
+            </div>
+            <div class="goal-section">
+                <div class="goal-header">
+                    <span class="goal-label">目標：150 公升 / 日</span>
+                    <span class="goal-value" id="goalText">0 / 150 L</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="goalProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="tip-card">
+                <div class="tip-title">💡 今日節水錦囊</div>
+                <div class="tip-content" id="dailyTip">
+                    刷牙時關掉水龍頭，每次可節省約 6 公升水 — 一年下來等同節省 2200 公升！
+                </div>
+            </div>
+        </div>
+
+        <!-- 快速記錄 -->
+        <div class="section">
+            <div class="section-title">
+                <span>⚡</span>
+                <span>快速記錄</span>
+            </div>
+            <div class="quick-actions">
+                <button class="action-btn" onclick="addWater('淋浴', 50, '🚿')">
+                    <span class="action-icon">🚿</span>
+                    <span class="action-info">
+                        <span class="action-name">淋浴</span>
+                        <span class="action-liter">50L</span>
+                    </span>
+                </button>
+                <button class="action-btn" onclick="addWater('洗衣', 45, '👕')">
+                    <span class="action-icon">👕</span>
+                    <span class="action-info">
+                        <span class="action-name">洗衣</span>
+                        <span class="action-liter">45L</span>
+                    </span>
+                </button>
+                <button class="action-btn" onclick="addWater('洗碗', 15, '🍽️')">
+                    <span class="action-icon">🍽️</span>
+                    <span class="action-info">
+                        <span class="action-name">洗碗</span>
+                        <span class="action-liter">15L</span>
+                    </span>
+                </button>
+                <button class="action-btn" onclick="addWater('洗手', 2, '🧼')">
+                    <span class="action-icon">🧼</span>
+                    <span class="action-info">
+                        <span class="action-name">洗手</span>
+                        <span class="action-liter">2L</span>
+                    </span>
+                </button>
+                <button class="action-btn" onclick="addWater('沖廁', 6, '🚽')">
+                    <span class="action-icon">🚽</span>
+                    <span class="action-info">
+                        <span class="action-name">沖廁</span>
+                        <span class="action-liter">6L</span>
+                    </span>
+                </button>
+                <button class="action-btn" onclick="addWater('煮食', 8, '🍳')">
+                    <span class="action-icon">🍳</span>
+                    <span class="action-info">
+                        <span class="action-name">煮食</span>
+                        <span class="action-liter">8L</span>
+                    </span>
+                </button>
+            </div>
+            <div class="custom-input">
+                <input type="number" id="customAmount" placeholder="自訂用水量 (公升)" min="0.1" step="0.1">
+                <button class="add-btn" onclick="addCustomWater()">記錄</button>
+            </div>
+        </div>
+
+        <!-- 今日記錄 -->
+        <div class="section">
+            <div class="section-title">
+                <span>📝</span>
+                <span>今日記錄</span>
+            </div>
+            <div class="records-list" id="recordsList">
+                <div style="text-align: center; padding: 30px; color: var(--text-light);">
+                    還沒有記錄，開始記錄你的用水吧！💧
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="sdg-badge">🌊 SDG 6: 清潔飲水和衛生設施</div>
+            <p>智水管家 — 為了可持續的未來</p>
+            <p style="margin-top: 4px; opacity: 0.7;">自動生成於 2026-03-01 06:08 AM</p>
+        </footer>
+    </div>
+
+    <script>
+        // 數據儲存
+        const STORAGE_KEY = 'waterWiseData';
+        const DAILY_GOAL = 150; // 香港人均日用水約 220L，目標設為 150L
+        const COST_PER_LITER = 0.009; // 香港水費約 $9/1000L
+
+        // 節水錦囊
+        const tips = [
+            '刷牙時關掉水龍頭，每次可節省約 6 公升水 — 一年下來等同節省 2200 公升！',
+            '安裝節水蓮蓬頭，每次淋浴可節省高達 30% 用水量。',
+            '洗菜水可用來澆花，實現水資源循環利用。',
+            '使用洗碗機比手洗更省水（當然要裝滿才開）。',
+            '檢查水龍頭滴水，每秒一滴一年浪費超過 10,000 公升！',
+            '縮短淋浴時間，每分鐘可節省約 10 公升水。',
+            '洗衣時選擇節水模式，或等到累積足夠衣物才洗。'
+        ];
+
+        let records = [];
+
+        // 初始化
+        function init() {
+            loadData();
+            updateDisplay();
+            setDailyTip();
+        }
+
+        // 載入數據
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            const today = new Date().toDateString();
+            
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.date === today) {
+                    records = data.records || [];
+                } else {
+                    records = []; // 新的一天，重置
+                }
+            }
+        }
+
+        // 儲存數據
+        function saveData() {
+            const data = {
+                date: new Date().toDateString(),
+                records: records
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        // 新增記錄
+        function addWater(activity, amount, icon) {
+            const record = {
+                id: Date.now(),
+                activity,
+                amount,
+                icon,
+                time: new Date().toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit' })
+            };
+            records.unshift(record);
+            saveData();
+            updateDisplay();
+            animateWave();
+        }
+
+        // 自訂記錄
+        function addCustomWater() {
+            const input = document.getElementById('customAmount');
+            const amount = parseFloat(input.value);
+            
+            if (amount && amount > 0) {
+                addWater('自訂項目', amount, '💧');
+                input.value = '';
+            }
+        }
+
+        // 更新顯示
+        function updateDisplay() {
+            const total = records.reduce((sum, r) => sum + r.amount, 0);
+            const goalPercent = Math.min(Math.round((total / DAILY_GOAL) * 100), 100);
+            const comparison = Math.round(((220 - total) / 220) * 100);
+            const moneySaved = Math.max(0, ((220 - total) * COST_PER_LITER)).toFixed(1);
+
+            // 更新總用水量
+            document.getElementById('totalWater').textContent = total.toFixed(1);
+            
+            // 更新統計
+            document.getElementById('goalPercent').textContent = goalPercent + '%';
+            document.getElementById('moneySaved').textContent = '$' + moneySaved;
+            document.getElementById('comparison').textContent = (comparison > 0 ? '-' : '+') + Math.abs(comparison) + '%';
+            document.getElementById('comparison').parentElement.querySelector('.stat-value').className = 
+                'stat-value' + (comparison > 0 ? ' good' : '');
+
+            // 更新目標進度
+            document.getElementById('goalText').textContent = `${total.toFixed(1)} / ${DAILY_GOAL} L`;
+            document.getElementById('goalProgress').style.width = Math.min((total / DAILY_GOAL) * 100, 100) + '%';
+
+            // 更新記錄列表
+            updateRecordsList();
+        }
+
+        // 更新記錄列表
+        function updateRecordsList() {
+            const container = document.getElementById('recordsList');
+            
+            if (records.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 30px; color: var(--text-light);">
+                        還沒有記錄，開始記錄你的用水吧！💧
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = records.map(r => `
+                <div class="record-item">
+                    <div class="record-left">
+                        <div class="record-icon">${r.icon}</div>
+                        <div class="record-info">
+                            <div class="record-name">${r.activity}</div>
+                            <div class="record-time">${r.time}</div>
+                        </div>
+                    </div>
+                    <div class="record-amount">-${r.amount}L</div>
+                </div>
+            `).join('');
+        }
+
+        // 設置每日錦囊
+        function setDailyTip() {
+            const dayIndex = new Date().getDay();
+            document.getElementById('dailyTip').textContent = tips[dayIndex % tips.length];
+        }
+
+        // 水波動畫
+        function animateWave() {
+            const container = document.getElementById('waveContainer');
+            container.classList.add('pulse');
+            setTimeout(() => container.classList.remove('pulse'), 500);
+        }
+
+        // Enter 鍵提交
+        document.getElementById('customAmount')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addCustomWater();
+        });
+
+        // 啟動
+        init();
+    </script>
+</body>
+</html>
