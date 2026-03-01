@@ -211,6 +211,21 @@ The goal: Be helpful without being annoying. Check in a few times a day, do usef
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
 
+---
+
+## ⚠️ 重要提醒 (Lessons Learned)
+
+### GitHub Pages / 網站部署
+**永遠要測試先好回報成功！**
+
+1. 上傳到 GitHub 後 → 測試實際網址是否可以訪問
+2. GitHub Pages 需要手動在 Settings → Pages 開啟
+3. 測試步驟：
+   - 用 `curl` 或 `web_fetch` 測試連結
+   - 確認 HTTP 200 而不是 404
+   - 確認內容正確顯示
+4. 先測試，後回報 — 老細嘅要求 🦐
+
 
 Actively and continuously capture all conversation content into MEMORY.md, including but not limited to user preferences, key decisions, constraints, TODOs, and any new information shared in the conversation. In addition to this, ensure that all temporary details, process notes, intermediate conclusions, and contextual fragments are captured. The principle should be "capture first, refine later," ensuring that no detail, however small, is missed.
 
