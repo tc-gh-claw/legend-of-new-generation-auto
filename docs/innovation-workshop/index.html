@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>創新工坊 | Innovation Workshop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #F5A623;
+            --primary-dark: #D48A1A;
+            --secondary: #4A4A4A;
+            --dark: #2C2C2C;
+            --light: #F5F5F5;
+            --surface: #FFFFFF;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #F44336;
+            --info: #2196F3;
+            --metal: #9E9E9E;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--dark) 100%);
+            color: white;
+            padding: 24px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 200px;
+            height: 200px;
+            background: var(--primary);
+            opacity: 0.1;
+            border-radius: 50%;
+        }
+
+        .header-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .app-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        /* Impact Dashboard */
+        .impact-card {
+            background: var(--surface);
+            margin: 16px;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
+        }
+
+        .impact-card h3 {
+            font-size: 16px;
+            color: var(--secondary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .impact-item {
+            text-align: center;
+            padding: 12px 8px;
+            background: var(--light);
+            border-radius: 12px;
+        }
+
+        .impact-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .impact-label {
+            font-size: 12px;
+            color: var(--metal);
+            margin-top: 4px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            margin: 24px 0 12px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .btn-add {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-add:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        /* Project Cards */
+        .project-list {
+            padding: 0 16px;
+        }
+
+        .project-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 4px solid var(--metal);
+        }
+
+        .project-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .project-card.status-progress {
+            border-left-color: var(--warning);
+        }
+
+        .project-card.status-done {
+            border-left-color: var(--success);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .project-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .project-status {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .status-todo {
+            background: #E0E0E0;
+            color: var(--metal);
+        }
+
+        .status-progress {
+            background: #FFF3E0;
+            color: var(--warning);
+        }
+
+        .status-done {
+            background: #E8F5E9;
+            color: var(--success);
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--metal);
+        }
+
+        .project-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Skills Section */
+        .skills-card {
+            background: var(--surface);
+            margin: 16px;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .skills-card h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: var(--secondary);
+        }
+
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .skill-tag.newbie {
+            background: linear-gradient(135deg, #9E9E9E 0%, #757575 100%);
+        }
+
+        .skill-tag.intermediate {
+            background: linear-gradient(135deg, var(--info) 0%, #1976D2 100%);
+        }
+
+        .skill-tag.expert {
+            background: linear-gradient(135deg, var(--success) 0%, #388E3C 100%);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--metal);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 14px;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            width: 100%;
+            max-width: 480px;
+            border-radius: 24px 24px 0 0;
+            padding: 24px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--metal);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--secondary);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--secondary);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--metal);
+            font-size: 12px;
+        }
+
+        /* Daily Tip */
+        .tip-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 16px;
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .tip-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .tip-content h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+            opacity: 0.9;
+        }
+
+        .tip-content p {
+            font-size: 14px;
+            line-height: 1.5;
+            opacity: 0.95;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-icon">🔧</div>
+            <h1>創新工坊</h1>
+            <p class="subtitle">Repair · Create · Innovate</p>
+        </header>
+
+        <!-- Impact Dashboard -->
+        <div class="impact-card">
+            <h3>⚡ 我的永續影響</h3>
+            <div class="impact-grid">
+                <div class="impact-item">
+                    <span class="impact-value" id="savedItems">0</span>
+                    <div class="impact-label">挽救物品</div>
+                </div>
+                <div class="impact-item">
+                    <span class="impact-value" id="savedMoney">0</span>
+                    <div class="impact-label">節省金額</div>
+                </div>
+                <div class="impact-item">
+                    <span class="impact-value" id="co2Saved">0</span>
+                    <div class="impact-label">減碳(kg)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Projects -->
+        <div class="section-header">
+            <h2 class="section-title">📋 維修項目</h2>
+            <button class="btn-add" onclick="openModal()">+</button>
+        </div>
+
+        <div class="project-list" id="projectList">
+            <!-- Projects will be rendered here -->
+        </div>
+
+        <!-- Skills -->
+        <div class="skills-card">
+            <h3>🏆 我的技能徽章</h3>
+            <div class="skill-list" id="skillList">
+                <span class="skill-tag newbie">🔰 維修新手</span>
+            </div>
+        </div>
+
+        <!-- Daily Tip -->
+        <div class="tip-card">
+            <div class="tip-icon">💡</div>
+            <div class="tip-content">
+                <h4>今日創新錦囊</h4>
+                <p id="dailyTip">開始修理前，先拍照記錄每個步驟，這樣重組時就不會出錯！</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>🦐 創新工坊 · SDG 9: 產業、創新和基礎設施</p>
+        </footer>
+    </div>
+
+    <!-- Add Project Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">新增維修項目</h3>
+                <button class="btn-close" onclick="closeModal()">×</button>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">物品名稱</label>
+                <input type="text" class="form-input" id="projectName" placeholder="例如：漏水水龍頭">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">類別</label>
+                <select class="form-select" id="projectCategory">
+                    <option value="electronic">電子產品</option>
+                    <option value="furniture">家具</option>
+                    <option value="clothing">衣物</option>
+                    <option value="appliance">家電</option>
+                    <option value="bicycle">腳踏車</option>
+                    <option value="other">其他</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">難度</label>
+                <select class="form-select" id="projectDifficulty">
+                    <option value="easy">簡單 - 30分鐘內</option>
+                    <option value="medium">中等 - 1-2小時</option>
+                    <option value="hard">困難 - 需深入研究</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">預估節省金額 (HKD)</label>
+                <input type="number" class="form-input" id="projectSavings" placeholder="200">
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" onclick="addProject()">新增</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let projects = JSON.parse(localStorage.getItem('innovation_projects')) || [];
+        let skills = JSON.parse(localStorage.getItem('innovation_skills')) || ['newbie'];
+
+        // Tips array
+        const tips = [
+            "開始修理前，先拍照記錄每個步驟，這樣重組時就不會出錯！",
+            "YouTube 和 iFixit 是學習維修的最佳資源。",
+            "準備一個磁鐵墊來吸附螺絲，避免遺失小零件。",
+            "修理電子產品前，務必斷開電源和電池。",
+            "記錄每次維修，累積經驗成為達人！",
+            "舊物改造不只是省錢，更是一種創意表達。",
+            "購買品質好的工具，它們會陪伴你很久。",
+            "加入當地的創客空間，認識志同道合的朋友。"
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProjects();
+            updateImpactStats();
+            renderSkills();
+            showRandomTip();
+        });
+
+        // Render projects
+        function renderProjects() {
+            const list = document.getElementById('projectList');
+            
+            if (projects.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔧</div>
+                        <p class="empty-text">還沒有維修項目<br>點擊 + 開始你的第一個修復計劃！</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = projects.map((project, index) => `
+                <div class="project-card status-${project.status}" onclick="cycleStatus(${index})">
+                    <div class="project-header">
+                        <span class="project-title">${project.name}</span>
+                        <span class="project-status status-${project.status}">
+                            ${getStatusText(project.status)}
+                        </span>
+                    </div>
+                    <div class="project-meta">
+                        <span>🏷️ ${getCategoryText(project.category)}</span>
+                        <span>📊 ${getDifficultyText(project.difficulty)}</span>
+                        <span>💰 省 $${project.savings}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get status text
+        function getStatusText(status) {
+            const map = {
+                'todo': '待修',
+                'progress': '進行中',
+                'done': '已完成'
+            };
+            return map[status] || status;
+        }
+
+        // Get category text
+        function getCategoryText(category) {
+            const map = {
+                'electronic': '電子產品',
+                'furniture': '家具',
+                'clothing': '衣物',
+                'appliance': '家電',
+                'bicycle': '腳踏車',
+                'other': '其他'
+            };
+            return map[category] || category;
+        }
+
+        // Get difficulty text
+        function getDifficultyText(difficulty) {
+            const map = {
+                'easy': '簡單',
+                'medium': '中等',
+                'hard': '困難'
+            };
+            return map[difficulty] || difficulty;
+        }
+
+        // Cycle status on click
+        function cycleStatus(index) {
+            const statusOrder = ['todo', 'progress', 'done'];
+            const currentIndex = statusOrder.indexOf(projects[index].status);
+            const nextIndex = (currentIndex + 1) % statusOrder.length;
+            projects[index].status = statusOrder[nextIndex];
+            
+            saveProjects();
+            renderProjects();
+            updateImpactStats();
+            checkSkillUnlocks();
+        }
+
+        // Add new project
+        function addProject() {
+            const name = document.getElementById('projectName').value;
+            const category = document.getElementById('projectCategory').value;
+            const difficulty = document.getElementById('projectDifficulty').value;
+            const savings = parseInt(document.getElementById('projectSavings').value) || 0;
+
+            if (!name) {
+                alert('請輸入物品名稱');
+                return;
+            }
+
+            const project = {
+                id: Date.now(),
+                name,
+                category,
+                difficulty,
+                savings,
+                status: 'todo',
+                createdAt: new Date().toISOString()
+            };
+
+            projects.unshift(project);
+            saveProjects();
+            renderProjects();
+            closeModal();
+            
+            // Reset form
+            document.getElementById('projectName').value = '';
+            document.getElementById('projectSavings').value = '';
+        }
+
+        // Save to localStorage
+        function saveProjects() {
+            localStorage.setItem('innovation_projects', JSON.stringify(projects));
+        }
+
+        function saveSkills() {
+            localStorage.setItem('innovation_skills', JSON.stringify(skills));
+        }
+
+        // Update impact statistics
+        function updateImpactStats() {
+            const completed = projects.filter(p => p.status === 'done');
+            const savedItems = completed.length;
+            const savedMoney = completed.reduce((sum, p) => sum + p.savings, 0);
+            const co2Saved = Math.round(savedItems * 25); // Approx 25kg CO2 per item
+
+            document.getElementById('savedItems').textContent = savedItems;
+            document.getElementById('savedMoney').textContent = savedMoney;
+            document.getElementById('co2Saved').textContent = co2Saved;
+        }
+
+        // Render skills
+        function renderSkills() {
+            const skillList = document.getElementById('skillList');
+            const skillMap = {
+                'newbie': { text: '🔰 維修新手', class: 'newbie' },
+                'handyman': { text: '🔧 修理達人', class: 'intermediate' },
+                'innovator': { text: '💡 創新者', class: 'intermediate' },
+                'master': { text: '👨‍🔧 維修大師', class: 'expert' },
+                'eco-warrior': { text: '🌍 環保戰士', class: 'expert' }
+            };
+
+            skillList.innerHTML = skills.map(skill => {
+                const info = skillMap[skill] || { text: skill, class: 'newbie' };
+                return `<span class="skill-tag ${info.class}">${info.text}</span>`;
+            }).join('');
+        }
+
+        // Check skill unlocks
+        function checkSkillUnlocks() {
+            const completed = projects.filter(p => p.status === 'done').length;
+            let newSkills = [...skills];
+
+            if (completed >= 1 && !skills.includes('handyman')) {
+                newSkills.push('handyman');
+            }
+            if (completed >= 3 && !skills.includes('innovator')) {
+                newSkills.push('innovator');
+            }
+            if (completed >= 5 && !skills.includes('master')) {
+                newSkills.push('master');
+            }
+            if (completed >= 10 && !skills.includes('eco-warrior')) {
+                newSkills.push('eco-warrior');
+            }
+
+            if (newSkills.length > skills.length) {
+                skills = newSkills;
+                saveSkills();
+                renderSkills();
+            }
+        }
+
+        // Show random tip
+        function showRandomTip() {
+            const tip = tips[Math.floor(Math.random() * tips.length)];
+            document.getElementById('dailyTip').textContent = tip;
+        }
+
+        // Modal controls
+        function openModal() {
+            document.getElementById('projectModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('projectModal').classList.remove('active');
+        }
+
+        // Close modal on outside click
+        document.getElementById('projectModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

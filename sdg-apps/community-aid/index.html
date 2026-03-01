@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社區互助站 | Community Aid Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --warm-white: #FAF8F5;
+            --warm-gray: #E8E4DF;
+            --soft-orange: #E07B39;
+            --soft-orange-light: #F5D4C0;
+            --deep-brown: #4A3F35;
+            --forest-green: #5B7B6F;
+            --forest-light: #C5D5C8;
+            --sunset: #D4A574;
+            --text-primary: #3D352E;
+            --text-secondary: #6B5F54;
+            --shadow-soft: 0 4px 20px rgba(74, 63, 53, 0.08);
+            --shadow-card: 0 8px 32px rgba(74, 63, 53, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--warm-white);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, var(--soft-orange) 0%, var(--sunset) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--deep-brown);
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .sdg-badge {
+            display: inline-block;
+            background: var(--soft-orange);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        /* Impact Dashboard */
+        .impact-dashboard {
+            background: linear-gradient(135deg, var(--deep-brown) 0%, #5A4D42 100%);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-card);
+            color: white;
+        }
+
+        .impact-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .impact-header h2 {
+            font-size: 14px;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .impact-number {
+            font-size: 56px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--sunset) 0%, var(--soft-orange-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .impact-unit {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .impact-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 16px 8px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--sunset);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* Action Cards */
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--deep-brown);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px 16px;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--warm-gray);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-card);
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .action-card:nth-child(1) .action-icon { background: var(--soft-orange-light); }
+        .action-card:nth-child(2) .action-icon { background: var(--forest-light); }
+        .action-card:nth-child(3) .action-icon { background: #E8D5C4; }
+        .action-card:nth-child(4) .action-icon { background: #D4C5B5; }
+
+        .action-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .action-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* Activity Log */
+        .activity-section {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--warm-gray);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .activity-item:first-child {
+            padding-top: 0;
+        }
+
+        .activity-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.donate { background: var(--soft-orange-light); }
+        .activity-icon.volunteer { background: var(--forest-light); }
+        .activity-icon.share { background: #E8D5C4; }
+
+        .activity-content h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .activity-content p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .activity-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .impact-tag {
+            background: var(--forest-green);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        /* Daily Tip */
+        .tip-section {
+            background: linear-gradient(135deg, var(--forest-light) 0%, #D8E5DB 100%);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .tip-header span {
+            font-size: 20px;
+        }
+
+        .tip-header h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--deep-brown);
+        }
+
+        .tip-content {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        /* Bottom Action */
+        .bottom-action {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 16px 20px 24px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+        }
+
+        .btn-primary {
+            display: block;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, var(--soft-orange) 0%, #C96A2E 100%);
+            color: white;
+            border: none;
+            padding: 18px 32px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(224, 123, 57, 0.35);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(224, 123, 57, 0.45);
+        }
+
+        .spacer {
+            height: 80px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 28px 28px 0 0;
+            padding: 24px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--deep-brown);
+        }
+
+        .btn-close {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--warm-gray);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--warm-gray);
+            border-radius: 14px;
+            font-size: 15px;
+            font-family: inherit;
+            background: white;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--soft-orange);
+        }
+
+        .type-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .type-option {
+            padding: 14px 8px;
+            border: 2px solid var(--warm-gray);
+            border-radius: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .type-option.active {
+            border-color: var(--soft-orange);
+            background: var(--soft-orange-light);
+        }
+
+        .type-option span {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .type-option p {
+            font-size: 11px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-icon">🤝</div>
+            <h1>社區互助站</h1>
+            <p>Community Aid Hub</p>
+            <span class="sdg-badge">SDG 1 · 消除貧窮</span>
+        </header>
+
+        <section class="impact-dashboard">
+            <div class="impact-header">
+                <h2>本月社區影響力</h2>
+                <div class="impact-number">1,280</div>
+                <div class="impact-unit">社區貢獻點數</div>
+            </div>
+            <div class="impact-stats">
+                <div class="stat-item">
+                    <span class="stat-value">¥350</span>
+                    <span class="stat-label">捐贈總額</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">8hr</span>
+                    <span class="stat-label">志願時間</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">12</span>
+                    <span class="stat-label">幫助人次</span>
+                </div>
+            </div>
+        </section>
+
+        <h2 class="section-title">
+            <span>⚡</span> 快速行動
+        </h2>
+        <div class="action-cards">
+            <div class="action-card" onclick="openModal('donation')">
+                <div class="action-icon">💝</div>
+                <p class="action-title">愛心捐贈</p>
+                <p class="action-desc">金錢或物資</p>
+            </div>
+            <div class="action-card" onclick="openModal('volunteer')">
+                <div class="action-icon">🙋</div>
+                <p class="action-title">志願服務</p>
+                <p class="action-desc">記錄服務時數</p>
+            </div>
+            <div class="action-card" onclick="openModal('skill')">
+                <div class="action-icon">🛠️</div>
+                <p class="action-title">技能分享</p>
+                <p class="action-desc">教授他人技能</p>
+            </div>
+            <div class="action-card" onclick="openModal('resource')">
+                <div class="action-icon">📦</div>
+                <p class="action-title">資源共享</p>
+                <p class="action-desc">分享閒置物品</p>
+            </div>
+        </div>
+
+        <section class="activity-section">
+            <h2 class="section-title">
+                <span>📋</span> 最近活動
+            </h2>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon donate">💝</div>
+                    <div class="activity-content">
+                        <h4>捐贈食物銀行</h4>
+                        <p>捐贈白米、罐頭等物資</p>
+                        <div class="activity-meta">
+                            <span>2小時前</span>
+                            <span class="impact-tag">+50 點</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon volunteer">🙋</div>
+                    <div class="activity-content">
+                        <h4>社區清潔活動</h4>
+                        <p>協助長者清理家居</p>
+                        <div class="activity-meta">
+                            <span>昨天</span>
+                            <span class="impact-tag">+80 點</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon share">🛠️</div>
+                    <div class="activity-content">
+                        <h4>維修技能分享</h4>
+                        <p>教導社區居民基本家電維修</p>
+                        <div class="activity-meta">
+                            <span>3天前</span>
+                            <span class="impact-tag">+100 點</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tip-section">
+            <div class="tip-header">
+                <span>💡</span>
+                <h3>今日互助錦囊</h3>
+            </div>
+            <p class="tip-content" id="dailyTip">
+                「施比受更有福」——每月只需捐出收入的1%，就能為有需要的人帶來溫飽。你願意今天開始這個承諾嗎？
+            </p>
+        </section>
+
+        <div class="spacer"></div>
+    </div>
+
+    <div class="bottom-action">
+        <button class="btn-primary" onclick="openModal()">
+            ✨ 記錄新貢獻
+        </button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="actionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>記錄貢獻</h3>
+                <button class="btn-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="form-group">
+                <label>選擇類型</label>
+                <div class="type-selector">
+                    <div class="type-option active" data-type="donation">
+                        <span>💝</span>
+                        <p>捐贈</p>
+                    </div>
+                    <div class="type-option" data-type="volunteer">
+                        <span>🙋</span>
+                        <p>志願</p>
+                    </div>
+                    <div class="type-option" data-type="skill">
+                        <span>🛠️</span>
+                        <p>技能</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>內容描述</label>
+                <input type="text" placeholder="例如：捐贈白米10公斤">
+            </div>
+            <div class="form-group">
+                <label>數量/價值</label>
+                <input type="text" placeholder="例如：¥200 或 2小時">
+            </div>
+            <button class="btn-primary" onclick="closeModal()">確認記錄</button>
+        </div>
+    </div>
+
+    <script>
+        // Daily Tips
+        const tips = [
+            "「施比受更有福」——每月只需捐出收入的1%，就能為有需要的人帶來溫飽。你願意今天開始這個承諾嗎？",
+            "技能比金錢更持久。教會一個人維修電器，他可能因此獲得一份工作。",
+            "閒置的嬰兒用品、書籍、衣物，對另一個家庭來說可能是及時雨。",
+            "陪伴是最廉價卻最珍貴的捐贈。探訪獨居長者，聆聽他們的故事。",
+            "本地食物銀行通常最需要的是：嬰兒食品、罐頭魚、食用油。",
+            "微型貸款可以讓小商販買入第一批貨物，開啟自力更生之路。"
+        ];
+
+        // Set random daily tip based on date
+        const today = new Date().getDate();
+        document.getElementById('dailyTip').textContent = tips[today % tips.length];
+
+        // Modal functions
+        function openModal(type) {
+            document.getElementById('actionModal').classList.add('active');
+            if (type) {
+                document.querySelectorAll('.type-option').forEach(opt => {
+                    opt.classList.toggle('active', opt.dataset.type === type);
+                });
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('actionModal').classList.remove('active');
+        }
+
+        // Type selector
+        document.querySelectorAll('.type-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.type-option').forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+            });
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('actionModal').addEventListener('click', (e) => {
+            if (e.target.id === 'actionModal') closeModal();
+        });
+    </script>
+</body>
+</html>

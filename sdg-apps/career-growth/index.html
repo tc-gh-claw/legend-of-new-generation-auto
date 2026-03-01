@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>職涯成長追蹤器 | Career Growth Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #334155;
+            --accent-primary: #f59e0b;
+            --accent-secondary: #fbbf24;
+            --accent-glow: rgba(245, 158, 11, 0.3);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-card) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .sdg-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: var(--bg-primary);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Dashboard Grid */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .card-icon.work { background: rgba(245, 158, 11, 0.2); }
+        .card-icon.skills { background: rgba(59, 130, 246, 0.2); }
+        .card-icon.balance { background: rgba(16, 185, 129, 0.2); }
+        .card-icon.milestone { background: rgba(139, 92, 246, 0.2); }
+
+        .card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .card-value.work { color: var(--accent-primary); }
+        .card-value.skills { color: var(--info); }
+        .card-value.balance { color: var(--success); }
+        .card-value.milestone { color: #8b5cf6; }
+
+        .card-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Work Timer */
+        .timer-display {
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            margin: 20px 0;
+            color: var(--accent-primary);
+            text-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Work-Life Balance */
+        .balance-ring {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .balance-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .balance-ring-bg {
+            fill: none;
+            stroke: var(--bg-card);
+            stroke-width: 12;
+        }
+
+        .balance-ring-progress {
+            fill: none;
+            stroke: url(#balanceGradient);
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .balance-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .balance-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .balance-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Skills Progress */
+        .skill-item {
+            margin-bottom: 16px;
+        }
+
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .skill-name {
+            font-weight: 500;
+        }
+
+        .skill-level {
+            color: var(--info);
+            font-weight: 600;
+        }
+
+        .skill-bar {
+            height: 8px;
+            background: var(--bg-card);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--info), #60a5fa);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .add-skill-btn {
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        /* Milestones */
+        .milestone-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .milestone-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .milestone-item:hover {
+            transform: translateX(5px);
+        }
+
+        .milestone-check {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .milestone-check.completed {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .milestone-check.completed::after {
+            content: '✓';
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .milestone-text {
+            flex: 1;
+        }
+
+        .milestone-text.completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .milestone-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Tip Section */
+        .tip-section {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 30px;
+            color: var(--bg-primary);
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .tip-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Weekly Chart */
+        .chart-container {
+            height: 200px;
+            margin-top: 20px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            gap: 8px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 6px 6px 0 0;
+            min-height: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+
+        .chart-bar::after {
+            content: attr(data-hours) 'h';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .chart-bar:hover::after {
+            opacity: 1;
+        }
+
+        .chart-label {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--bg-card);
+            border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .timer-display {
+                font-size: 2.5rem;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- SVG Gradients -->
+        <svg width="0" height="0">
+            <defs>
+                <linearGradient id="balanceGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#10b981"/>
+                    <stop offset="100%" style="stop-color:#34d399"/>
+                </linearGradient>
+            </defs>
+        </svg>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="sdg-badge">SDG 8: Decent Work & Economic Growth</div>
+            <h1>職涯成長追蹤器</h1>
+            <p>促進體面工作、提升技能、實現工作與生活平衡</p>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard">
+            <!-- Work Timer Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon work">⏱️</div>
+                    <div>
+                        <h3>今日工作時數</h3>
+                    </div>
+                </div>
+                <div class="timer-display" id="timerDisplay">00:00:00</div>
+                <div class="card-subtitle" style="text-align: center; margin-bottom: 15px;">
+                    目標: 8 小時 | 本週累計: <span id="weekHours">32.5</span> 小時
+                </div>
+                <div class="timer-controls">
+                    <button class="btn btn-primary" id="startBtn" onclick="startTimer()">
+                        <span>▶</span> 開始工作
+                    </button>
+                    <button class="btn btn-secondary" id="pauseBtn" onclick="pauseTimer()" disabled>
+                        <span>⏸</span> 暫停
+                    </button>
+                    <button class="btn btn-secondary" id="stopBtn" onclick="stopTimer()" disabled>
+                        <span>⏹</span> 結束
+                    </button>
+                </div>
+            </div>
+
+            <!-- Work-Life Balance Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon balance">⚖️</div>
+                    <div>
+                        <h3>工作與生活平衡</h3>
+                    </div>
+                </div>
+                <div class="balance-ring">
+                    <svg width="200" height="200">
+                        <circle class="balance-ring-bg" cx="100" cy="100" r="85"/>
+                        <circle class="balance-ring-progress" cx="100" cy="100" r="85" 
+                                stroke-dasharray="534" stroke-dashoffset="80" id="balanceRing"/>
+                    </svg>
+                    <div class="balance-text">
+                        <div class="balance-score" id="balanceScore">85</div>
+                        <div class="balance-label">健康指數</div>
+                    </div>
+                </div>
+                <div class="card-subtitle" style="text-align: center;">
+                    <span id="balanceStatus">🌟 平衡狀態良好</span>
+                </div>
+            </div>
+
+            <!-- Skills Progress Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon skills">📚</div>
+                    <div>
+                        <h3>技能學習進度</h3>
+                    </div>
+                </div>
+                <div id="skillsList">
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">JavaScript 進階</span>
+                            <span class="skill-level">75%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">專案管理</span>
+                            <span class="skill-level">60%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 60%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">數據分析</span>
+                            <span class="skill-level">45%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 45%"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary add-skill-btn" onclick="openSkillModal()">
+                    <span>+</span> 添加新技能
+                </button>
+            </div>
+
+            <!-- Milestones Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon milestone">🎯</div>
+                    <div>
+                        <h3>職涯里程碑</h3>
+                    </div>
+                </div>
+                <div class="milestone-list" id="milestoneList">
+                    <div class="milestone-item">
+                        <div class="milestone-check completed" onclick="toggleMilestone(this)"></div>
+                        <div class="milestone-text completed">
+                            <div>完成專案管理認證</div>
+                            <div class="milestone-date">2026-02-15</div>
+                        </div>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="milestone-check" onclick="toggleMilestone(this)"></div>
+                        <div class="milestone-text">
+                            <div>晉升資深工程師</div>
+                            <div class="milestone-date">目標: 2026-06</div>
+                        </div>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="milestone-check" onclick="toggleMilestone(this)"></div>
+                        <div class="milestone-text">
+                            <div>帶領 5 人團隊</div>
+                            <div class="milestone-date">目標: 2026-09</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary add-skill-btn" onclick="openMilestoneModal()">
+                    <span>+</span> 添加里程碑
+                </button>
+            </div>
+        </div>
+
+        <!-- Weekly Chart Card -->
+        <div class="card" style="margin-bottom: 30px;">
+            <div class="card-header">
+                <div class="card-icon work">📊</div>
+                <div>
+                    <h3>本週工作趨勢</h3>
+                </div>
+            </div>
+            <div class="chart-container">
+                <div style="flex: 1; text-align: center;">
+                    <div class="chart-bar" style="height: 60%" data-hours="6.5"></div>
+                    <div class="chart-label">週一</div>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                    <div class="chart-bar" style="height: 80%" data-hours="8.0"></div>
+                    <div class="chart-label">週二</div>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                    <div class="chart-bar" style="height: 90%" data-hours="9.0"></div>
+                    <div class="chart-label">週三</div>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                    <div class="chart-bar" style="height: 70%" data-hours="7.5"></div>
+                    <div class="chart-label">週四</div>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                    <div class="chart-bar" style="height: 50%" data-hours="5.5"></div>
+                    <div class="chart-label">週五</div>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                    <div class="chart-bar" style="height: 20%; opacity: 0.5;" data-hours="0"></div>
+                    <div class="chart-label">週六</div>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                    <div class="chart-bar pulse" style="height: 15%; opacity: 0.5;" data-hours="0"></div>
+                    <div class="chart-label">週日</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Tip -->
+        <div class="tip-section">
+            <div class="tip-header">
+                <span>💡</span>
+                <span>今日職涯錦囊</span>
+            </div>
+            <div class="tip-content" id="dailyTip">
+                定期檢視你的職涯目標，確保日常工作與長期發展方向一致。每季度花一小時反思：我現在學到什麼？下一步想達成什麼？
+            </div>
+        </div>
+    </div>
+
+    <!-- Skill Modal -->
+    <div class="modal" id="skillModal">
+        <div class="modal-content">
+            <h3>添加新技能</h3>
+            <div class="input-group">
+                <label>技能名稱</label>
+                <input type="text" id="skillNameInput" placeholder="例如: Python 程式設計">
+            </div>
+            <div class="input-group">
+                <label>當前進度 (%)</label>
+                <input type="number" id="skillLevelInput" placeholder="0-100" min="0" max="100">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeSkillModal()">取消</button>
+                <button class="btn btn-primary" onclick="addSkill()">添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Milestone Modal -->
+    <div class="modal" id="milestoneModal">
+        <div class="modal-content">
+            <h3>添加新里程碑</h3>
+            <div class="input-group">
+                <label>里程碑描述</label>
+                <input type="text" id="milestoneInput" placeholder="例如: 完成領導力培訓">
+            </div>
+            <div class="input-group">
+                <label>目標日期</label>
+                <input type="date" id="milestoneDateInput">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeMilestoneModal()">取消</button>
+                <button class="btn btn-primary" onclick="addMilestone()">添加</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Timer functionality
+        let timerInterval;
+        let startTime;
+        let elapsedTime = 0;
+        let isRunning = false;
+
+        function updateTimerDisplay() {
+            const totalSeconds = Math.floor(elapsedTime / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            
+            document.getElementById('timerDisplay').textContent = 
+                String(hours).padStart(2, '0') + ':' +
+                String(minutes).padStart(2, '0') + ':' +
+                String(seconds).padStart(2, '0');
+        }
+
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                startTime = Date.now() - elapsedTime;
+                timerInterval = setInterval(() => {
+                    elapsedTime = Date.now() - startTime;
+                    updateTimerDisplay();
+                    updateBalanceScore();
+                }, 1000);
+                
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('pauseBtn').disabled = false;
+                document.getElementById('stopBtn').disabled = false;
+            }
+        }
+
+        function pauseTimer() {
+            if (isRunning) {
+                isRunning = false;
+                clearInterval(timerInterval);
+                
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('startBtn').innerHTML = '<span>▶</span> 繼續';
+                document.getElementById('pauseBtn').disabled = true;
+            }
+        }
+
+        function stopTimer() {
+            isRunning = false;
+            clearInterval(timerInterval);
+            
+            // Save the session
+            const totalSeconds = Math.floor(elapsedTime / 1000);
+            const hours = (totalSeconds / 3600).toFixed(1);
+            
+            // Update week hours
+            const currentWeekHours = parseFloat(document.getElementById('weekHours').textContent);
+            document.getElementById('weekHours').textContent = (currentWeekHours + parseFloat(hours)).toFixed(1);
+            
+            // Reset
+            elapsedTime = 0;
+            updateTimerDisplay();
+            
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('startBtn').innerHTML = '<span>▶</span> 開始工作';
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = true;
+            
+            updateBalanceScore();
+        }
+
+        // Work-Life Balance Score
+        function updateBalanceScore() {
+            const hoursWorked = elapsedTime / (1000 * 60 * 60);
+            const dailyTarget = 8;
+            let score = 100;
+            
+            if (hoursWorked > dailyTarget) {
+                score = Math.max(0, 100 - (hoursWorked - dailyTarget) * 20);
+            }
+            
+            document.getElementById('balanceScore').textContent = Math.round(score);
+            
+            // Update ring
+            const circumference = 2 * Math.PI * 85;
+            const offset = circumference - (score / 100) * circumference;
+            document.getElementById('balanceRing').style.strokeDashoffset = offset;
+            
+            // Update status
+            const statusEl = document.getElementById('balanceStatus');
+            if (score >= 80) {
+                statusEl.textContent = '🌟 平衡狀態良好';
+                document.getElementById('balanceScore').style.color = 'var(--success)';
+            } else if (score >= 50) {
+                statusEl.textContent = '⚠️ 注意工作時長';
+                document.getElementById('balanceScore').style.color = 'var(--warning)';
+            } else {
+                statusEl.textContent = '😰 工作過度，請休息';
+                document.getElementById('balanceScore').style.color = 'var(--danger)';
+            }
+        }
+
+        // Milestones
+        function toggleMilestone(element) {
+            element.classList.toggle('completed');
+            const text = element.nextElementSibling;
+            text.classList.toggle('completed');
+        }
+
+        // Skills Modal
+        function openSkillModal() {
+            document.getElementById('skillModal').classList.add('active');
+        }
+
+        function closeSkillModal() {
+            document.getElementById('skillModal').classList.remove('active');
+            document.getElementById('skillNameInput').value = '';
+            document.getElementById('skillLevelInput').value = '';
+        }
+
+        function addSkill() {
+            const name = document.getElementById('skillNameInput').value;
+            const level = document.getElementById('skillLevelInput').value;
+            
+            if (name && level) {
+                const skillsList = document.getElementById('skillsList');
+                const skillItem = document.createElement('div');
+                skillItem.className = 'skill-item';
+                skillItem.innerHTML = `
+                    <div class="skill-header">
+                        <span class="skill-name">${name}</span>
+                        <span class="skill-level">${level}%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: ${level}%"></div>
+                    </div>
+                `;
+                skillsList.appendChild(skillItem);
+                closeSkillModal();
+            }
+        }
+
+        // Milestone Modal
+        function openMilestoneModal() {
+            document.getElementById('milestoneModal').classList.add('active');
+        }
+
+        function closeMilestoneModal() {
+            document.getElementById('milestoneModal').classList.remove('active');
+            document.getElementById('milestoneInput').value = '';
+            document.getElementById('milestoneDateInput').value = '';
+        }
+
+        function addMilestone() {
+            const desc = document.getElementById('milestoneInput').value;
+            const date = document.getElementById('milestoneDateInput').value;
+            
+            if (desc) {
+                const milestoneList = document.getElementById('milestoneList');
+                const milestoneItem = document.createElement('div');
+                milestoneItem.className = 'milestone-item';
+                milestoneItem.innerHTML = `
+                    <div class="milestone-check" onclick="toggleMilestone(this)"></div>
+                    <div class="milestone-text">
+                        <div>${desc}</div>
+                        <div class="milestone-date">目標: ${date || '未設定'}</div>
+                    </div>
+                `;
+                milestoneList.appendChild(milestoneItem);
+                closeMilestoneModal();
+            }
+        }
+
+        // Daily Tips
+        const tips = [
+            "定期檢視你的職涯目標，確保日常工作與長期發展方向一致。每季度花一小時反思：我現在學到什麼？下一步想達成什麼？",
+            "學會說『不』是職涯中的重要技能。專注於高價值任務，避免過度承諾導致 burnout。",
+            "建立個人品牌：在專業領域持續分享知識，參與社群討論，讓你的專業能力被看見。",
+            "尋找一位職涯導師，定期交流職涯規劃。前人的經驗能幫助你避開許多彎路。",
+            "每完成一個專案，花15分鐘記錄學到的教訓和成就。這些資料將成為升遷和轉職的重要素材。",
+            "投資自己的人際網絡。80% 的工作機會來自人脈推薦，定期與舊同事、業界人士保持聯繫。",
+            "設定『學習時間』，每週至少 3 小時專注於技能提升。持續學習是職涯成長的關鍵。",
+            "工作與生活平衡不是 50/50，而是根據人生階段動態調整。重要的是保持自我覺察，定期檢視。"
+        ];
+
+        // Set random tip based on day
+        const today = new Date().getDay();
+        document.getElementById('dailyTip').textContent = tips[today % tips.length];
+
+        // Close modals on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // Initialize balance ring
+        updateBalanceScore();
+    </script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>和平之聲 | Voice of Peace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #fef3c7 0%, #f3e8ff 50%, #dbeafe 100%);
+            min-height: 100vh;
+        }
+        .peace-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .dove-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .pulse-ring {
+            animation: pulse-ring 2s ease-out infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        .action-card {
+            transition: all 0.3s ease;
+        }
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+        .wave-bg {
+            background: linear-gradient(90deg, #f59e0b 0%, #8b5cf6 50%, #3b82f6 100%);
+            background-size: 200% 100%;
+            animation: wave 4s ease infinite;
+        }
+        @keyframes wave {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+    </style>
+</head>
+<body class="pb-24">
+    <!-- Header -->
+    <header class="peace-card sticky top-0 z-50 px-4 py-4">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <div class="w-10 h-10 bg-gradient-to-br from-amber-400 via-purple-400 to-blue-400 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-gray-800">和平之聲</h1>
+                    <p class="text-xs text-gray-500">SDG 16 · 和平與正義</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-2xl font-bold text-purple-600" id="peaceScore">0</div>
+                <div class="text-xs text-gray-500">和平指數</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Peace Dashboard -->
+    <section class="px-4 pt-6">
+        <div class="max-w-md mx-auto">
+            <!-- Peace Index Card -->
+            <div class="peace-card rounded-2xl p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-gray-800">今日和平指數</h2>
+                    <span class="text-sm text-gray-400" id="currentDate"></span>
+                </div>
+                
+                <div class="relative flex justify-center mb-6">
+                    <div class="relative w-32 h-32">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" stroke="#e5e7eb" stroke-width="8" fill="none"/>
+                            <circle id="peaceCircle" cx="50" cy="50" r="45" stroke="url(#peaceGradient)" stroke-width="8" fill="none"
+                                stroke-dasharray="283" stroke-dashoffset="283" stroke-linecap="round" class="transition-all duration-1000"/>
+                            <defs>
+                                <linearGradient id="peaceGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#f59e0b"/>
+                                    <stop offset="50%" stop-color="#8b5cf6"/>
+                                    <stop offset="100%" stop-color="#3b82f6"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <svg class="w-10 h-10 text-purple-500 dove-float" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M21 7c-2 0-4 1-5 2-1-1-3-2-5-2s-4 1-5 2c-1-1-3-2-5-2v2c1.5 0 3 .5 4 1.5C6 13 8 14 10 14s4-1 5-2c1 1 3 2 5 2s4-1 5-2c1 1 2.5 1.5 4 1.5v-2c-2 0-4-1-5-2-1 1-3 2-5 2z"/>
+                            </svg>
+                            <span class="text-2xl font-bold text-gray-800 mt-1" id="peaceValue">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="text-center p-3 bg-amber-50 rounded-xl">
+                        <div class="text-xl mb-1">🗳️</div>
+                        <div class="text-lg font-bold text-amber-600" id="civicCount">0</div>
+                        <div class="text-xs text-gray-600">公民參與</div>
+                    </div>
+                    <div class="text-center p-3 bg-purple-50 rounded-xl">
+                        <div class="text-xl mb-1">⚖️</div>
+                        <div class="text-lg font-bold text-purple-600" id="justiceCount">0</div>
+                        <div class="text-xs text-gray-600">正義行動</div>
+                    </div>
+                    <div class="text-center p-3 bg-blue-50 rounded-xl">
+                        <div class="text-xl mb-1">🤝</div>
+                        <div class="text-lg font-bold text-blue-600" id="dialogueCount">0</div>
+                        <div class="text-xs text-gray-600">對話促進</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">今日和平行動</h3>
+            <div class="space-y-3 mb-6">
+                <div class="action-card peace-card rounded-xl p-4 cursor-pointer" onclick="logAction('civic')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-2xl">🗳️</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">公民參與</h4>
+                            <p class="text-sm text-gray-600">參與社區決策、投票、表達意見</p>
+                        </div>
+                        <div class="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center text-white font-bold">+</div>
+                    </div>
+                </div>
+
+                <div class="action-card peace-card rounded-xl p-4 cursor-pointer" onclick="logAction('justice')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-2xl">⚖️</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">正義行動</h4>
+                            <p class="text-sm text-gray-600">支持公平、舉報不公、捍衛權利</p>
+                        </div>
+                        <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">+</div>
+                    </div>
+                </div>
+
+                <div class="action-card peace-card rounded-xl p-4 cursor-pointer" onclick="logAction('dialogue')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl">🤝</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">對話促進</h4>
+                            <p class="text-sm text-gray-600">化解衝突、促進理解、建立橋樑</p>
+                        </div>
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">+</div>
+                    </div>
+                </div>
+
+                <div class="action-card peace-card rounded-xl p-4 cursor-pointer" onclick="logAction('education')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-2xl">📚</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">和平教育</h4>
+                            <p class="text-sm text-gray-600">學習人權、分享知識、提升意識</p>
+                        </div>
+                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">+</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Peace Tip -->
+            <div class="peace-card rounded-2xl p-5 mb-6 border-l-4 border-purple-500">
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">💡</span>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-1">每日和平錦囊</h4>
+                        <p class="text-sm text-gray-600 italic" id="peaceTip">「和平不僅是沒有戰爭，更是正義的實現。」</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Knowledge Base -->
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">人權與正義知識庫</h3>
+            <div class="space-y-3 mb-6">
+                <div class="peace-card rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-semibold text-gray-800">🕊️ 世界人權宣言</h4>
+                        <span class="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full">基礎</span>
+                    </div>
+                    <p class="text-sm text-gray-600">1948年聯合國通過，闡明所有人與生俱來的權利。</p>
+                </div>
+
+                <div class="peace-card rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-semibold text-gray-800">⚖️ 正義的四個支柱</h4>
+                        <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">核心</span>
+                    </div>
+                    <p class="text-sm text-gray-600">問責、公正、透明、參與 — 構成強大機構的基礎。</p>
+                </div>
+
+                <div class="peace-card rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-semibold text-gray-800">🗳️ 公民參與形式</h4>
+                        <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">實踐</span>
+                    </div>
+                    <p class="text-sm text-gray-600">投票、請願、社區會議、監督政府、志願服務。</p>
+                </div>
+            </div>
+
+            <!-- Action Log -->
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">行動日誌</h3>
+            <div class="peace-card rounded-2xl p-4" id="actionLog">
+                <p class="text-center text-gray-400 py-4">暫無記錄，開始你的第一個和平行動吧！</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Data storage
+        let peaceData = {
+            score: 0,
+            civic: 0,
+            justice: 0,
+            dialogue: 0,
+            education: 0,
+            actions: []
+        };
+
+        const peaceTips = [
+            "和平不僅是沒有戰爭，更是正義的實現。",
+            "每個人的聲音都值得被聽見，這是民主的基石。",
+            "透明度建立信任，信任促進和平。",
+            "教育是最強大的武器，用來改變世界。",
+            "理解是和解的第一步。",
+            "正義遲到就是正義缺席。",
+            "公民參與是權利，也是責任。",
+            "對話比對抗更能解決問題。"
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            updateDisplay();
+            updateDate();
+            rotateTip();
+        });
+
+        function loadData() {
+            const saved = localStorage.getItem('peaceData');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (parsed.date === new Date().toDateString()) {
+                    peaceData = parsed;
+                }
+            }
+        }
+
+        function saveData() {
+            peaceData.date = new Date().toDateString();
+            localStorage.setItem('peaceData', JSON.stringify(peaceData));
+        }
+
+        function updateDisplay() {
+            // Update score
+            peaceData.score = peaceData.civic + peaceData.justice + peaceData.dialogue + peaceData.education;
+            document.getElementById('peaceScore').textContent = peaceData.score;
+            document.getElementById('peaceValue').textContent = peaceData.score;
+            
+            // Update circle
+            const maxScore = 20;
+            const percentage = Math.min(peaceData.score / maxScore, 1);
+            const offset = 283 - (283 * percentage);
+            document.getElementById('peaceCircle').style.strokeDashoffset = offset;
+            
+            // Update counts
+            document.getElementById('civicCount').textContent = peaceData.civic;
+            document.getElementById('justiceCount').textContent = peaceData.justice;
+            document.getElementById('dialogueCount').textContent = peaceData.dialogue + peaceData.education;
+
+            // Update log
+            updateLog();
+            saveData();
+        }
+
+        function logAction(type) {
+            const types = {
+                civic: { name: '公民參與', icon: '🗳️', color: 'amber' },
+                justice: { name: '正義行動', icon: '⚖️', color: 'purple' },
+                dialogue: { name: '對話促進', icon: '🤝', color: 'blue' },
+                education: { name: '和平教育', icon: '📚', color: 'green' }
+            };
+
+            peaceData[type]++;
+            
+            const action = {
+                type: type,
+                time: new Date().toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit' }),
+                ...types[type]
+            };
+            
+            peaceData.actions.unshift(action);
+            if (peaceData.actions.length > 10) peaceData.actions.pop();
+            
+            updateDisplay();
+        }
+
+        function updateLog() {
+            const logEl = document.getElementById('actionLog');
+            if (peaceData.actions.length === 0) {
+                logEl.innerHTML = '<p class="text-center text-gray-400 py-4">暫無記錄，開始你的第一個和平行動吧！</p>';
+                return;
+            }
+
+            logEl.innerHTML = peaceData.actions.map(a => `
+                <div class="flex items-center gap-3 py-2 border-b border-gray-100 last:border-0">
+                    <span class="text-xl">${a.icon}</span>
+                    <div class="flex-1">
+                        <span class="font-medium text-gray-800">${a.name}</span>
+                    </div>
+                    <span class="text-xs text-gray-400">${a.time}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateDate() {
+            const options = { month: 'short', day: 'numeric', weekday: 'short' };
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('zh-HK', options);
+        }
+
+        function rotateTip() {
+            const tip = peaceTips[Math.floor(Math.random() * peaceTips.length)];
+            document.getElementById('peaceTip').textContent = `「${tip}」`;
+        }
+    </script>
+</body>
+</html>

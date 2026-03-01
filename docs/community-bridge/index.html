@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社區互助橋 | Community Bridge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #E5243B;
+            --primary-light: #FF6B7A;
+            --secondary: #8B4513;
+            --warm: #D4A574;
+            --dark: #2C2416;
+            --light: #FDF8F3;
+            --surface: #FFFFFF;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --info: #2196F3;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 28px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-header::before {
+            content: '🤝';
+            position: absolute;
+            font-size: 120px;
+            opacity: 0.08;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .sdg-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            backdrop-filter: blur(4px);
+        }
+
+        .app-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .app-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 16px;
+            margin-top: -20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 16px 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(229,36,59,0.1);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 16px 12px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--warm));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        /* Budget Card */
+        .budget-card {
+            background: var(--surface);
+            margin: 0 16px 16px;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .budget-title {
+            font-weight: 600;
+        }
+
+        .budget-period {
+            font-size: 12px;
+            color: #888;
+            background: var(--light);
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .budget-amount {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .amount-display {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .amount-display.negative {
+            color: var(--primary);
+        }
+
+        .amount-label {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .budget-progress {
+            margin-bottom: 16px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #E8E8E8;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-fill.safe {
+            background: linear-gradient(90deg, var(--success), #81C784);
+        }
+
+        .progress-fill.warning {
+            background: linear-gradient(90deg, var(--warning), #FFB74D);
+        }
+
+        .progress-fill.danger {
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #888;
+            margin-top: 6px;
+        }
+
+        .budget-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #C41E33;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: #E8E0D8;
+        }
+
+        /* Resource Cards */
+        .resource-list {
+            padding: 0 16px;
+        }
+
+        .resource-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 4px solid var(--primary);
+        }
+
+        .resource-card:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .resource-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--warm), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .resource-info {
+            flex: 1;
+        }
+
+        .resource-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .resource-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .resource-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+        }
+
+        .meta-tag {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #888;
+        }
+
+        .meta-tag.highlight {
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        /* Goal Tracker */
+        .goals-section {
+            padding: 0 16px;
+        }
+
+        .goal-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .goal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .goal-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .goal-checkbox:hover {
+            background: rgba(229,36,59,0.1);
+        }
+
+        .goal-checkbox.checked {
+            background: var(--primary);
+        }
+
+        .goal-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .goal-text {
+            flex: 1;
+        }
+
+        .goal-title {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .goal-title.completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .goal-reward {
+            font-size: 12px;
+            color: var(--success);
+        }
+
+        .goal-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .goal-bar {
+            flex: 1;
+            height: 6px;
+            background: #E8E8E8;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .goal-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--warm));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .goal-percent {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary);
+            min-width: 36px;
+            text-align: right;
+        }
+
+        /* Tips Section */
+        .tips-card {
+            background: linear-gradient(135deg, var(--secondary), var(--warm));
+            margin: 16px;
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tips-card::before {
+            content: '💡';
+            position: absolute;
+            font-size: 80px;
+            opacity: 0.1;
+            right: -10px;
+            bottom: -20px;
+        }
+
+        .tips-title {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .tips-content {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .tips-nav {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 16px;
+        }
+
+        .tips-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tips-dot.active {
+            background: white;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Achievement Badges */
+        .badges-section {
+            padding: 0 16px 16px;
+        }
+
+        .badges-grid {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 4px;
+            scrollbar-width: none;
+        }
+
+        .badges-grid::-webkit-scrollbar {
+            display: none;
+        }
+
+        .badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 12px;
+            background: var(--surface);
+            border-radius: 16px;
+            min-width: 80px;
+            box-shadow: var(--shadow);
+            opacity: 0.5;
+            transition: all 0.2s;
+        }
+
+        .badge.earned {
+            opacity: 1;
+            border: 2px solid var(--primary);
+        }
+
+        .badge-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--warm), var(--primary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .badge.earned .badge-icon {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .badge-name {
+            font-size: 11px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: var(--surface);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 20px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 12px;
+        }
+
+        .nav-item:hover {
+            background: var(--light);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            width: 100%;
+            max-width: 480px;
+            border-radius: 24px 24px 0 0;
+            padding: 24px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: var(--light);
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E8E8E8;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="sdg-badge">
+                <span>🎯</span>
+                <span>SDG 1 - 無貧窮</span>
+            </div>
+            <h1 class="app-title">社區互助橋</h1>
+            <p class="app-subtitle">攜手同行，共建希望</p>
+        </header>
+
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <div class="stat-card">
+                <div class="stat-value" id="daysTracked">7</div>
+                <div class="stat-label">追蹤日數</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="goalsCompleted">3</div>
+                <div class="stat-label">完成目標</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="badgesEarned">2</div>
+                <div class="stat-label">獲得徽章</div>
+            </div>
+        </div>
+
+        <!-- Budget Tracker -->
+        <div class="section-header">
+            <div class="section-title">
+                <div class="section-icon">💰</div>
+                簡易預算
+            </div>
+        </div>
+        
+        <div class="budget-card">
+            <div class="budget-header">
+                <span class="budget-title">本月預算</span>
+                <span class="budget-period">2026年3月</span>
+            </div>
+            <div class="budget-amount">
+                <div class="amount-display" id="remainingAmount">$1,240</div>
+                <div class="amount-label">剩餘預算 / $5,000</div>
+            </div>
+            <div class="budget-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill safe" id="budgetProgress" style="width: 75%"></div>
+                </div>
+                <div class="progress-labels">
+                    <span>已用 $3,760</span>
+                    <span>剩餘 25%</span>
+                </div>
+            </div>
+            <div class="budget-actions">
+                <button class="btn btn-secondary" onclick="openModal('income')">➕ 記收入</button>
+                <button class="btn btn-primary" onclick="openModal('expense')">➖ 記支出</button>
+            </div>
+        </div>
+
+        <!-- Daily Tips -->
+        <div class="tips-card">
+            <div class="tips-title">每日理財錦囊</div>
+            <div class="tips-content" id="dailyTip">
+                「先儲蓄，後消費」— 收到收入後，先將10%存入儲蓄，再用剩餘嘅錢安排開支。
+            </div>
+            <div class="tips-nav">
+                <span class="tips-dot active" onclick="showTip(0)"></span>
+                <span class="tips-dot" onclick="showTip(1)"></span>
+                <span class="tips-dot" onclick="showTip(2)"></span>
+            </div>
+        </div>
+
+        <!-- Community Resources -->
+        <div class="section-header">
+            <div class="section-title">
+                <div class="section-icon">🏛️</div>
+                社區資源
+            </div>
+        </div>
+        
+        <div class="resource-list">
+            <div class="resource-card" onclick="showResourceDetail(0)">
+                <div class="resource-icon">🍱</div>
+                <div class="resource-info">
+                    <div class="resource-name">社區食物銀行</div>
+                    <div class="resource-desc">免費食物援助，每週二、五開放領取</div>
+                    <div class="resource-meta">
+                        <span class="meta-tag">📍 0.8公里</span>
+                        <span class="meta-tag highlight">🆓 免費</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="resource-card" onclick="showResourceDetail(1)">
+                <div class="resource-icon">📚</div>
+                <div class="resource-info">
+                    <div class="resource-name">免費技能培訓課程</div>
+                    <div class="resource-desc">電腦基礎、求職技巧、理財規劃</div>
+                    <div class="resource-meta">
+                        <span class="meta-tag">📍 線上/線下</span>
+                        <span class="meta-tag highlight">🆓 全免費</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="resource-card" onclick="showResourceDetail(2)">
+                <div class="resource-icon">🏥</div>
+                <div class="resource-info">
+                    <div class="resource-name">社區健康服務</div>
+                    <div class="resource-desc">基本醫療諮詢、心理健康支援</div>
+                    <div class="resource-meta">
+                        <span class="meta-tag">📍 1.2公里</span>
+                        <span class="meta-tag">💵 低收入減免</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="resource-card" onclick="showResourceDetail(3)">
+                <div class="resource-icon">👔</div>
+                <div class="resource-info">
+                    <div class="resource-name">職業介紹及配對</div>
+                    <div class="resource-desc">免費履歷指導、工作配對服務</div>
+                    <div class="resource-meta">
+                        <span class="meta-tag">📍 線上申請</span>
+                        <span class="meta-tag highlight">🆓 免費</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Goals Section -->
+        <div class="section-header">
+            <div class="section-title">
+                <div class="section-icon">🎯</div>
+                脫貧目標
+            </div>
+        </div>
+        
+        <div class="goals-section">
+            <div class="goal-card">
+                <div class="goal-header">
+                    <div class="goal-checkbox" onclick="toggleGoal(this, 0)"></div>
+                    <div class="goal-text">
+                        <div class="goal-title">建立緊急儲蓄基金</div>
+                        <div class="goal-reward">🏆 儲蓄新手徽章</div>
+                    </div>
+                </div>
+                <div class="goal-progress">
+                    <div class="goal-bar">
+                        <div class="goal-fill" style="width: 65%"></div>
+                    </div>
+                    <span class="goal-percent">65%</span>
+                </div>
+            </div>
+            
+            <div class="goal-card">
+                <div class="goal-header">
+                    <div class="goal-checkbox" onclick="toggleGoal(this, 1)"></div>
+                    <div class="goal-text">
+                        <div class="goal-title">完成職業培訓課程</div>
+                        <div class="goal-reward">🏆 技能提升徽章</div>
+                    </div>
+                </div>
+                <div class="goal-progress">
+                    <div class="goal-bar">
+                        <div class="goal-fill" style="width: 30%"></div>
+                    </div>
+                    <span class="goal-percent">30%</span>
+                </div>
+            </div>
+            
+            <div class="goal-card">
+                <div class="goal-header">
+                    <div class="goal-checkbox checked" onclick="toggleGoal(this, 2)"></div>
+                    <div class="goal-text">
+                        <div class="goal-title completed">尋找社區支援資源</div>
+                        <div class="goal-reward">✅ 已完成</div>
+                    </div>
+                </div>
+                <div class="goal-progress">
+                    <div class="goal-bar">
+                        <div class="goal-fill" style="width: 100%"></div>
+                    </div>
+                    <span class="goal-percent">100%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="section-header">
+            <div class="section-title">
+                <div class="section-icon">🏅</div>
+                成就徽章
+            </div>
+        </div>
+        
+        <div class="badges-section">
+            <div class="badges-grid">
+                <div class="badge earned">
+                    <div class="badge-icon">🌟</div>
+                    <div class="badge-name">起步者</div>
+                </div>
+                <div class="badge earned">
+                    <div class="badge-icon">📊</div>
+                    <div class="badge-name">記帳達人</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-icon">💰</div>
+                    <div class="badge-name">儲蓄新手</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-icon">🎓</div>
+                    <div class="badge-name">技能提升</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-icon">🤝</div>
+                    <div class="badge-name">互助之星</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-icon">🚀</div>
+                    <div class="badge-name">脫貧勇士</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-item active">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">首頁</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">預算</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">🗺️</span>
+                <span class="nav-label">資源</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">我的</span>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">記錄交易</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <form id="transactionForm">
+                <div class="form-group">
+                    <label class="form-label">金額</label>
+                    <input type="number" class="form-input" placeholder="輸入金額" id="amount">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">類別</label>
+                    <select class="form-select" id="category">
+                        <option>食物</option>
+                        <option>交通</option>
+                        <option>住房</option>
+                        <option>醫療</option>
+                        <option>教育</option>
+                        <option>其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">備註</label>
+                    <input type="text" class="form-input" placeholder="選填">
+                    <div class="form-hint">簡短描述這筆交易</div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">確認記錄</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Tips rotation
+        const tips = [
+            "「先儲蓄，後消費」— 收到收入後，先將10%存入儲蓄，再用剩餘嘅錢安排開支。",
+            "「記錄每一筆支出」— 了解錢花去哪裡，是理財的第一步。",
+            "「善用社區資源」— 唔好羞於尋求幫助，社區資源就係為咗支援有需要嘅人而設。"
+        ];
+
+        function showTip(index) {
+            document.getElementById('dailyTip').textContent = tips[index];
+            document.querySelectorAll('.tips-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+
+        // Auto rotate tips
+        let currentTip = 0;
+        setInterval(() => {
+            currentTip = (currentTip + 1) % tips.length;
+            showTip(currentTip);
+        }, 5000);
+
+        // Goal toggle
+        function toggleGoal(checkbox, index) {
+            checkbox.classList.toggle('checked');
+            const title = checkbox.nextElementSibling.querySelector('.goal-title');
+            title.classList.toggle('completed');
+            
+            // Update stats
+            const completedGoals = document.querySelectorAll('.goal-checkbox.checked').length;
+            document.getElementById('goalsCompleted').textContent = completedGoals;
+        }
+
+        // Modal
+        function openModal(type) {
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('modalTitle').textContent = type === 'income' ? '記錄收入' : '記錄支出';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Form submit
+        document.getElementById('transactionForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            closeModal();
+            // Show feedback
+            const btn = e.target.querySelector('.btn-primary');
+            const originalText = btn.textContent;
+            btn.textContent = '✅ 已記錄！';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 1500);
+        });
+
+        // Resource detail
+        function showResourceDetail(index) {
+            const resources = [
+                { name: '社區食物銀行', desc: '提供免費食物援助，包括乾糧、新鮮蔬果等。每週二、五上午9點至下午5點開放。' },
+                { name: '免費技能培訓課程', desc: '提供電腦基礎、求職技巧、理財規劃等課程。可選擇線上或線下參與。' },
+                { name: '社區健康服務', desc: '提供基本醫療諮詢、心理健康支援、疫苗接種等服務。' },
+                { name: '職業介紹及配對', desc: '免費履歷指導、面試技巧培訓、工作配對服務。' }
+            ];
+            alert(resources[index].name + '\n\n' + resources[index].desc);
+        }
+
+        // Close modal on outside click
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

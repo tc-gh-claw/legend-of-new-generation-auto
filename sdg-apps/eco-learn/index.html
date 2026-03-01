@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>綠色學習助手 | EcoLearn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #5c6bc0;
+            --primary-light: #8e99a4;
+            --primary-dark: #3949ab;
+            --accent: #ff7043;
+            --success: #66bb6a;
+            --warning: #ffa726;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #2c3e50;
+            --text-light: #5a6c7d;
+            --border: #e1e8ed;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -30px) scale(1.1); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* Learning Progress Card */
+        .progress-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .streak-badge {
+            background: linear-gradient(135deg, #ff7043, #ff8a65);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .progress-circle {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+
+        .progress-circle svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle-bg {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 12;
+        }
+
+        .progress-circle-bar {
+            fill: none;
+            stroke: url(#progressGradient);
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-percent {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .progress-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0.8rem;
+            background: var(--bg);
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 0.2rem;
+        }
+
+        /* Today's Goal */
+        .goal-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .goal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .goal-edit {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .goal-slider {
+            margin-bottom: 1rem;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--border);
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(92, 107, 192, 0.4);
+        }
+
+        .slider-value {
+            font-weight: 600;
+            color: var(--primary);
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .quick-add {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-btn {
+            background: var(--bg);
+            border: 2px solid transparent;
+            padding: 0.6rem 1rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-btn:hover {
+            border-color: var(--primary);
+            background: rgba(92, 107, 192, 0.1);
+        }
+
+        .quick-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Learning Topics */
+        .topics-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .topics-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .topic-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .topic-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .topic-item:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .topic-item.completed {
+            background: rgba(102, 187, 106, 0.1);
+            border-color: var(--success);
+        }
+
+        .topic-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+
+        .topic-item:nth-child(1) .topic-icon { background: rgba(92, 107, 192, 0.15); }
+        .topic-item:nth-child(2) .topic-icon { background: rgba(102, 187, 106, 0.15); }
+        .topic-item:nth-child(3) .topic-icon { background: rgba(255, 112, 67, 0.15); }
+        .topic-item:nth-child(4) .topic-icon { background: rgba(255, 167, 38, 0.15); }
+        .topic-item:nth-child(5) .topic-icon { background: rgba(77, 182, 172, 0.15); }
+
+        .topic-info {
+            flex: 1;
+        }
+
+        .topic-name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .topic-meta {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .topic-check {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .topic-item.completed .topic-check {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        /* Weekly Chart */
+        .chart-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .chart-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 150px;
+            padding-top: 1rem;
+        }
+
+        .chart-bar-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-bar {
+            width: 32px;
+            background: linear-gradient(to top, var(--primary), var(--primary-light));
+            border-radius: 8px 8px 4px 4px;
+            transition: height 0.5s ease;
+            position: relative;
+        }
+
+        .chart-bar:hover::after {
+            content: attr(data-value) '分鐘';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+
+        .chart-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* Tips Carousel */
+        .tips-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tips-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .tips-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .tip-content {
+            font-size: 1rem;
+            line-height: 1.7;
+            min-height: 60px;
+        }
+
+        .tips-nav {
+            display: flex;
+            justify-content: center;
+            gap: 0.4rem;
+            margin-top: 1rem;
+        }
+
+        .tip-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tip-dot.active {
+            background: white;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Badges Section */
+        .badges-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .badges-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .badge-item {
+            text-align: center;
+            padding: 0.8rem 0.4rem;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .badge-item.earned {
+            background: rgba(255, 193, 7, 0.15);
+        }
+
+        .badge-item:not(.earned) {
+            opacity: 0.4;
+        }
+
+        .badge-icon {
+            font-size: 2rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .badge-name {
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+
+        /* Celebrate Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            text-align: center;
+            max-width: 320px;
+            width: 90%;
+            animation: modalPop 0.4s ease;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .modal-text {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            z-index: 1001;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .sdg-tag {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <svg width="0" height="0">
+        <defs>
+            <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#5c6bc0"/>
+                <stop offset="100%" style="stop-color:#3949ab"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <header class="header">
+        <div class="header-content">
+            <h1>📚 綠色學習助手</h1>
+            <p>每天進步一點點，永續知識累積中</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Progress Card -->
+        <div class="progress-card">
+            <div class="progress-header">
+                <span class="progress-title">今日學習進度</span>
+                <div class="streak-badge">
+                    <span>🔥</span>
+                    <span id="streakCount">7</span> 天連續
+                </div>
+            </div>
+            
+            <div class="progress-circle">
+                <svg width="180" height="180">
+                    <circle class="progress-circle-bg" cx="90" cy="90" r="75"/>
+                    <circle class="progress-circle-bar" cx="90" cy="90" r="75" 
+                            stroke-dasharray="471" stroke-dashoffset="117"/>
+                </svg>
+                <div class="progress-text">
+                    <div class="progress-percent" id="progressPercent">75%</div>
+                    <div class="progress-label">已完成</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="todayMinutes">45</div>
+                    <div class="stat-label">今日分鐘</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalHours">28</div>
+                    <div class="stat-label">累計小時</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="topicsCompleted">12</div>
+                    <div class="stat-label">完成主題</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Goal -->
+        <div class="goal-card">
+            <div class="goal-header">
+                <span class="goal-title">今日學習目標</span>
+                <button class="goal-edit" onclick="editGoal()">調整</button>
+            </div>
+            <div class="goal-slider">
+                <div class="slider-container">
+                    <input type="range" class="slider" id="goalSlider" min="15" max="120" value="60" step="15">
+                    <span class="slider-value" id="goalValue">60分鐘</span>
+                </div>
+            </div>
+            <div class="quick-add">
+                <button class="quick-btn" onclick="addMinutes(15)">+15分鐘</button>
+                <button class="quick-btn" onclick="addMinutes(30)">+30分鐘</button>
+                <button class="quick-btn" onclick="addMinutes(45)">+45分鐘</button>
+                <button class="quick-btn" onclick="addMinutes(60)">+1小時</button>
+            </div>
+        </div>
+
+        <!-- Learning Topics -->
+        <div class="topics-card">
+            <h3 class="topics-title">📖 今日推薦主題</h3>
+            <div class="topic-list">
+                <div class="topic-item" onclick="toggleTopic(this)">
+                    <div class="topic-icon">🌍</div>
+                    <div class="topic-info">
+                        <div class="topic-name">氣候變化基礎</div>
+                        <div class="topic-meta">15分鐘 · 入門</div>
+                    </div>
+                    <div class="topic-check">✓</div>
+                </div>
+                <div class="topic-item completed" onclick="toggleTopic(this)">
+                    <div class="topic-icon">♻️</div>
+                    <div class="topic-info">
+                        <div class="topic-name">循環經濟概念</div>
+                        <div class="topic-meta">20分鐘 · 入門</div>
+                    </div>
+                    <div class="topic-check">✓</div>
+                </div>
+                <div class="topic-item" onclick="toggleTopic(this)">
+                    <div class="topic-icon">🌱</div>
+                    <div class="topic-info">
+                        <div class="topic-name">可持續農業</div>
+                        <div class="topic-meta">25分鐘 · 進階</div>
+                    </div>
+                    <div class="topic-check">✓</div>
+                </div>
+                <div class="topic-item" onclick="toggleTopic(this)">
+                    <div class="topic-icon">💧</div>
+                    <div class="topic-info">
+                        <div class="topic-name">水資源保護</div>
+                        <div class="topic-meta">15分鐘 · 入門</div>
+                    </div>
+                    <div class="topic-check">✓</div>
+                </div>
+                <div class="topic-item" onclick="toggleTopic(this)">
+                    <div class="topic-icon">⚡</div>
+                    <div class="topic-info">
+                        <div class="topic-name">再生能源介紹</div>
+                        <div class="topic-meta">30分鐘 · 進階</div>
+                    </div>
+                    <div class="topic-check">✓</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weekly Chart -->
+        <div class="chart-card">
+            <h3 class="chart-title">📊 本週學習趨勢</h3>
+            <div class="chart-container" id="weeklyChart">
+                <!-- Bars generated by JS -->
+            </div>
+        </div>
+
+        <!-- Tips Carousel -->
+        <div class="tips-card">
+            <div class="tips-header">
+                <span>💡</span>
+                <span>學習錦囊</span>
+            </div>
+            <div class="tip-content" id="tipContent">
+                每天學習 20 分鐘，一年就能累積 120 小時的永續知識！
+            </div>
+            <div class="tips-nav" id="tipsNav">
+                <!-- Dots generated by JS -->
+            </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="badges-card">
+            <h3 class="badges-title">🏆 學習徽章</h3>
+            <div class="badges-grid">
+                <div class="badge-item earned">
+                    <div class="badge-icon">🌱</div>
+                    <div class="badge-name">新手起步</div>
+                </div>
+                <div class="badge-item earned">
+                    <div class="badge-icon">📖</div>
+                    <div class="badge-name">閱讀達人</div>
+                </div>
+                <div class="badge-item earned">
+                    <div class="badge-icon">🔥</div>
+                    <div class="badge-name">7天連續</div>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-icon">🎓</div>
+                    <div class="badge-name">知識淵博</div>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-icon">🌍</div>
+                    <div class="badge-name">地球衛士</div>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-icon">⭐</div>
+                    <div class="badge-name">專家級別</div>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-icon">🏅</div>
+                    <div class="badge-name">30天連續</div>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-icon">👑</div>
+                    <div class="badge-name">大師成就</div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>持續學習，改變世界 🌏</p>
+            <span class="sdg-tag">SDG 4: 優質教育</span>
+        </footer>
+    </div>
+
+    <!-- Celebrate Modal -->
+    <div class="modal-overlay" id="celebrateModal">
+        <div class="modal">
+            <div class="modal-emoji">🎉</div>
+            <h3 class="modal-title">目標達成！</h3>
+            <p class="modal-text" id="celebrateText">恭喜你完成今日學習目標！持續的學習是改變世界的力量。</p>
+            <button class="modal-btn" onclick="closeModal()">繼續學習</button>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const tips = [
+            "每天學習 20 分鐘，一年就能累積 120 小時的永續知識！",
+            "聯合國 SDGs 共有 17 個目標，涵蓋環境、社會和經濟三大面向。",
+            "分享知識給身邊的人，影響力會呈指數級增長。",
+            "學習氣候變化知識，是採取行動的第一步。",
+            "循環經濟的核心理念：減少、重用、回收、再生。",
+            "全球只有 2.5% 的水是淡水，其中僅 1% 可供人類使用。",
+            "森林覆蓋了地球 31% 的面積，是 80% 陸地物種的家園。",
+            "選擇可再生能源，每年可減少數噸碳排放。"
+        ];
+
+        const weeklyData = [30, 45, 60, 40, 75, 45, 20]; // Last 7 days
+        const days = ['一', '二', '三', '四', '五', '六', '日'];
+
+        // State
+        let currentTip = 0;
+        let todayMinutes = 45;
+        let dailyGoal = 60;
+        let streakDays = 7;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            initWeeklyChart();
+            initTipsCarousel();
+            updateProgress();
+        });
+
+        function loadData() {
+            const saved = localStorage.getItem('ecoLearnData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                todayMinutes = data.todayMinutes || 45;
+                dailyGoal = data.dailyGoal || 60;
+                streakDays = data.streakDays || 7;
+                document.getElementById('goalSlider').value = dailyGoal;
+            }
+            updateDisplay();
+        }
+
+        function saveData() {
+            const data = {
+                todayMinutes,
+                dailyGoal,
+                streakDays,
+                lastDate: new Date().toDateString()
+            };
+            localStorage.setItem('ecoLearnData', JSON.stringify(data));
+        }
+
+        function updateDisplay() {
+            document.getElementById('todayMinutes').textContent = todayMinutes;
+            document.getElementById('streakCount').textContent = streakDays;
+            document.getElementById('goalValue').textContent = dailyGoal + '分鐘';
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const percent = Math.min(100, Math.round((todayMinutes / dailyGoal) * 100));
+            document.getElementById('progressPercent').textContent = percent + '%';
+            
+            const circle = document.querySelector('.progress-circle-bar');
+            const circumference = 2 * Math.PI * 75;
+            const offset = circumference - (percent / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+
+            if (todayMinutes >= dailyGoal && !window.goalCelebrated) {
+                window.goalCelebrated = true;
+                setTimeout(() => celebrate('goal'), 500);
+            }
+        }
+
+        function addMinutes(minutes) {
+            todayMinutes += minutes;
+            document.getElementById('todayMinutes').textContent = todayMinutes;
+            
+            // Update total hours
+            const totalHours = Math.floor((28 * 60 + minutes) / 60);
+            document.getElementById('totalHours').textContent = totalHours;
+            
+            updateProgress();
+            saveData();
+            
+            // Visual feedback
+            const btn = event.target;
+            btn.classList.add('active');
+            setTimeout(() => btn.classList.remove('active'), 200);
+        }
+
+        function editGoal() {
+            const slider = document.getElementById('goalSlider');
+            slider.focus();
+        }
+
+        document.getElementById('goalSlider').addEventListener('input', (e) => {
+            dailyGoal = parseInt(e.target.value);
+            document.getElementById('goalValue').textContent = dailyGoal + '分鐘';
+            window.goalCelebrated = false;
+            updateProgress();
+            saveData();
+        });
+
+        function toggleTopic(element) {
+            element.classList.toggle('completed');
+            const isCompleted = element.classList.contains('completed');
+            
+            if (isCompleted) {
+                addMinutes(15);
+                celebrate('topic');
+            }
+        }
+
+        function initWeeklyChart() {
+            const container = document.getElementById('weeklyChart');
+            const maxValue = Math.max(...weeklyData);
+            
+            weeklyData.forEach((value, index) => {
+                const height = (value / maxValue) * 100;
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar-wrapper';
+                bar.innerHTML = `
+                    <div class="chart-bar" style="height: ${height}%" data-value="${value}"></div>
+                    <span class="chart-label">${days[index]}</span>
+                `;
+                container.appendChild(bar);
+            });
+        }
+
+        function initTipsCarousel() {
+            const nav = document.getElementById('tipsNav');
+            tips.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'tip-dot' + (index === 0 ? ' active' : '');
+                dot.onclick = () => showTip(index);
+                nav.appendChild(dot);
+            });
+
+            setInterval(() => {
+                showTip((currentTip + 1) % tips.length);
+            }, 5000);
+        }
+
+        function showTip(index) {
+            currentTip = index;
+            document.getElementById('tipContent').textContent = tips[index];
+            
+            document.querySelectorAll('.tip-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+
+        function celebrate(type) {
+            createConfetti();
+            
+            const modal = document.getElementById('celebrateModal');
+            const text = document.getElementById('celebrateText');
+            
+            if (type === 'goal') {
+                text.textContent = `太棒了！你完成了今日 ${dailyGoal} 分鐘的學習目標！連續 ${streakDays} 天的堅持，知識正在改變世界！`;
+            } else {
+                text.textContent = '完成一個學習主題！每多了解一點，就能為地球多做一點。';
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('celebrateModal').classList.remove('active');
+        }
+
+        function createConfetti() {
+            const colors = ['#5c6bc0', '#66bb6a', '#ff7043', '#ffa726', '#8e99a4'];
+            
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    document.body.appendChild(confetti);
+
+                    const duration = 2000 + Math.random() * 2000;
+                    confetti.animate([
+                        { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+                        { transform: `translateY(100vh) rotate(${720 + Math.random() * 720}deg)`, opacity: 0 }
+                    ], {
+                        duration: duration,
+                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                    }).onfinish = () => confetti.remove();
+                }, i * 50);
+            }
+        }
+
+        // Close modal on overlay click
+        document.getElementById('celebrateModal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

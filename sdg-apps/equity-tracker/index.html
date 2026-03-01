@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>平等職場追蹤器 | Equity Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --purple-deep: #4a148c;
+            --purple-primary: #7b1fa2;
+            --purple-light: #ba68c8;
+            --coral: #ff6b6b;
+            --coral-light: #ff8a80;
+            --teal: #00897b;
+            --teal-light: #4db6ac;
+            --gold: #ffb300;
+            --cream: #fff8e7;
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--purple-deep) 0%, var(--purple-primary) 50%, var(--teal) 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* 浮動裝飾元素 */
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .shape:nth-child(1) { width: 100px; height: 100px; background: var(--coral); top: 10%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 150px; height: 150px; background: var(--teal-light); top: 60%; left: 80%; animation-delay: 3s; }
+        .shape:nth-child(3) { width: 80px; height: 80px; background: var(--gold); top: 30%; left: 70%; animation-delay: 6s; }
+        .shape:nth-child(4) { width: 120px; height: 120px; background: var(--coral-light); top: 80%; left: 20%; animation-delay: 9s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .sdg-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--coral), var(--coral-light));
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .header .subtitle {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        /* 平等指數儀表板 */
+        .equality-dashboard {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .equality-ring {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+
+        .equality-ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .equality-ring .bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.1);
+            stroke-width: 12;
+        }
+
+        .equality-ring .progress {
+            fill: none;
+            stroke: url(#equalityGradient);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-dasharray: 440;
+            stroke-dashoffset: 440;
+            transition: stroke-dashoffset 1s ease-out;
+        }
+
+        .ring-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .equality-score {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .equality-label {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .equality-status {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        /* 統計網格 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* 每日行動區 */
+        .action-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-item {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-item:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+        .action-item.completed {
+            opacity: 0.6;
+        }
+
+        .action-item.completed .action-text {
+            text-decoration: line-through;
+        }
+
+        .action-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .action-item.completed .action-checkbox {
+            background: var(--teal);
+            border-color: var(--teal);
+        }
+
+        .action-checkbox::after {
+            content: '✓';
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .action-item.completed .action-checkbox::after {
+            opacity: 1;
+        }
+
+        .action-text {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .action-points {
+            font-size: 11px;
+            background: var(--coral);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* 里程碑卡片 */
+        .milestone-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .milestone-track {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .milestone-track::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+
+        .milestone-track::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            width: var(--progress, 0%);
+            height: 4px;
+            background: linear-gradient(90deg, var(--coral), var(--gold));
+            transform: translateY(-50%);
+            z-index: 0;
+            transition: width 0.5s;
+        }
+
+        .milestone {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 3px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s;
+        }
+
+        .milestone.achieved {
+            background: var(--gold);
+            border-color: var(--gold);
+            transform: scale(1.1);
+        }
+
+        .milestone-label {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            white-space: nowrap;
+            opacity: 0.7;
+        }
+
+        /* 性別平等錦囊 */
+        .tips-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .tips-carousel {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tips-track {
+            display: flex;
+            transition: transform 0.4s ease;
+        }
+
+        .tip-card {
+            min-width: 100%;
+            padding: 16px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .tip-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .tip-text {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .tips-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .tip-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tip-dot.active {
+            background: var(--gold);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* 成就徽章 */
+        .badges-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .badge {
+            text-align: center;
+            padding: 12px 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .badge.earned {
+            background: rgba(255, 179, 0, 0.15);
+            transform: scale(1.05);
+        }
+
+        .badge-icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+            filter: grayscale(100%);
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+
+        .badge.earned .badge-icon {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+
+        .badge-name {
+            font-size: 10px;
+            opacity: 0.7;
+        }
+
+        /* 響應式 */
+        @media (max-width: 400px) {
+            .badges-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <svg width="0" height="0" style="position:absolute;">
+        <defs>
+            <linearGradient id="equalityGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#ff6b6b"/>
+                <stop offset="50%" style="stop-color:#ba68c8"/>
+                <stop offset="100%" style="stop-color:#4db6ac"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <div class="sdg-badge">SDG 5 · 性別平等</div>
+            <h1>平等職場追蹤器</h1>
+            <p class="subtitle">每日行動，共建平等</p>
+        </header>
+
+        <!-- 平等指數儀表板 -->
+        <div class="equality-dashboard">
+            <div class="equality-ring">
+                <svg viewBox="0 0 160 160">
+                    <circle class="bg" cx="80" cy="80" r="70"/>
+                    <circle class="progress" id="equalityProgress" cx="80" cy="80" r="70"/>
+                </svg>
+                <div class="ring-content">
+                    <div class="equality-score" id="equalityScore">0</div>
+                    <div class="equality-label">平等指數</div>
+                </div>
+            </div>
+            <div class="equality-status" id="equalityStatus">開始你的平等之旅</div>
+        </div>
+
+        <!-- 統計網格 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🤝</div>
+                <div class="stat-value" id="actionsCount">0</div>
+                <div class="stat-label">今日行動</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-value" id="totalPoints">0</div>
+                <div class="stat-label">累計積分</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-value" id="streakDays">0</div>
+                <div class="stat-label">連續天數</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-value" id="badgesCount">0</div>
+                <div class="stat-label">已獲徽章</div>
+            </div>
+        </div>
+
+        <!-- 里程碑 -->
+        <div class="milestone-section">
+            <div class="section-title">🌟 平等里程碑</div>
+            <div class="milestone-track" id="milestoneTrack">
+                <div class="milestone" data-points="0">
+                    🌱
+                    <span class="milestone-label">起步</span>
+                </div>
+                <div class="milestone" data-points="50">
+                    🌿
+                    <span class="milestone-label">50分</span>
+                </div>
+                <div class="milestone" data-points="100">
+                    🌳
+                    <span class="milestone-label">100分</span>
+                </div>
+                <div class="milestone" data-points="200">
+                    ⭐
+                    <span class="milestone-label">200分</span>
+                </div>
+                <div class="milestone" data-points="500">
+                    👑
+                    <span class="milestone-label">500分</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 每日行動 -->
+        <div class="action-section">
+            <div class="section-title">✅ 今日平等行動</div>
+            <div class="action-list" id="actionList">
+                <div class="action-item" data-action="speakup" data-points="10">
+                    <div class="action-checkbox"></div>
+                    <div class="action-text">在會議中支持女性同事發言</div>
+                    <div class="action-points">+10</div>
+                </div>
+                <div class="action-item" data-action="mentor" data-points="15">
+                    <div class="action-checkbox"></div>
+                    <div class="action-text">指導或推薦一位女性同事</div>
+                    <div class="action-points">+15</div>
+                </div>
+                <div class="action-item" data-action="share" data-points="10">
+                    <div class="action-checkbox"></div>
+                    <div class="action-text">分享性別平等資源或文章</div>
+                    <div class="action-points">+10</div>
+                </div>
+                <div class="action-item" data-action="feedback" data-points="10">
+                    <div class="action-checkbox"></div>
+                    <div class="action-text">給予女性同事具體正面反饋</div>
+                    <div class="action-points">+10</div>
+                </div>
+                <div class="action-item" data-action="equal" data-points="20">
+                    <div class="action-checkbox"></div>
+                    <div class="action-text">主動分擔團隊中的行政工作</div>
+                    <div class="action-points">+20</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 性別平等錦囊 -->
+        <div class="tips-section">
+            <div class="section-title">💡 平等錦囊</div>
+            <div class="tips-carousel">
+                <div class="tips-track" id="tipsTrack">
+                    <div class="tip-card">
+                        <div class="tip-icon">🎤</div>
+                        <div class="tip-text">「他打斷她」現象：研究顯示，女性在會議中被插話的機率是男性的2倍。當你見到這種情況，可以說：「我想聽聽她剛才想說的。」</div>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">📊</div>
+                        <div class="tip-text">全球女性收入仍比男性低約20%。推動薪酬透明化，主動了解同級別同事的薪酬範圍，有助發現不平等。</div>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">🔄</div>
+                        <div class="tip-text">「辦公室家務」：複印、泡茶、安排會議等行政工作常默認由女性負責。主動輪流分擔，讓所有人都有機會專注核心工作。</div>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">📝</div>
+                        <div class="tip-text">推薦效應：男性常被以潛力推薦，女性則需已證明實績。推薦女性時，強調她們的實際成就同領導力。</div>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">👂</div>
+                        <div class="tip-text">無意識偏見：我們都可能有偏見。當你發現自己假設某位女性同事「可能太忙照顧家庭」而不邀請她參與項目，這就是偏見。</div>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">🌐</div>
+                        <div class="tip-text">董事會中的女性：增加女性在領導層的比例不只關乎公平，研究顯示多元領導團隊的公司表現更出色。</div>
+                    </div>
+                </div>
+            </div>
+            <div class="tips-dots" id="tipsDots"></div>
+        </div>
+
+        <!-- 成就徽章 -->
+        <div class="badges-section">
+            <div class="section-title">🎖️ 平等先鋒徽章</div>
+            <div class="badges-grid" id="badgesGrid">
+                <div class="badge" data-badge="starter" data-required="10">
+                    <div class="badge-icon">🌱</div>
+                    <div class="badge-name">起步者</div>
+                </div>
+                <div class="badge" data-badge="advocate" data-required="50">
+                    <div class="badge-icon">📢</div>
+                    <div class="badge-name">倡議者</div>
+                </div>
+                <div class="badge" data-badge="mentor" data-required="100">
+                    <div class="badge-icon">🤝</div>
+                    <div class="badge-name">導師</div>
+                </div>
+                <div class="badge" data-badge="ally" data-required="200">
+                    <div class="badge-icon">⚡</div>
+                    <div class="badge-name">盟友</div>
+                </div>
+                <div class="badge" data-badge="champion" data-required="500">
+                    <div class="badge-icon">🏆</div>
+                    <div class="badge-name">冠軍</div>
+                </div>
+                <div class="badge" data-badge="streak3" data-required="streak3">
+                    <div class="badge-icon">🔥</div>
+                    <div class="badge-name">3天連續</div>
+                </div>
+                <div class="badge" data-badge="streak7" data-required="streak7">
+                    <div class="badge-icon">🌟</div>
+                    <div class="badge-name">7天連續</div>
+                </div>
+                <div class="badge" data-badge="streak30" data-required="streak30">
+                    <div class="badge-icon">👑</div>
+                    <div class="badge-name">30天連續</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 數據管理
+        const appData = {
+            actions: {},
+            totalPoints: 0,
+            streakDays: 0,
+            badges: [],
+            lastActive: null
+        };
+
+        // 平等錦囊
+        const equalityTips = [
+            { icon: '🎤', text: '「他打斷她」現象：研究顯示，女性在會議中被插話的機率是男性的2倍。當你見到這種情況，可以說：「我想聽聽她剛才想說的。」' },
+            { icon: '📊', text: '全球女性收入仍比男性低約20%。推動薪酬透明化，主動了解同級別同事的薪酬範圍，有助發現不平等。' },
+            { icon: '🔄', text: '「辦公室家務」：複印、泡茶、安排會議等行政工作常默認由女性負責。主動輪流分擔，讓所有人都有機會專注核心工作。' },
+            { icon: '📝', text: '推薦效應：男性常被以潛力推薦，女性則需已證明實績。推薦女性時，強調她們的實際成就同領導力。' },
+            { icon: '👂', text: '無意識偏見：我們都可能有偏見。當你發現自己假設某位女性同事「可能太忙照顧家庭」而不邀請她參與項目，這就是偏見。' },
+            { icon: '🌐', text: '董事會中的女性：增加女性在領導層的比例不只關乎公平，研究顯示多元領導團隊的公司表現更出色。' }
+        ];
+
+        // 初始化
+        function init() {
+            loadData();
+            renderActions();
+            renderTips();
+            updateDisplay();
+            checkNewDay();
+        }
+
+        // 載入數據
+        function loadData() {
+            const saved = localStorage.getItem('equityTracker');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.assign(appData, data);
+            }
+        }
+
+        // 儲存數據
+        function saveData() {
+            localStorage.setItem('equityTracker', JSON.stringify(appData));
+        }
+
+        // 檢查新的一天
+        function checkNewDay() {
+            const today = new Date().toDateString();
+            if (appData.lastActive !== today) {
+                if (appData.lastActive) {
+                    const lastDate = new Date(appData.lastActive);
+                    const diffDays = Math.floor((new Date() - lastDate) / (1000 * 60 * 60 * 24));
+                    if (diffDays === 1) {
+                        appData.streakDays++;
+                    } else if (diffDays > 1) {
+                        appData.streakDays = 0;
+                    }
+                }
+                appData.actions = {};
+                appData.lastActive = today;
+                saveData();
+            }
+        }
+
+        // 渲染行動列表
+        function renderActions() {
+            const actionItems = document.querySelectorAll('.action-item');
+            actionItems.forEach(item => {
+                const actionId = item.dataset.action;
+                if (appData.actions[actionId]) {
+                    item.classList.add('completed');
+                }
+                item.addEventListener('click', () => toggleAction(actionId, item));
+            });
+        }
+
+        // 切換行動狀態
+        function toggleAction(actionId, element) {
+            const points = parseInt(element.dataset.points);
+            
+            if (appData.actions[actionId]) {
+                delete appData.actions[actionId];
+                appData.totalPoints -= points;
+            } else {
+                appData.actions[actionId] = true;
+                appData.totalPoints += points;
+            }
+            
+            element.classList.toggle('completed');
+            saveData();
+            updateDisplay();
+        }
+
+        // 渲染錦囊輪播
+        function renderTips() {
+            const track = document.getElementById('tipsTrack');
+            const dotsContainer = document.getElementById('tipsDots');
+            
+            equalityTips.forEach((tip, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'tip-dot' + (index === 0 ? ' active' : '');
+                dot.addEventListener('click', () => goToTip(index));
+                dotsContainer.appendChild(dot);
+            });
+
+            // 自動輪播
+            setInterval(() => {
+                const current = document.querySelector('.tip-dot.active');
+                const dots = Array.from(dotsContainer.children);
+                const currentIndex = dots.indexOf(current);
+                const nextIndex = (currentIndex + 1) % dots.length;
+                goToTip(nextIndex);
+            }, 5000);
+        }
+
+        // 切換錦囊
+        function goToTip(index) {
+            const track = document.getElementById('tipsTrack');
+            const dots = document.querySelectorAll('.tip-dot');
+            
+            track.style.transform = `translateX(-${index * 100}%)`;
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+        }
+
+        // 更新顯示
+        function updateDisplay() {
+            // 計算今日積分
+            const todayPoints = Object.keys(appData.actions).reduce((sum, key) => {
+                const el = document.querySelector(`[data-action="${key}"]`);
+                return sum + (el ? parseInt(el.dataset.points) : 0);
+            }, 0);
+
+            // 更新平等指數 (滿分 100)
+            const maxDailyPoints = 65; // 所有行動的總分
+            const equalityIndex = Math.min(100, Math.round((todayPoints / maxDailyPoints) * 100));
+            
+            document.getElementById('equalityScore').textContent = equalityIndex;
+            document.getElementById('actionsCount').textContent = Object.keys(appData.actions).length;
+            document.getElementById('totalPoints').textContent = appData.totalPoints;
+            document.getElementById('streakDays').textContent = appData.streakDays;
+
+            // 更新進度環
+            const progressCircle = document.getElementById('equalityProgress');
+            const circumference = 440;
+            const offset = circumference - (equalityIndex / 100) * circumference;
+            progressCircle.style.strokeDashoffset = offset;
+
+            // 更新狀態文字
+            const statusEl = document.getElementById('equalityStatus');
+            if (equalityIndex === 0) statusEl.textContent = '開始你的平等之旅';
+            else if (equalityIndex < 30) statusEl.textContent = '邁出第一步 💪';
+            else if (equalityIndex < 60) statusEl.textContent = '繼續前進！🌟';
+            else if (equalityIndex < 100) statusEl.textContent = '平等先鋒！⭐';
+            else statusEl.textContent = '今日平等達標！🏆';
+
+            // 更新里程碑
+            updateMilestones();
+            
+            // 更新徽章
+            updateBadges();
+        }
+
+        // 更新里程碑
+        function updateMilestones() {
+            const milestones = document.querySelectorAll('.milestone');
+            const maxPoints = 500;
+            const progress = Math.min(100, (appData.totalPoints / maxPoints) * 80 + 10);
+            document.getElementById('milestoneTrack').style.setProperty('--progress', progress + '%');
+
+            milestones.forEach(m => {
+                const required = parseInt(m.dataset.points);
+                if (appData.totalPoints >= required) {
+                    m.classList.add('achieved');
+                }
+            });
+        }
+
+        // 更新徽章
+        function updateBadges() {
+            const badges = document.querySelectorAll('.badge');
+            let earnedCount = 0;
+
+            badges.forEach(badge => {
+                const required = badge.dataset.required;
+                let earned = false;
+
+                if (required.startsWith('streak')) {
+                    const streak = parseInt(required.replace('streak', ''));
+                    earned = appData.streakDays >= streak;
+                } else {
+                    earned = appData.totalPoints >= parseInt(required);
+                }
+
+                if (earned) {
+                    badge.classList.add('earned');
+                    earnedCount++;
+                }
+            });
+
+            document.getElementById('badgesCount').textContent = earnedCount;
+        }
+
+        // 啟動
+        init();
+    </script>
+</body>
+</html>

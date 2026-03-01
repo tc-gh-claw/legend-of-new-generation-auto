@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>森林守護者 | Forest Guardian</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --forest-dark: #1a2f1a;
+            --forest-mid: #2d5016;
+            --forest-light: #4a7c2e;
+            --leaf-bright: #7cb342;
+            --leaf-light: #aed581;
+            --earth-brown: #5d4037;
+            --earth-light: #8d6e63;
+            --sun-gold: #ffb300;
+            --cream: #f5f5dc;
+            --text-dark: #1b1b1b;
+            --text-light: #f5f5f5;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang HK', 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(180deg, var(--forest-dark) 0%, var(--forest-mid) 100%);
+            min-height: 100vh;
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+
+        /* 森林背景動畫 */
+        .forest-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .tree {
+            position: absolute;
+            bottom: 0;
+            font-size: 60px;
+            opacity: 0.15;
+            animation: sway 8s ease-in-out infinite;
+        }
+
+        .tree:nth-child(1) { left: 5%; animation-delay: 0s; }
+        .tree:nth-child(2) { left: 15%; animation-delay: 1s; font-size: 80px; }
+        .tree:nth-child(3) { left: 25%; animation-delay: 2s; }
+        .tree:nth-child(4) { left: 70%; animation-delay: 0.5s; font-size: 90px; }
+        .tree:nth-child(5) { left: 80%; animation-delay: 1.5s; }
+        .tree:nth-child(6) { left: 90%; animation-delay: 3s; font-size: 70px; }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        /* 飄落樹葉 */
+        .leaf {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--leaf-light);
+            border-radius: 0 100% 0 100%;
+            opacity: 0.6;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+            color: var(--leaf-light);
+        }
+
+        .sdg-badge {
+            display: inline-block;
+            background: var(--leaf-bright);
+            color: var(--forest-dark);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* 森林健康指數 */
+        .forest-health {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 24px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .health-title {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 16px;
+        }
+
+        .health-circle {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+
+        .health-ring {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--leaf-bright) 0deg,
+                var(--leaf-bright) calc(var(--health-percent, 72) * 3.6deg),
+                rgba(255, 255, 255, 0.1) calc(var(--health-percent, 72) * 3.6deg)
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .health-ring::before {
+            content: '';
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            background: var(--forest-mid);
+            border-radius: 50%;
+        }
+
+        .health-value {
+            position: relative;
+            z-index: 1;
+            font-size: 48px;
+            font-weight: 700;
+        }
+
+        .health-status {
+            font-size: 16px;
+            color: var(--leaf-light);
+            margin-bottom: 12px;
+        }
+
+        .forest-facts {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .fact {
+            text-align: center;
+        }
+
+        .fact-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--leaf-bright);
+        }
+
+        .fact-label {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* 個人貢獻 */
+        .contribution-section {
+            margin: 20px 0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .contrib-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .contrib-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s, background 0.3s;
+            cursor: pointer;
+        }
+
+        .contrib-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .contrib-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .contrib-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--sun-gold);
+        }
+
+        .contrib-label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .contrib-unit {
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        /* 每日行動 */
+        .action-section {
+            margin: 20px 0;
+        }
+
+        .action-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .action-item.completed {
+            opacity: 0.6;
+            background: rgba(124, 179, 66, 0.2);
+        }
+
+        .action-item.completed .action-check {
+            background: var(--leaf-bright);
+            border-color: var(--leaf-bright);
+        }
+
+        .action-check {
+            width: 28px;
+            height: 28px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .action-check::after {
+            content: '✓';
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .action-item.completed .action-check::after {
+            opacity: 1;
+            color: var(--forest-dark);
+            font-weight: 700;
+        }
+
+        .action-content {
+            flex: 1;
+        }
+
+        .action-title {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .action-impact {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 2px;
+        }
+
+        .action-points {
+            background: var(--sun-gold);
+            color: var(--forest-dark);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* 野生動物圖鑑 */
+        .wildlife-section {
+            margin: 20px 0;
+        }
+
+        .wildlife-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 4px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .wildlife-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .wildlife-card {
+            flex: 0 0 140px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            scroll-snap-align: start;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .wildlife-card:hover {
+            transform: scale(1.05);
+        }
+
+        .wildlife-card.endangered {
+            border-color: rgba(239, 83, 80, 0.5);
+        }
+
+        .wildlife-card.vulnerable {
+            border-color: rgba(255, 179, 0, 0.5);
+        }
+
+        .wildlife-emoji {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .wildlife-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .wildlife-status {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 6px;
+            display: inline-block;
+        }
+
+        .status-endangered {
+            background: rgba(239, 83, 80, 0.3);
+            color: #ff8a80;
+        }
+
+        .status-vulnerable {
+            background: rgba(255, 179, 0, 0.3);
+            color: #ffd54f;
+        }
+
+        .status-safe {
+            background: rgba(124, 179, 66, 0.3);
+            color: #aed581;
+        }
+
+        /* 每日森林錦囊 */
+        .tip-section {
+            margin: 20px 0;
+        }
+
+        .tip-card {
+            background: linear-gradient(135deg, rgba(124, 179, 66, 0.2), rgba(255, 179, 0, 0.1));
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(124, 179, 66, 0.3);
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: var(--leaf-light);
+        }
+
+        .tip-text {
+            font-size: 16px;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        /* 底部導航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: rgba(26, 47, 26, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 11px;
+            transition: color 0.3s;
+        }
+
+        .nav-item.active {
+            color: var(--leaf-bright);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-spacer {
+            height: 80px;
+        }
+
+        /* 慶祝動畫 */
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(26, 47, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            z-index: 1000;
+            display: none;
+            border: 2px solid var(--leaf-bright);
+            min-width: 280px;
+        }
+
+        .celebration.show {
+            display: block;
+            animation: celebrateIn 0.5s ease;
+        }
+
+        @keyframes celebrateIn {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .celebration-emoji {
+            font-size: 64px;
+            margin-bottom: 16px;
+            animation: bounce 0.6s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .celebration-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--leaf-bright);
+            margin-bottom: 8px;
+        }
+
+        .celebration-text {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .celebration-btn {
+            background: var(--leaf-bright);
+            color: var(--forest-dark);
+            border: none;
+            padding: 12px 32px;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .celebration-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(124, 179, 66, 0.4);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- 森林背景 -->
+    <div class="forest-bg">
+        <div class="tree">🌲</div>
+        <div class="tree">🌳</div>
+        <div class="tree">🌲</div>
+        <div class="tree">🌳</div>
+        <div class="tree">🌲</div>
+        <div class="tree">🌳</div>
+    </div>
+
+    <div class="app-container">
+        <header>
+            <div class="logo">🌲</div>
+            <h1>森林守護者</h1>
+            <p class="subtitle">Forest Guardian</p>
+            <span class="sdg-badge">SDG 15 · 陸地生物</span>
+        </header>
+
+        <!-- 森林健康指數 -->
+        <section class="forest-health">
+            <p class="health-title">🌍 全球森林健康指數</p>
+            <div class="health-circle">
+                <div class="health-ring" id="healthRing">
+                    <div class="health-value">72%</div>
+                </div>
+            </div>
+            <p class="health-status">狀態：需要保護</p>
+            <div class="forest-facts">
+                <div class="fact">
+                    <div class="fact-number">31%</div>
+                    <div class="fact-label">地球森林覆蓋率</div>
+                </div>
+                <div class="fact">
+                    <div class="fact-number">1000萬</div>
+                    <div class="fact-label">每年物種數量</div>
+                </div>
+                <div class="fact">
+                    <div class="fact-number">4200萬</div>
+                    <div class="fact-label">物種面臨滅絕</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 個人貢獻 -->
+        <section class="contribution-section">
+            <h2 class="section-title">
+                <span>🌱</span>
+                我的森林貢獻
+            </h2>
+            <div class="contrib-grid">
+                <div class="contrib-card" onclick="addTrees()">
+                    <div class="contrib-icon">🌳</div>
+                    <div class="contrib-value">
+                        <span id="treeCount">0</span>
+                        <span class="contrib-unit">棵</span>
+                    </div>
+                    <div class="contrib-label">已種植樹木</div>
+                </div>
+                <div class="contrib-card" onclick="showArea()">
+                    <div class="contrib-icon">🌿</div>
+                    <div class="contrib-value">
+                        <span id="areaCount">0</span>
+                        <span class="contrib-unit">m²</span>
+                    </div>
+                    <div class="contrib-label">保護森林面積</div>
+                </div>
+                <div class="contrib-card">
+                    <div class="contrib-icon">🦋</div>
+                    <div class="contrib-value">
+                        <span id="speciesCount">0</span>
+                        <span class="contrib-unit">種</span>
+                    </div>
+                    <div class="contrib-label">保護物種</div>
+                </div>
+                <div class="contrib-card">
+                    <div class="contrib-icon">💚</div>
+                    <div class="contrib-value">
+                        <span id="actionCount">0</span>
+                        <span class="contrib-unit">次</span>
+                    </div>
+                    <div class="contrib-label">環保行動</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 每日行動 -->
+        <section class="action-section">
+            <h2 class="section-title">
+                <span>✅</span>
+                今日森林行動
+            </h2>
+            <div class="action-list">
+                <div class="action-item" onclick="toggleAction(this, 10)">
+                    <div class="action-check"></div>
+                    <div class="action-content">
+                        <div class="action-title">使用電子賬單</div>
+                        <div class="action-impact">減少紙張消耗，保護森林資源</div>
+                    </div>
+                    <span class="action-points">+10</span>
+                </div>
+                <div class="action-item" onclick="toggleAction(this, 15)">
+                    <div class="action-check"></div>
+                    <div class="action-content">
+                        <div class="action-title">選擇FSC認證產品</div>
+                        <div class="action-impact">支持可持續林業管理</div>
+                    </div>
+                    <span class="action-points">+15</span>
+                </div>
+                <div class="action-item" onclick="toggleAction(this, 20)">
+                    <div class="action-check"></div>
+                    <div class="action-content">
+                        <div class="action-title">參與植樹活動</div>
+                        <div class="action-impact">直接增加森林覆蓋面積</div>
+                    </div>
+                    <span class="action-points">+20</span>
+                </div>
+                <div class="action-item" onclick="toggleAction(this, 10)">
+                    <div class="action-check"></div>
+                    <div class="action-content">
+                        <div class="action-title">減少肉類消費</div>
+                        <div class="action-impact">降低畜牧業對森林的壓力</div>
+                    </div>
+                    <span class="action-points">+10</span>
+                </div>
+                <div class="action-item" onclick="toggleAction(this, 15)">
+                    <div class="action-check"></div>
+                    <div class="action-content">
+                        <div class="action-title">分享森林保護知識</div>
+                        <div class="action-impact">提升大眾環保意識</div>
+                    </div>
+                    <span class="action-points">+15</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 野生動物圖鑑 -->
+        <section class="wildlife-section">
+            <h2 class="section-title">
+                <span>🦉</span>
+                野生動物圖鑑
+            </h2>
+            <div class="wildlife-scroll">
+                <div class="wildlife-card endangered">
+                    <div class="wildlife-emoji">🐅</div>
+                    <div class="wildlife-name">華南虎</div>
+                    <span class="wildlife-status status-endangered">極危</span>
+                </div>
+                <div class="wildlife-card endangered">
+                    <div class="wildlife-emoji">🐼</div>
+                    <div class="wildlife-name">大熊貓</div>
+                    <span class="wildlife-status status-vulnerable">易危</span>
+                </div>
+                <div class="wildlife-card vulnerable">
+                    <div class="wildlife-emoji">🐘</div>
+                    <div class="wildlife-name">亞洲象</div>
+                    <span class="wildlife-status status-endangered">瀕危</span>
+                </div>
+                <div class="wildlife-card">
+                    <div class="wildlife-emoji">🦉</div>
+                    <div class="wildlife-name">貓頭鷹</div>
+                    <span class="wildlife-status status-safe">無危</span>
+                </div>
+                <div class="wildlife-card vulnerable">
+                    <div class="wildlife-emoji">🦎</div>
+                    <div class="wildlife-name">穿山甲</div>
+                    <span class="wildlife-status status-endangered">極危</span>
+                </div>
+                <div class="wildlife-card">
+                    <div class="wildlife-emoji">🦌</div>
+                    <div class="wildlife-name">梅花鹿</div>
+                    <span class="wildlife-status status-safe">無危</span>
+                </div>
+                <div class="wildlife-card endangered">
+                    <div class="wildlife-emoji">🦍</div>
+                    <div class="wildlife-name">山地大猩猩</div>
+                    <span class="wildlife-status status-endangered">瀕危</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 每日森林錦囊 -->
+        <section class="tip-section">
+            <div class="tip-card">
+                <div class="tip-header">
+                    <span>💡</span>
+                    <span>每日森林錦囊</span>
+                </div>
+                <p class="tip-text" id="dailyTip">森林覆蓋了地球31%的陸地面積，是80%陸地生物的家園。保護森林就是保護生物多樣性。</p>
+            </div>
+        </section>
+
+        <div class="nav-spacer"></div>
+    </div>
+
+    <!-- 底部導航 -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <span class="nav-icon">🌲</span>
+            <span>森林</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">📊</span>
+            <span>統計</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">🏆</span>
+            <span>成就</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span>設定</span>
+        </a>
+    </nav>
+
+    <!-- 慶祝彈窗 -->
+    <div class="overlay" id="overlay" onclick="closeCelebration()"></div>
+    <div class="celebration" id="celebration">
+        <div class="celebration-emoji" id="celebrationEmoji">🌲</div>
+        <h3 class="celebration-title" id="celebrationTitle">做得好！</h3>
+        <p class="celebration-text" id="celebrationText">你為森林保護做出了貢獻！</p>
+        <button class="celebration-btn" onclick="closeCelebration()">繼續守護</button>
+    </div>
+
+    <script>
+        // 每日錦囊輪播
+        const tips = [
+            "森林覆蓋了地球31%的陸地面積，是80%陸地生物的家園。保護森林就是保護生物多樣性。",
+            "一棵成熟的樹木每年可以吸收約22公斤二氧化碳，釋放足夠4人呼吸的氧氣。",
+            "減少使用紙張，選擇電子賬單，每年可拯救數百棵樹木。",
+            "FSC認證確保木材來自負責任管理的森林，購買時請認準FSC標籤。",
+            "亞馬遜雨林被稱為「地球之肺」，但每分鐘都有相當於3個足球場面積的森林消失。",
+            "植樹造林不僅吸收碳排放，還能防止水土流失，保護水源。",
+            "減少牛肉消費可以減少對牧場的需求，從而減少森林砍伐。",
+            "非法野生動物貿易是導致許多物種瀕危的主要原因，拒絕購買野生動物製品。"
+        ];
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            createFallingLeaves();
+            rotateTips();
+            updateHealthDisplay();
+        });
+
+        // 創建飄落樹葉
+        function createFallingLeaves() {
+            const bg = document.querySelector('.forest-bg');
+            for (let i = 0; i < 15; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = 'leaf';
+                leaf.style.left = Math.random() * 100 + '%';
+                leaf.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                leaf.style.animationDelay = Math.random() * 5 + 's';
+                leaf.style.opacity = Math.random() * 0.4 + 0.2;
+                bg.appendChild(leaf);
+            }
+        }
+
+        // 輪播錦囊
+        function rotateTips() {
+            let currentTip = 0;
+            setInterval(() => {
+                currentTip = (currentTip + 1) % tips.length;
+                const tipElement = document.getElementById('dailyTip');
+                tipElement.style.opacity = 0;
+                setTimeout(() => {
+                    tipElement.textContent = tips[currentTip];
+                    tipElement.style.opacity = 1;
+                }, 300);
+            }, 10000);
+        }
+
+        // 更新健康指數顯示
+        function updateHealthDisplay() {
+            const healthPercent = 72;
+            document.getElementById('healthRing').style.setProperty('--health-percent', healthPercent);
+        }
+
+        // 行動切換
+        function toggleAction(element, points) {
+            const isCompleted = element.classList.contains('completed');
+            
+            if (!isCompleted) {
+                element.classList.add('completed');
+                incrementStat('actionCount', 1);
+                
+                // 隨機顯示慶祝
+                const messages = [
+                    { emoji: '🌲', title: '森林感谢你！', text: '你的行动保护了珍贵的森林资源。' },
+                    { emoji: '🦋', title: '生物多样性+1', text: '你的选择帮助保护了野生动物的栖息地。' },
+                    { emoji: '🌳', title: '树木在成长！', text: '你的环保行动让世界变得更绿。' },
+                    { emoji: '💚', title: '地球守护者', text: '每一步小小的行动都在改变世界。' }
+                ];
+                const msg = messages[Math.floor(Math.random() * messages.length)];
+                showCelebration(msg.emoji, msg.title, msg.text);
+            } else {
+                element.classList.remove('completed');
+                incrementStat('actionCount', -1);
+            }
+            
+            saveData();
+        }
+
+        // 添加樹木
+        function addTrees() {
+            incrementStat('treeCount', 1);
+            incrementStat('areaCount', 10);
+            showCelebration('🌳', '種植成功！', '你剛剛種下了一棵樹，為地球增添了一抹綠色。');
+            saveData();
+        }
+
+        // 顯示保護區域
+        function showArea() {
+            showCelebration('🌿', '森林保護區', '你幫助保護的森林面積正在擴大！');
+        }
+
+        // 增加統計
+        function incrementStat(id, amount) {
+            const element = document.getElementById(id);
+            let value = parseInt(element.textContent) || 0;
+            value += amount;
+            if (value < 0) value = 0;
+            element.textContent = value;
+        }
+
+        // 顯示慶祝
+        function showCelebration(emoji, title, text) {
+            document.getElementById('celebrationEmoji').textContent = emoji;
+            document.getElementById('celebrationTitle').textContent = title;
+            document.getElementById('celebrationText').textContent = text;
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('celebration').classList.add('show');
+        }
+
+        // 關閉慶祝
+        function closeCelebration() {
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('celebration').classList.remove('show');
+        }
+
+        // 保存數據
+        function saveData() {
+            const data = {
+                treeCount: document.getElementById('treeCount').textContent,
+                areaCount: document.getElementById('areaCount').textContent,
+                speciesCount: document.getElementById('speciesCount').textContent,
+                actionCount: document.getElementById('actionCount').textContent
+            };
+            localStorage.setItem('forestGuardianData', JSON.stringify(data));
+        }
+
+        // 載入數據
+        function loadData() {
+            const data = JSON.parse(localStorage.getItem('forestGuardianData') || '{}');
+            if (data.treeCount) document.getElementById('treeCount').textContent = data.treeCount;
+            if (data.areaCount) document.getElementById('areaCount').textContent = data.areaCount;
+            if (data.speciesCount) document.getElementById('speciesCount').textContent = data.speciesCount;
+            if (data.actionCount) document.getElementById('actionCount').textContent = data.actionCount;
+        }
+    </script>
+</body>
+</html>

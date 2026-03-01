@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微光希望 | MicroHope</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 溫暖漸變背景 -->
+    <div class="warm-bg"></div>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-icon">🤝</div>
+            <h1>微光希望</h1>
+            <p class="subtitle">SDG 1 - 消除貧困</p>
+        </header>
+
+        <!-- 影響力儀表板 -->
+        <section class="dashboard-section">
+            <div class="impact-card">
+                <div class="impact-visual">
+                    <div class="glow-ring"></div>
+                    <div class="impact-icon-large">💛</div>
+                </div>
+                <div class="impact-stats">
+                    <h2>你的愛心影響力</h2>
+                    <div class="impact-grid">
+                        <div class="impact-item">
+                            <span class="impact-value" id="peopleHelped">0</span>
+                            <span class="impact-label">受助人群</span>
+                        </div>
+                        <div class="impact-item">
+                            <span class="impact-value" id="familiesSupported">0</span>
+                            <span class="impact-label">支持家庭</span>
+                        </div>
+                        <div class="impact-item highlight">
+                            <span class="impact-value" id="microLoans">0</span>
+                            <span class="impact-label">微型貸款</span>
+                        </div>
+                    </div>
+                    <div class="impact-level">
+                        <span class="level-badge" id="impactLevel">愛心種子</span>
+                        <p class="level-desc">每個小小的善舉，都能點亮希望</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 今日善行 -->
+        <section class="actions-section">
+            <div class="section-header">
+                <h2>📋 今日善行</h2>
+                <span class="date-badge" id="todayDate">3月1日</span>
+            </div>
+            <div class="action-list" id="actionList">
+                <div class="action-item" data-action="fairtrade">
+                    <div class="action-icon">☕</div>
+                    <div class="action-content">
+                        <span class="action-title">選購公平貿易商品</span>
+                        <span class="action-desc">購買公平貿易咖啡或茶，支持生產者</span>
+                        <span class="action-impact">💛 支持 1 個家庭</span>
+                    </div>
+                    <button class="action-btn" onclick="completeAction('fairtrade')">完成</button>
+                </div>
+                <div class="action-item" data-action="donate">
+                    <div class="action-icon">🎁</div>
+                    <div class="action-content">
+                        <span class="action-title">捐贈物資</span>
+                        <span class="action-desc">捐贈衣物、書籍或食物給有需要的人</span>
+                        <span class="action-impact">💛 幫助 3 位人士</span>
+                    </div>
+                    <button class="action-btn" onclick="completeAction('donate')">完成</button>
+                </div>
+                <div class="action-item" data-action="skillshare">
+                    <div class="action-icon">📚</div>
+                    <div class="action-content">
+                        <span class="action-title">技能分享</span>
+                        <span class="action-desc">教授一項技能，幫助他人提升就業能力</span>
+                        <span class="action-impact">💛 賦能 2 位學員</span>
+                    </div>
+                    <button class="action-btn" onclick="completeAction('skillshare')">完成</button>
+                </div>
+                <div class="action-item" data-action="localbiz">
+                    <div class="action-icon">🏪</div>
+                    <div class="action-content">
+                        <span class="action-title">支持社區小店</span>
+                        <span class="action-desc">光顧本地小商戶，支持社區經濟</span>
+                        <span class="action-impact">💛 支持 1 個家庭生計</span>
+                    </div>
+                    <button class="action-btn" onclick="completeAction('localbiz')">完成</button>
+                </div>
+                <div class="action-item" data-action="microloan">
+                    <div class="action-icon">💰</div>
+                    <div class="action-content">
+                        <span class="action-title">微型貸款支持</span>
+                        <span class="action-desc">通過平台為創業者提供小額貸款支持</span>
+                        <span class="action-impact">💛 資助 1 個創業夢想</span>
+                    </div>
+                    <button class="action-btn" onclick="completeAction('microloan')">完成</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 受助者故事 -->
+        <section class="stories-section">
+            <h2>📖 希望故事</h2>
+            <div class="story-carousel" id="storyCarousel">
+                <div class="story-card active" data-story="1">
+                    <div class="story-image">👩‍🌾</div>
+                    <div class="story-content">
+                        <h3>阿梅的咖啡園</h3>
+                        <p class="story-location">📍 埃塞俄比亞</p>
+                        <p class="story-text">通過公平貿易，阿梅的咖啡豆直接銷往世界各地。她現在能供三個孩子上學，還修建了村裡第一口乾淨的水井。</p>
+                        <div class="story-impact">
+                            <span class="impact-tag">☕ 公平貿易</span>
+                            <span class="impact-tag">💧 社區發展</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="story-card" data-story="2">
+                    <div class="story-image">👨‍🔧</div>
+                    <div class="story-content">
+                        <h3>老陳修車舖</h3>
+                        <p class="story-location">📍 台灣台中</p>
+                        <p class="story-text">一筆微型貸款讓老陳能購入維修工具，開設了自己的腳踏車修理舖。現在僱用了兩名學徒，幫助社區居民出行。</p>
+                        <div class="story-impact">
+                            <span class="impact-tag">🔧 技能培訓</span>
+                            <span class="impact-tag">💼 創造就業</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="story-card" data-story="3">
+                    <div class="story-image">👩‍🏫</div>
+                    <div class="story-content">
+                        <h3>瑪莉亞的縫紉班</h3>
+                        <p class="story-location">📍 秘魯庫斯科</p>
+                        <p class="story-text">學習縫紉技能後，瑪莉亞不僅養活了自己的家庭，還教導其他婦女，讓整個社區的婦女都有了獨立的收入來源。</p>
+                        <div class="story-impact">
+                            <span class="impact-tag">🧵 婦女賦權</span>
+                            <span class="impact-tag">📚 教育傳承</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="story-card" data-story="4">
+                    <div class="story-image">🧑‍🌾</div>
+                    <div class="story-content">
+                        <h3>小農合作社</h3>
+                        <p class="story-location">📍 印度喀拉拉邦</p>
+                        <p class="story-text">20位小農組成合作社，通過直銷平台將有機蔬菜賣給城市消費者，收入增加了三倍，不再受中間商剝削。</p>
+                        <div class="story-impact">
+                            <span class="impact-tag">🥬 農民直銷</span>
+                            <span class="impact-tag">🤝 合作社模式</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-nav">
+                <button class="nav-btn" onclick="prevStory()">◀</button>
+                <div class="carousel-dots" id="carouselDots"></div>
+                <button class="nav-btn" onclick="nextStory()">▶</button>
+            </div>
+        </section>
+
+        <!-- 知識卡片 -->
+        <section class="knowledge-section">
+            <h2>💡 消除貧困小知識</h2>
+            <div class="knowledge-card">
+                <div class="knowledge-icon">📊</div>
+                <div class="knowledge-content">
+                    <p class="knowledge-fact" id="knowledgeFact">全球仍有 7 億人生活在極端貧困中（每日生活費低於 $1.90）。但自 1990 年以來，已有超過 10 億人脫離貧困。</p>
+                    <button class="fact-btn" onclick="newFact()">下一則</button>
+                </div>
+            </div>
+            <div class="quick-stats">
+                <div class="stat-box">
+                    <span class="stat-number">10億+</span>
+                    <span class="stat-desc">已脫貧人口</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">$25</span>
+                    <span class="stat-desc">微型貸款平均金額</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">98%</span>
+                    <span class="stat-desc">微型貸款還款率</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 行動記錄 -->
+        <section class="log-section">
+            <h2>📝 我的善行記錄</h2>
+            <div class="log-list" id="logList">
+                <p class="empty-state">今日還沒有記錄，開始你的第一個善行吧！</p>
+            </div>
+        </section>
+
+        <!-- 成就系統 -->
+        <section class="achievements-section">
+            <h2>🏆 愛心徽章</h2>
+            <div class="badge-grid" id="badgeGrid">
+                <div class="badge locked" data-badge="firststep">
+                    <span class="badge-icon">🌱</span>
+                    <span class="badge-name">第一步</span>
+                    <span class="badge-desc">完成第一個善行</span>
+                </div>
+                <div class="badge locked" data-badge="compassion">
+                    <span class="badge-icon">💝</span>
+                    <span class="badge-name">愛心播種者</span>
+                    <span class="badge-desc">累計幫助 10 人</span>
+                </div>
+                <div class="badge locked" data-badge="supporter">
+                    <span class="badge-icon">🤝</span>
+                    <span class="badge-name">堅定支持者</span>
+                    <span class="badge-desc">連續 7 天完成善行</span>
+                </div>
+                <div class="badge locked" data-badge="changemaker">
+                    <span class="badge-icon">⭐</span>
+                    <span class="badge-name">改變創造者</span>
+                    <span class="badge-desc">支持 5 個微型貸款</span>
+                </div>
+                <div class="badge locked" data-badge="guardian">
+                    <span class="badge-icon">🛡️</span>
+                    <span class="badge-name">希望守護者</span>
+                    <span class="badge-desc">累計幫助 50 人</span>
+                </div>
+                <div class="badge locked" data-badge="angel">
+                    <span class="badge-icon">👼</span>
+                    <span class="badge-name">人間天使</span>
+                    <span class="badge-desc">累計幫助 100 人</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 資源連結 -->
+        <section class="resources-section">
+            <h2>🔗 更多參與方式</h2>
+            <div class="resource-list">
+                <a href="#" class="resource-item">
+                    <span class="resource-icon">🌐</span>
+                    <div class="resource-info">
+                        <span class="resource-name">Kiva 微型貸款</span>
+                        <span class="resource-desc">$25 起支持全球創業者</span>
+                    </div>
+                    <span class="resource-arrow">→</span>
+                </a>
+                <a href="#" class="resource-item">
+                    <span class="resource-icon">🏷️</span>
+                    <div class="resource-info">
+                        <span class="resource-name">Fairtrade 公平貿易</span>
+                        <span class="resource-desc">尋找公平貿易認證商品</span>
+                    </div>
+                    <span class="resource-arrow">→</span>
+                </a>
+                <a href="#" class="resource-item">
+                    <span class="resource-icon">🤲</span>
+                    <div class="resource-info">
+                        <span class="resource-name">本地慈善機構</span>
+                        <span class="resource-desc">尋找附近的志願服務機會</span>
+                    </div>
+                    <span class="resource-arrow">→</span>
+                </a>
+            </div>
+        </section>
+
+        <footer class="app-footer">
+            <p>🦐 微光希望 · 每一個善舉都是一盞明燈</p>
+            <p class="sdg-ref">聯合國可持續發展目標 1</p>
+        </footer>
+    </div>
+
+    <!-- 慶祝彈窗 -->
+    <div class="modal" id="celebrationModal">
+        <div class="modal-content celebration-content">
+            <div class="celebration-animation">
+                <span class="celebration-emoji">🌟</span>
+                <span class="celebration-emoji">💛</span>
+                <span class="celebration-emoji">🌟</span>
+            </div>
+            <h3 id="celebrationTitle">善行完成！</h3>
+            <p id="celebrationMessage">你的愛心正在改變世界！</p>
+            <div class="impact-preview">
+                <span class="impact-icon">🤝</span>
+                <span class="impact-text" id="impactText">幫助了 1 位需要的人</span>
+            </div>
+            <button class="btn btn-primary" onclick="closeCelebration()">繼續行善</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

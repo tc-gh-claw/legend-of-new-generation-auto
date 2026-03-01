@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全球伙伴 | Global Bridge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f766e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .partnership-card {
+            transition: all 0.3s ease;
+        }
+        .partnership-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .sdg-icon {
+            transition: all 0.3s ease;
+        }
+        .sdg-icon:hover {
+            transform: scale(1.1);
+        }
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(45, 212, 191, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(45, 212, 191, 0.6); }
+        }
+        .float-animation {
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .connection-line {
+            stroke-dasharray: 5,5;
+            animation: dash 20s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -100; }
+        }
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body class="pb-24">
+    <!-- Header -->
+    <header class="glass-card sticky top-0 z-50 px-4 py-4">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <div class="w-10 h-10 bg-gradient-to-br from-teal-400 via-blue-500 to-indigo-600 rounded-full flex items-center justify-center pulse-glow">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                        </svg>
+                    </div>
+                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-teal-400 rounded-full border-2 border-slate-900"></div>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-white">全球伙伴</h1>
+                    <p class="text-xs text-teal-300">SDG 17 · 伙伴關係</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-2xl font-bold text-teal-400" id="partnershipScore">0</div>
+                <div class="text-xs text-slate-400">伙伴指數</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Global Impact Dashboard -->
+    <section class="px-4 pt-6">
+        <div class="max-w-md mx-auto">
+            <!-- Connection Globe Card -->
+            <div class="glass-card rounded-2xl p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-white">全球連結網絡</h2>
+                    <span class="text-sm text-slate-400" id="currentDate"></span>
+                </div>
+                
+                <div class="relative flex justify-center mb-6">
+                    <div class="relative w-36 h-36">
+                        <svg class="w-full h-full" viewBox="0 0 100 100">
+                            <!-- Globe outline -->
+                            <circle cx="50" cy="50" r="45" stroke="rgba(45,212,191,0.3)" stroke-width="2" fill="none"/>
+                            <ellipse cx="50" cy="50" rx="45" ry="20" stroke="rgba(45,212,191,0.2)" stroke-width="1" fill="none"/>
+                            <ellipse cx="50" cy="50" rx="20" ry="45" stroke="rgba(45,212,191,0.2)" stroke-width="1" fill="none"/>
+                            
+                            <!-- Connection lines -->
+                            <line x1="20" y1="30" x2="80" y2="60" stroke="rgba(56,189,248,0.5)" stroke-width="1" class="connection-line"/>
+                            <line x1="80" y1="30" x2="20" y2="60" stroke="rgba(56,189,248,0.5)" stroke-width="1" class="connection-line"/>
+                            <line x1="50" y1="15" x2="50" y2="85" stroke="rgba(56,189,248,0.5)" stroke-width="1" class="connection-line"/>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span class="text-4xl float-animation">🌍</span>
+                            <span class="text-2xl font-bold text-teal-400 mt-1" id="connectionCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-4 gap-2">
+                    <div class="text-center p-2 bg-slate-800/50 rounded-xl">
+                        <div class="text-lg mb-1">🏛️</div>
+                        <div class="text-sm font-bold text-teal-400" id="govCount">0</div>
+                        <div class="text-xs text-slate-400">政府</div>
+                    </div>
+                    <div class="text-center p-2 bg-slate-800/50 rounded-xl">
+                        <div class="text-lg mb-1">🏢</div>
+                        <div class="text-sm font-bold text-blue-400" id="bizCount">0</div>
+                        <div class="text-xs text-slate-400">企業</div>
+                    </div>
+                    <div class="text-center p-2 bg-slate-800/50 rounded-xl">
+                        <div class="text-lg mb-1">🤝</div>
+                        <div class="text-sm font-bold text-indigo-400" id="ngoCount">0</div>
+                        <div class="text-xs text-slate-400">NGO</div>
+                    </div>
+                    <div class="text-center p-2 bg-slate-800/50 rounded-xl">
+                        <div class="text-lg mb-1">👥</div>
+                        <div class="text-sm font-bold text-purple-400" id="peopleCount">0</div>
+                        <div class="text-xs text-slate-400">民眾</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SDG Progress -->
+            <div class="glass-card rounded-2xl p-5 mb-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-3">SDGs 完成進度</h3>
+                <div class="flex flex-wrap gap-2 justify-center" id="sdgGrid">
+                    <!-- SDG icons will be generated -->
+                </div>
+                <div class="mt-4 text-center">
+                    <div class="text-3xl font-bold text-teal-400" id="sdgProgress">16/17</div>
+                    <div class="text-xs text-slate-400">已覆蓋 SDG 目標</div>
+                </div>
+            </div>
+
+            <!-- Partnership Actions -->
+            <h3 class="text-lg font-semibold text-white mb-3">今日伙伴行動</h3>
+            <div class="space-y-3 mb-6">
+                <div class="partnership-card glass-card rounded-xl p-4 cursor-pointer" onclick="logPartnership('share')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-teal-500/20 rounded-xl flex items-center justify-center text-2xl">📢</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white">分享 SDG 訊息</h4>
+                            <p class="text-sm text-slate-400">在社交媒體傳播可持續發展目標</p>
+                        </div>
+                        <div class="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center text-white font-bold">+</div>
+                    </div>
+                </div>
+
+                <div class="partnership-card glass-card rounded-xl p-4 cursor-pointer" onclick="logPartnership('collab')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center text-2xl">🤝</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white">建立合作</h4>
+                            <p class="text-sm text-slate-400">連結不同領域的人共同行動</p>
+                        </div>
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">+</div>
+                    </div>
+                </div>
+
+                <div class="partnership-card glass-card rounded-xl p-4 cursor-pointer" onclick="logPartnership('resource')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center text-2xl">🔄</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white">資源共享</h4>
+                            <p class="text-sm text-slate-400">分享知識、技能或物資</p>
+                        </div>
+                        <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold">+</div>
+                    </div>
+                </div>
+
+                <div class="partnership-card glass-card rounded-xl p-4 cursor-pointer" onclick="logPartnership('advocate')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-2xl">📣</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white">倡導行動</h4>
+                            <p class="text-sm text-slate-400">向政府/企業倡議可持續政策</p>
+                        </div>
+                        <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">+</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Partnership Stories -->
+            <h3 class="text-lg font-semibold text-white mb-3">全球合作案例</h3>
+            <div class="space-y-3 mb-6">
+                <div class="glass-card rounded-xl p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">💉</span>
+                        <div>
+                            <h4 class="font-semibold text-white mb-1">COVAX 疫苗聯盟</h4>
+                            <p class="text-sm text-slate-400">全球190多國合作，確保疫苗公平分配，展現多邊主義力量。</p>
+                            <span class="inline-block mt-2 text-xs bg-teal-500/20 text-teal-300 px-2 py-1 rounded-full">🌍 多國合作</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">🌳</span>
+                        <div>
+                            <h4 class="font-semibold text-white mb-1">熱帶雨林聯盟</h4>
+                            <p class="text-sm text-slate-400">企業、NGO與政府聯手，保護熱帶雨林並推動可持續農業。</p>
+                            <span class="inline-block mt-2 text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full">🏢 公私合作</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">📚</span>
+                        <div>
+                            <h4 class="font-semibold text-white mb-1">全球教育伙伴</h4>
+                            <p class="text-sm text-slate-400">聯合國、企業與民間組織合作，為發展中國家提供教育資源。</p>
+                            <span class="inline-block mt-2 text-xs bg-indigo-500/20 text-indigo-300 px-2 py-1 rounded-full">🤝 多方合作</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Insight -->
+            <div class="glass-card rounded-2xl p-5 mb-6 border-l-4 border-teal-400">
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">💡</span>
+                    <div>
+                        <h4 class="font-semibold text-white mb-1">今日伙伴錦囊</h4>
+                        <p class="text-sm text-slate-300 italic" id="partnershipTip">「沒有一個國家能獨自實現可持續發展，我們需要攜手同行。」</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Knowledge Cards -->
+            <h3 class="text-lg font-semibold text-white mb-3">伙伴關係知識庫</h3>
+            <div class="space-y-3 mb-6">
+                <div class="glass-card rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-semibold text-white">🏛️ 多邊合作機制</h4>
+                        <span class="text-xs bg-teal-500/20 text-teal-300 px-2 py-1 rounded-full">基礎</span>
+                    </div>
+                    <p class="text-sm text-slate-400">聯合國、G20、世貿組織等多邊平台，促進全球政策協調。</p>
+                </div>
+
+                <div class="glass-card rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-semibold text-white">🏢 公私伙伴關係 (PPP)</h4>
+                        <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full">核心</span>
+                    </div>
+                    <p class="text-sm text-slate-400">政府與私營部門合作，結合資源與專長解決社會問題。</p>
+                </div>
+
+                <div class="glass-card rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-semibold text-white">💰 發展援助</h4>
+                        <span class="text-xs bg-indigo-500/20 text-indigo-300 px-2 py-1 rounded-full">資金</span>
+                    </div>
+                    <p class="text-sm text-slate-400">官方發展援助(ODA)和私人慈善捐贈支持發展中國家。</p>
+                </div>
+            </div>
+
+            <!-- Partnership Log -->
+            <h3 class="text-lg font-semibold text-white mb-3">行動日誌</h3>
+            <div class="glass-card rounded-2xl p-4" id="actionLog">
+                <p class="text-center text-slate-500 py-4">暫無記錄，開始你的第一個伙伴行動吧！</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Data storage
+        let partnershipData = {
+            score: 0,
+            share: 0,
+            collab: 0,
+            resource: 0,
+            advocate: 0,
+            actions: []
+        };
+
+        const partnershipTips = [
+            "沒有一個國家能獨自實現可持續發展，我們需要攜手同行。",
+            "真正的改變發生在不同背景的人願意傾聽彼此時。",
+            "合作不是妥協，而是創造更大的價值。",
+            "每個人都可以是連結者，搭建理解的橋樑。",
+            "透明度是信任的基石，信任是合作的基礎。",
+            "科技讓世界變小，但人心讓世界變大。",
+            "知識共享是對抗無知的最佳武器。",
+            "當我們一起行動，改變的速度會超乎想像。"
+        ];
+
+        // SDG Icons
+        const sdgIcons = [
+            { num: 1, icon: '🤝', color: '#E5243B', name: '消除貧困' },
+            { num: 2, icon: '🍽️', color: '#DDA63A', name: '零饥饿' },
+            { num: 3, icon: '😴', color: '#4C9F38', name: '良好健康' },
+            { num: 4, icon: '📚', color: '#C5192D', name: '優質教育' },
+            { num: 5, icon: '⚖️', color: '#FF3A21', name: '性別平等' },
+            { num: 6, icon: '💧', color: '#26BDE2', name: '清潔飲水' },
+            { num: 7, icon: '⚡', color: '#FCC30B', name: '清潔能源' },
+            { num: 8, icon: '💼', color: '#A21942', name: '體面工作' },
+            { num: 9, icon: '🔧', color: '#FD6925', name: '產業創新' },
+            { num: 10, icon: '🌈', color: '#DD1367', name: '減少不平等' },
+            { num: 11, icon: '🏙️', color: '#FD9D24', name: '可持續城市' },
+            { num: 12, icon: '🔄', color: '#BF8B2E', name: '負責任消費' },
+            { num: 13, icon: '🌍', color: '#3F7E44', name: '氣候行動' },
+            { num: 14, icon: '🌊', color: '#0A97D9', name: '水下生物' },
+            { num: 15, icon: '🌲', color: '#56C02B', name: '陸地生物' },
+            { num: 16, icon: '🕊️', color: '#00689D', name: '和平正義' },
+            { num: 17, icon: '🌐', color: '#19486A', name: '伙伴關係' }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            renderSDGGrid();
+            updateDisplay();
+            updateDate();
+            rotateTip();
+        });
+
+        function loadData() {
+            const saved = localStorage.getItem('partnershipData');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (parsed.date === new Date().toDateString()) {
+                    partnershipData = parsed;
+                }
+            }
+        }
+
+        function saveData() {
+            partnershipData.date = new Date().toDateString();
+            localStorage.setItem('partnershipData', JSON.stringify(partnershipData));
+        }
+
+        function renderSDGGrid() {
+            const grid = document.getElementById('sdgGrid');
+            grid.innerHTML = sdgIcons.map(sdg => `
+                <div class="sdg-icon w-8 h-8 rounded-full flex items-center justify-center text-xs cursor-pointer" 
+                     style="background-color: ${sdg.color}" 
+                     title="SDG ${sdg.num}: ${sdg.name}">
+                    ${sdg.num}
+                </div>
+            `).join('');
+        }
+
+        function updateDisplay() {
+            // Update score
+            partnershipData.score = partnershipData.share + partnershipData.collab + partnershipData.resource + partnershipData.advocate;
+            document.getElementById('partnershipScore').textContent = partnershipData.score;
+            document.getElementById('connectionCount').textContent = partnershipData.score;
+            
+            // Update counts
+            document.getElementById('govCount').textContent = Math.floor(partnershipData.advocate / 2);
+            document.getElementById('bizCount').textContent = Math.floor(partnershipData.collab / 2);
+            document.getElementById('ngoCount').textContent = Math.floor(partnershipData.resource / 2);
+            document.getElementById('peopleCount').textContent = Math.floor(partnershipData.share / 2);
+
+            // Update log
+            updateLog();
+            saveData();
+        }
+
+        function logPartnership(type) {
+            const types = {
+                share: { name: '分享 SDG 訊息', icon: '📢', color: 'teal' },
+                collab: { name: '建立合作', icon: '🤝', color: 'blue' },
+                resource: { name: '資源共享', icon: '🔄', color: 'indigo' },
+                advocate: { name: '倡導行動', icon: '📣', color: 'purple' }
+            };
+
+            partnershipData[type]++;
+            
+            const action = {
+                type: type,
+                time: new Date().toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit' }),
+                ...types[type]
+            };
+            
+            partnershipData.actions.unshift(action);
+            if (partnershipData.actions.length > 10) partnershipData.actions.pop();
+            
+            updateDisplay();
+        }
+
+        function updateLog() {
+            const logEl = document.getElementById('actionLog');
+            if (partnershipData.actions.length === 0) {
+                logEl.innerHTML = '<p class="text-center text-slate-500 py-4">暫無記錄，開始你的第一個伙伴行動吧！</p>';
+                return;
+            }
+
+            logEl.innerHTML = partnershipData.actions.map(a => `
+                <div class="flex items-center gap-3 py-2 border-b border-slate-700 last:border-0">
+                    <span class="text-xl">${a.icon}</span>
+                    <div class="flex-1">
+                        <span class="font-medium text-white">${a.name}</span>
+                    </div>
+                    <span class="text-xs text-slate-400">${a.time}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateDate() {
+            const options = { month: 'short', day: 'numeric', weekday: 'short' };
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('zh-HK', options);
+        }
+
+        function rotateTip() {
+            const tip = partnershipTips[Math.floor(Math.random() * partnershipTips.length)];
+            document.getElementById('partnershipTip').textContent = `「${tip}」`;
+        }
+    </script>
+</body>
+</html>

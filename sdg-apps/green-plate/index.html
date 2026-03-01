@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>綠色餐盤 | Green Plate</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="grain-overlay"></div>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-icon">🍽️</div>
+            <h1>綠色餐盤</h1>
+            <p class="subtitle">SDG 2 - 零饥饿</p>
+        </header>
+
+        <!-- Nutrition Balance Wheel -->
+        <section class="dashboard-section">
+            <div class="balance-card">
+                <h2>今日營養平衡</h2>
+                <div class="wheel-container">
+                    <div class="balance-wheel" id="balanceWheel">
+                        <div class="wheel-segment segment-grains" data-percent="25"></div>
+                        <div class="wheel-segment segment-protein" data-percent="25"></div>
+                        <div class="wheel-segment segment-veg" data-percent="30"></div>
+                        <div class="wheel-segment segment-fruit" data-percent="20"></div>
+                        <div class="wheel-center">
+                            <span class="center-score" id="balanceScore">85</span>
+                            <span class="center-label">平衡度</span>
+                        </div>
+                    </div>
+                    <div class="wheel-legend">
+                        <div class="legend-item">
+                            <span class="legend-color grains"></span>
+                            <span class="legend-label">穀物</span>
+                            <span class="legend-value" id="grainsValue">25%</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color protein"></span>
+                            <span class="legend-label">蛋白質</span>
+                            <span class="legend-value" id="proteinValue">25%</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color veg"></span>
+                            <span class="legend-label">蔬菜</span>
+                            <span class="legend-value" id="vegValue">30%</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color fruit"></span>
+                            <span class="legend-label">水果</span>
+                            <span class="legend-value" id="fruitValue">20%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Today's Meals -->
+        <section class="meals-section">
+            <div class="section-header">
+                <h2>🍱 今日餐點</h2>
+                <button class="btn-add" onclick="openAddMealModal()">+ 記錄餐點</button>
+            </div>
+            
+            <div class="meal-timeline" id="mealTimeline">
+                <div class="meal-card" data-meal="breakfast">
+                    <div class="meal-time">🌅 早餐</div>
+                    <div class="meal-content">
+                        <div class="meal-items" id="breakfastItems">
+                            <p class="empty-meal">尚未記錄</p>
+                        </div>
+                        <div class="meal-stats">
+                            <span class="meal-cal" id="breakfastCal">0 kcal</span>
+                            <span class="meal-sustainability" id="breakfastSustain">🌱</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="meal-card" data-meal="lunch">
+                    <div class="meal-time">☀️ 午餐</div>
+                    <div class="meal-content">
+                        <div class="meal-items" id="lunchItems">
+                            <p class="empty-meal">尚未記錄</p>
+                        </div>
+                        <div class="meal-stats">
+                            <span class="meal-cal" id="lunchCal">0 kcal</span>
+                            <span class="meal-sustainability" id="lunchSustain">🌱</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="meal-card" data-meal="dinner">
+                    <div class="meal-time">🌙 晚餐</div>
+                    <div class="meal-content">
+                        <div class="meal-items" id="dinnerItems">
+                            <p class="empty-meal">尚未記錄</p>
+                        </div>
+                        <div class="meal-stats">
+                            <span class="meal-cal" id="dinnerCal">0 kcal</span>
+                            <span class="meal-sustainability" id="dinnerSustain">🌱</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="meal-card snack" data-meal="snack">
+                    <div class="meal-time">🥤 點心</div>
+                    <div class="meal-content">
+                        <div class="meal-items" id="snackItems">
+                            <p class="empty-meal">尚未記錄</p>
+                        </div>
+                        <div class="meal-stats">
+                            <span class="meal-cal" id="snackCal">0 kcal</span>
+                            <span class="meal-sustainability" id="snackSustain">🌱</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sustainability Impact -->
+        <section class="impact-section">
+            <h2>🌍 永續影響</h2>
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <div class="impact-visual">
+                        <div class="carbon-circle" id="carbonCircle">
+                            <span class="carbon-value" id="carbonSaved">2.4</span>
+                            <span class="carbon-unit">kg</span>
+                        </div>
+                    </div>
+                    <div class="impact-info">
+                        <h3>減少碳排放</h3>
+                        <p>比平均飲食減少</p>
+                        <span class="impact-comparison">-32% ↓</span>
+                    </div>
+                </div>
+                
+                <div class="impact-card">
+                    <div class="impact-visual">
+                        <div class="water-drop-animation">
+                            <span class="water-icon">💧</span>
+                        </div>
+                        <span class="water-value" id="waterSaved">1,250</span>
+                        <span class="water-unit">L</span>
+                    </div>
+                    <div class="impact-info">
+                        <h3>節省水資源</h3>
+                        <p>本月累計節水</p>
+                        <span class="impact-equivalent">≈ 25 個浴缸</span>
+                    </div>
+                </div>
+                
+                <div class="impact-card">
+                    <div class="impact-visual">
+                        <div class="land-saved">
+                            <span class="land-icon">🌾</span>
+                            <span class="land-value" id="landSaved">12</span>
+                            <span class="land-unit">m²</span>
+                        </div>
+                    </div>
+                    <div class="impact-info">
+                        <h3>土地保護</h3>
+                        <p>避免過度耕作</p>
+                        <span class="impact-equivalent">≈ 3 個停車位</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Food Scanner -->
+        <section class="scanner-section">
+            <h2>🔍 食物掃描器</h2>
+            <div class="scanner-card">
+                <div class="scanner-display" id="scannerDisplay">
+                    <div class="scanner-frame">
+                        <span class="scanner-icon">📷</span>
+                        <p>掃描食物條碼或拍照識別</p>
+                    </div>
+                </div>
+                <div class="scanner-actions">
+                    <button class="scan-btn" onclick="simulateScan()">
+                        <span class="btn-icon">📸</span>
+                        <span>模擬掃描</span>
+                    </button>
+                    <button class="scan-btn" onclick="showFoodDatabase()">
+                        <span class="btn-icon">📋</span>
+                        <span>食物資料庫</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Scan Result -->
+            <div class="scan-result" id="scanResult" style="display: none;">
+                <div class="result-header">
+                    <span class="result-icon" id="resultIcon">🥗</span>
+                    <div class="result-title">
+                        <h3 id="resultName">有機藜麥沙拉</h3>
+                        <span class="result-badge sustainable" id="resultBadge">高度永續</span>
+                    </div>
+                </div>
+                <div class="result-stats">
+                    <div class="stat-bar">
+                        <span class="bar-label">碳足跡</span>
+                        <div class="bar-track">
+                            <div class="bar-fill low" style="width: 25%"></div>
+                        </div>
+                        <span class="bar-value">低</span>
+                    </div>
+                    <div class="stat-bar">
+                        <span class="bar-label">水足跡</span>
+                        <div class="bar-track">
+                            <div class="bar-fill low" style="width: 20%"></div>
+                        </div>
+                        <span class="bar-value">低</span>
+                    </div>
+                    <div class="stat-bar">
+                        <span class="bar-label">營養價值</span>
+                        <div class="bar-track">
+                            <div class="bar-fill high" style="width: 90%"></div>
+                        </div>
+                        <span class="bar-value">高</span>
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <button class="btn btn-primary" onclick="addToMeal()">加入今日餐點</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Weekly Stats -->
+        <section class="weekly-section">
+            <h2>📊 本週趨勢</h2>
+            <div class="chart-container">
+                <div class="chart-bars" id="weeklyChart">
+                    <div class="chart-bar" data-day="一" data-value="75"></div>
+                    <div class="chart-bar" data-day="二" data-value="82"></div>
+                    <div class="chart-bar" data-day="三" data-value="68"></div>
+                    <div class="chart-bar" data-day="四" data-value="90"></div>
+                    <div class="chart-bar" data-day="五" data-value="85"></div>
+                    <div class="chart-bar" data-day="六" data-value="72"></div>
+                    <div class="chart-bar active" data-day="日" data-value="85"></div>
+                </div>
+                <div class="chart-labels">
+                    <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+                </div>
+            </div>
+            <div class="weekly-summary">
+                <div class="summary-item">
+                    <span class="summary-value" id="weeklyAvg">82</span>
+                    <span class="summary-label">本週平均</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-value" id="sustainDays">5</span>
+                    <span class="summary-label">永續日數</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-value" id="streakDays">12</span>
+                    <span class="summary-label">連續記錄</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Tips -->
+        <section class="tips-section">
+            <h2>💡 今日飲食錦囊</h2>
+            <div class="tip-card" id="dailyTip">
+                <div class="tip-icon-large">🌱</div>
+                <div class="tip-content">
+                    <span class="tip-category">植物性飲食</span>
+                    <p class="tip-text" id="tipText">每週一天不吃肉，可減少個人碳足跡達 15%。試試「週一無肉日」吧！</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sustainable Alternatives -->
+        <section class="alternatives-section">
+            <h2>🔄 永續替代建議</h2>
+            <div class="alt-list" id="altList">
+                <div class="alt-item">
+                    <div class="alt-from">
+                        <span class="alt-icon">🥩</span>
+                        <span class="alt-name">牛肉</span>
+                    </div>
+                    <span class="alt-arrow">→</span>
+                    <div class="alt-to">
+                        <span class="alt-icon">🫘</span>
+                        <span class="alt-name">豆類/豆腐</span>
+                    </div>
+                    <span class="alt-savings">-96% 碳排放</span>
+                </div>
+                <div class="alt-item">
+                    <div class="alt-from">
+                        <span class="alt-icon">🦐</span>
+                        <span class="alt-name">養殖蝦</span>
+                    </div>
+                    <span class="alt-arrow">→</span>
+                    <div class="alt-to">
+                        <span class="alt-icon">🐟</span>
+                        <span class="alt-name">野生小型魚</span>
+                    </div>
+                    <span class="alt-savings">-75% 碳排放</span>
+                </div>
+                <div class="alt-item">
+                    <div class="alt-from">
+                        <span class="alt-icon">🍫</span>
+                        <span class="alt-name">傳統巧克力</span>
+                    </div>
+                    <span class="alt-arrow">→</span>
+                    <div class="alt-to">
+                        <span class="alt-icon">🍫</span>
+                        <span class="alt-name">公平貿易巧克力</span>
+                    </div>
+                    <span class="alt-savings">支持永續可可</span>
+                </div>
+            </div>
+        </section>
+
+        <footer class="app-footer">
+            <p>🦐 綠色餐盤 · 每一口都是對地球的承諾</p>
+            <p class="sdg-ref">聯合國可持續發展目標 2</p>
+        </footer>
+    </div>
+
+    <!-- Add Meal Modal -->
+    <div class="modal" id="addMealModal" style="display: none;">
+        <div class="modal-content">
+            <h3>🍽️ 記錄餐點</h3>
+            <div class="form-group">
+                <label>選擇餐別</label>
+                <div class="meal-selector">
+                    <button class="meal-type-btn active" data-meal="breakfast">
+                        <span>🌅</span>
+                        <span>早餐</span>
+                    </button>
+                    <button class="meal-type-btn" data-meal="lunch">
+                        <span>☀️</span>
+                        <span>午餐</span>
+                    </button>
+                    <button class="meal-type-btn" data-meal="dinner">
+                        <span>🌙</span>
+                        <span>晚餐</span>
+                    </button>
+                    <button class="meal-type-btn" data-meal="snack">
+                        <span>🥤</span>
+                        <span>點心</span>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>食物項目</label>
+                <div class="food-inputs" id="foodInputs">
+                    <div class="food-input-row">
+                        <input type="text" class="food-name" placeholder="食物名稱 (例如: 糙米飯)">
+                        <input type="number" class="food-amount" placeholder="份量(g)">
+                    </div>
+                </div>
+                <button class="btn-add-food" onclick="addFoodInput()">+ 新增食物</button>
+            </div>
+            <div class="form-group">
+                <label>永續標籤</label>
+                <div class="sustain-tags">
+                    <label class="tag-checkbox">
+                        <input type="checkbox" value="local">
+                        <span>🌾 本地食材</span>
+                    </label>
+                    <label class="tag-checkbox">
+                        <input type="checkbox" value="organic">
+                        <span>🌱 有機</span>
+                    </label>
+                    <label class="tag-checkbox">
+                        <input type="checkbox" value="plant">
+                        <span>🥗 植物性</span>
+                    </label>
+                    <label class="tag-checkbox">
+                        <input type="checkbox" value="seasonal">
+                        <span>🍂 當季</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeAddMealModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveMeal()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
