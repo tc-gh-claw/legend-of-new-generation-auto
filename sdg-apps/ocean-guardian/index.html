@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海洋守護者 | Ocean Guardian</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="ocean-bg"></div>
+    <div class="bubble-container" id="bubbles"></div>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-icon">🐋</div>
+            <h1>海洋守護者</h1>
+            <p class="subtitle">SDG 14 - 水下生物</p>
+        </header>
+
+        <!-- Ocean Health Dashboard -->
+        <section class="dashboard-section">
+            <div class="ocean-card">
+                <div class="ocean-visual">
+                    <div class="wave-container">
+                        <div class="wave wave-1"></div>
+                        <div class="wave wave-2"></div>
+                        <div class="wave wave-3"></div>
+                    </div>
+                    <div class="ocean-emoji" id="oceanEmoji">🌊</div>
+                </div>
+                <div class="ocean-status">
+                    <h2>今日海洋健康指數</h2>
+                    <div class="health-score" id="healthScore">78</div>
+                    <div class="health-bar">
+                        <div class="health-fill" id="healthFill" style="width: 78%"></div>
+                    </div>
+                    <p class="health-desc" id="healthDesc">良好 - 繼續守護我們的海洋</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Personal Impact Stats -->
+        <section class="stats-section">
+            <h2>🌟 我的海洋貢獻</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-icon">🥤</span>
+                    <span class="stat-value" id="plasticAvoided">0</span>
+                    <span class="stat-label">避免塑膠製品</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">♻️</span>
+                    <span class="stat-value" id="trashCollected">0</span>
+                    <span class="stat-label">清理垃圾 (件)</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">🐟</span>
+                    <span class="stat-value" id="sustainableChoices">0</span>
+                    <span class="stat-label">永續海鮮選擇</span>
+                </div>
+                <div class="stat-card highlight">
+                    <span class="stat-icon">🐢</span>
+                    <span class="stat-value" id="livesSaved">0</span>
+                    <span class="stat-label">拯救海洋生物</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Actions -->
+        <section class="actions-section">
+            <div class="section-header">
+                <h2>📋 今日行動</h2>
+                <span class="date-badge" id="todayDate">3月1日</span>
+            </div>
+            <div class="action-list" id="actionList">
+                <div class="action-item" data-action="plastic">
+                    <div class="action-icon">🚫</div>
+                    <div class="action-content">
+                        <span class="action-title">拒絕一次性塑膠</span>
+                        <span class="action-desc">使用可重複使用的餐具和購物袋</span>
+                    </div>
+                    <button class="action-btn" onclick="completeAction('plastic')">完成</button>
+                </div>
+                <div class="action-item" data-action="cleanup">
+                    <div class="action-icon">🧹</div>
+                    <div class="action-content">
+                        <span class="action-title">海灘/河岸清理</span>
+                        <span class="action-desc">撿拾 5 件垃圾，保護海洋環境</span>
+                    </div>
+                    <button class="action-btn" onclick="completeAction('cleanup')">完成</button>
+                </div>
+                <div class="action-item" data-action="seafood">
+                    <div class="action-icon">🎣</div>
+                    <div class="action-content">
+                        <span class="action-title">選擇永續海鮮</span>
+                        <span class="action-desc">查看海鮮指南，做出負責任選擇</span>
+                    </div>
+                    <button class="action-btn" onclick="completeAction('seafood')">完成</button>
+                </div>
+                <div class="action-item" data-action="share">
+                    <div class="action-icon">📢</div>
+                    <div class="action-content">
+                        <span class="action-title">分享海洋知識</span>
+                        <span class="action-desc">向朋友分享一個海洋保育小知識</span>
+                    </div>
+                    <button class="action-btn" onclick="completeAction('share')">完成</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Marine Life Explorer -->
+        <section class="explorer-section">
+            <h2>🐠 海洋生物圖鑑</h2>
+            <div class="creature-carousel" id="creatureCarousel">
+                <div class="creature-card" data-creature="turtle">
+                    <div class="creature-image">🐢</div>
+                    <div class="creature-info">
+                        <h3>綠蠵龜</h3>
+                        <p class="creature-status threatened">瀕危</p>
+                        <p class="creature-fact">每年因塑膠垃圾而死亡的數量超過 10 萬隻</p>
+                    </div>
+                </div>
+                <div class="creature-card" data-creature="whale">
+                    <div class="creature-image">🐋</div>
+                    <div class="creature-info">
+                        <h3>藍鯨</h3>
+                        <p class="creature-status endangered">極危</p>
+                        <p class="creature-fact">地球上最大的生物，噪音污染嚴重威脅其生存</p>
+                    </div>
+                </div>
+                <div class="creature-card" data-creature="coral">
+                    <div class="creature-image">🪸</div>
+                    <div class="creature-info">
+                        <h3>珊瑚礁</h3>
+                        <p class="creature-status threatened">受威脅</p>
+                        <p class="creature-fact">全球 50% 珊瑚礁已消失，25% 海洋生物依賴其生存</p>
+                    </div>
+                </div>
+                <div class="creature-card" data-creature="dolphin">
+                    <div class="creature-image">🐬</div>
+                    <div class="creature-info">
+                        <h3>海豚</h3>
+                        <p class="creature-status vulnerable">易危</p>
+                        <p class="creature-fact">誤捕和海洋污染是主要威脅</p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-nav">
+                <button class="nav-btn" onclick="prevCreature()">◀</button>
+                <div class="carousel-dots" id="carouselDots"></div>
+                <button class="nav-btn" onclick="nextCreature()">▶</button>
+            </div>
+        </section>
+
+        <!-- Ocean Fact of the Day -->
+        <section class="fact-section">
+            <h2>💡 今日海洋冷知識</h2>
+            <div class="fact-card">
+                <div class="fact-icon">🌊</div>
+                <div class="fact-content">
+                    <p class="fact-text" id="dailyFact">海洋產生了地球上 50-80% 的氧氣，主要來自浮游植物的光合作用。</p>
+                    <button class="fact-btn" onclick="newFact()">換一個</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Impact Log -->
+        <section class="log-section">
+            <h2>📝 我的行動記錄</h2>
+            <div class="log-list" id="logList">
+                <p class="empty-state">今日還沒有記錄，開始你的第一個行動吧！</p>
+            </div>
+        </section>
+
+        <!-- Achievements -->
+        <section class="achievements-section">
+            <h2>🏆 成就徽章</h2>
+            <div class="badge-grid" id="badgeGrid">
+                <div class="badge locked" data-badge="starter">
+                    <span class="badge-icon">🌱</span>
+                    <span class="badge-name">海洋新手</span>
+                    <span class="badge-desc">完成第一個行動</span>
+                </div>
+                <div class="badge locked" data-badge="warrior">
+                    <span class="badge-icon">🛡️</span>
+                    <span class="badge-name">海洋戰士</span>
+                    <span class="badge-desc">連續 7 天完成行動</span>
+                </div>
+                <div class="badge locked" data-badge="collector">
+                    <span class="badge-icon">🗑️</span>
+                    <span class="badge-name">清理達人</span>
+                    <span class="badge-desc">收集 50 件海洋垃圾</span>
+                </div>
+                <div class="badge locked" data-badge="champion">
+                    <span class="badge-icon">👑</span>
+                    <span class="badge-name">海洋守護者</span>
+                    <span class="badge-desc">拯救 100 隻海洋生物</span>
+                </div>
+            </div>
+        </section>
+
+        <footer class="app-footer">
+            <p>🦐 海洋守護者 · 保護我們的藍色星球</p>
+            <p class="sdg-ref">聯合國可持續發展目標 14</p>
+        </footer>
+    </div>
+
+    <!-- Celebration Modal -->
+    <div class="modal" id="celebrationModal" style="display: none;">
+        <div class="modal-content celebration-content">
+            <div class="celebration-animation">
+                <span class="celebration-emoji">🎉</span>
+                <span class="celebration-emoji">🐋</span>
+                <span class="celebration-emoji">🎉</span>
+            </div>
+            <h3 id="celebrationTitle">行動完成！</h3>
+            <p id="celebrationMessage">你為海洋做出了一份貢獻！</p>
+            <div class="impact-preview">
+                <span class="impact-icon">🐢</span>
+                <span class="impact-text">拯救了 2 隻海洋生物</span>
+            </div>
+            <button class="btn btn-primary" onclick="closeCelebration()">繼續守護</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

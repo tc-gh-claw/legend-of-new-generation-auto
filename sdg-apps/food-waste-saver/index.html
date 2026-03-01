@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>惜食管家 | Food Waste Saver</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FAF7F2;
+            --sage: #9CAF88;
+            --sage-dark: #7A8F6B;
+            --terracotta: #D4846A;
+            --terracotta-light: #E8A890;
+            --charcoal: #3D3D3D;
+            --warm-gray: #8B8680;
+            --mint: #B8D4C8;
+            --coral: #E8927C;
+            --shadow-soft: 0 4px 20px rgba(61, 61, 61, 0.08);
+            --shadow-hover: 0 8px 30px rgba(61, 61, 61, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--cream);
+            color: var(--charcoal);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--cream);
+            position: relative;
+            padding-bottom: 100px;
+        }
+
+        /* Header */
+        .header {
+            padding: 24px 20px 16px;
+            background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+            color: white;
+            border-radius: 0 0 32px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        /* Quick Add */
+        .quick-add {
+            padding: 20px;
+            background: white;
+            margin: -20px 16px 20px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            z-index: 10;
+        }
+
+        .quick-add-title {
+            font-size: 14px;
+            color: var(--warm-gray);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .quick-add-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-group {
+            flex: 1;
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E8E4DF;
+            border-radius: 14px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: var(--cream);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--sage);
+            background: white;
+        }
+
+        .input-group input::placeholder {
+            color: #B5B0A8;
+        }
+
+        .btn-add {
+            width: 50px;
+            height: 50px;
+            border: none;
+            background: var(--terracotta);
+            color: white;
+            border-radius: 14px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-add:hover {
+            background: var(--terracotta-light);
+            transform: scale(1.05);
+        }
+
+        .quick-categories {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .category-chip {
+            padding: 6px 14px;
+            background: var(--cream);
+            border: 1px solid #E8E4DF;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .category-chip:hover {
+            background: var(--sage);
+            color: white;
+            border-color: var(--sage);
+        }
+
+        /* Sections */
+        .section {
+            padding: 0 20px;
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-count {
+            background: var(--sage);
+            color: white;
+            font-size: 12px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .view-all {
+            font-size: 13px;
+            color: var(--sage-dark);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Food Cards */
+        .food-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .food-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .food-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .food-card.expiring {
+            border-left: 4px solid var(--terracotta);
+        }
+
+        .food-card.expiring::before {
+            content: '⚠️';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 14px;
+        }
+
+        .food-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--cream);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .food-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .food-name {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .food-meta {
+            font-size: 12px;
+            color: var(--warm-gray);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .expiry-badge {
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .expiry-safe {
+            background: var(--mint);
+            color: var(--sage-dark);
+        }
+
+        .expiry-warning {
+            background: #FFE4B5;
+            color: #B8860B;
+        }
+
+        .expiry-danger {
+            background: #FFD4C8;
+            color: var(--terracotta);
+        }
+
+        .food-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--cream);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            background: var(--sage);
+            color: white;
+        }
+
+        .btn-icon.delete:hover {
+            background: var(--terracotta);
+        }
+
+        /* Recipe Suggestions */
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .recipe-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .recipe-image {
+            height: 100px;
+            background: linear-gradient(135deg, var(--mint) 0%, var(--sage) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .recipe-content {
+            padding: 12px;
+        }
+
+        .recipe-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .recipe-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .recipe-tag {
+            font-size: 10px;
+            padding: 3px 8px;
+            background: var(--cream);
+            border-radius: 8px;
+            color: var(--warm-gray);
+        }
+
+        /* Stats Section */
+        .stats-card {
+            background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+        }
+
+        .stats-header {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-box-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .stat-box-label {
+            font-size: 11px;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--warm-gray);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 15px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(61, 61, 61, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--warm-gray);
+            margin-bottom: 6px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E8E4DF;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--sage);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-secondary {
+            background: var(--cream);
+            color: var(--charcoal);
+        }
+
+        .btn-primary {
+            background: var(--sage);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--sage-dark);
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 24px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--warm-gray);
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: var(--sage);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Category Colors */
+        .cat-vegetables { background: #E8F5E9; }
+        .cat-fruits { background: #FFF3E0; }
+        .cat-dairy { background: #E3F2FD; }
+        .cat-meat { background: #FFEBEE; }
+        .cat-grains { background: #FFF8E1; }
+        .cat-other { background: #F3E5F5; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-top">
+                <div class="logo">
+                    <span class="logo-icon">🌿</span>
+                    <span class="logo-text">惜食管家</span>
+                </div>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="savedCount">0</div>
+                    <div class="stat-label">已挽救 (件)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="moneySaved">$0</div>
+                    <div class="stat-label">節省金額</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="co2Saved">0</div>
+                    <div class="stat-label">減碳 (kg)</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Quick Add -->
+        <div class="quick-add">
+            <div class="quick-add-title">快速新增食物</div>
+            <div class="quick-add-form">
+                <div class="input-group">
+                    <input type="text" id="quickInput" placeholder="輸入食物名稱..." onkeypress="if(event.key==='Enter') openAddModal()">
+                </div>
+                <button class="btn-add" onclick="openAddModal()">+</button>
+            </div>
+            <div class="quick-categories">
+                <span class="category-chip" onclick="quickAdd('牛奶')">🥛 牛奶</span>
+                <span class="category-chip" onclick="quickAdd('雞蛋')">🥚 雞蛋</span>
+                <span class="category-chip" onclick="quickAdd('蘋果')">🍎 蘋果</span>
+                <span class="category-chip" onclick="quickAdd('麵包')">🍞 麵包</span>
+                <span class="category-chip" onclick="quickAdd('菠菜')">🥬 菠菜</span>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="section">
+            <div class="stats-card">
+                <div class="stats-header">📊 本月惜食成就</div>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-box-value" id="monthSaved">0</div>
+                        <div class="stat-box-label">食物挽救</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-value" id="wastePrevented">0%</div>
+                        <div class="stat-box-label">浪費減少</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-value" id="streakDays">0</div>
+                        <div class="stat-box-label">連續天數</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expiring Soon -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    ⏰ 即將過期
+                    <span class="section-count" id="expiringCount">0</span>
+                </div>
+            </div>
+            <div class="food-list" id="expiringList">
+                <div class="empty-state">
+                    <div class="empty-icon">🎉</div>
+                    <div class="empty-text">暫無即將過期的食物</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Pantry -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    🏠 我的食物櫃
+                    <span class="section-count" id="pantryCount">0</span>
+                </div>
+                <a href="#" class="view-all" onclick="showAllFoods()">查看全部</a>
+            </div>
+            <div class="food-list" id="pantryList">
+                <div class="empty-state">
+                    <div class="empty-icon">🥗</div>
+                    <div class="empty-text">食物櫃是空的，新增一些食物吧！</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recipe Suggestions -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    👨‍🍳 推薦食譜
+                    <span class="section-count" id="recipeCount">3</span>
+                </div>
+            </div>
+            <div class="recipe-grid" id="recipeList">
+                <!-- Recipes will be dynamically generated -->
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">首頁</span>
+            </a>
+            <a href="#" class="nav-item" onclick="openAddModal(); return false;">
+                <span class="nav-icon">➕</span>
+                <span class="nav-label">新增</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showRecipes(); return false;">
+                <span class="nav-icon">📖</span>
+                <span class="nav-label">食譜</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showStats(); return false;">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">統計</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Add Food Modal -->
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <div class="modal-title">🥗 新增食物</div>
+            <div class="form-group">
+                <label class="form-label">食物名稱</label>
+                <input type="text" class="form-input" id="foodName" placeholder="例如：蘋果、牛奶">
+            </div>
+            <div class="form-group">
+                <label class="form-label">類別</label>
+                <select class="form-select" id="foodCategory">
+                    <option value="vegetables">🥬 蔬菜</option>
+                    <option value="fruits">🍎 水果</option>
+                    <option value="dairy">🥛 乳製品</option>
+                    <option value="meat">🥩 肉類</option>
+                    <option value="grains">🌾 穀物</option>
+                    <option value="other">🍽️ 其他</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">購買日期</label>
+                <input type="date" class="form-input" id="purchaseDate">
+            </div>
+            <div class="form-group">
+                <label class="form-label">預計過期日</label>
+                <input type="date" class="form-input" id="expiryDate">
+            </div>
+            <div class="form-group">
+                <label class="form-label">數量</label>
+                <input type="text" class="form-input" id="quantity" placeholder="例如：3個、500g">
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeAddModal()">取消</button>
+                <button class="btn btn-primary" onclick="addFood()">新增</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Management
+        const categories = {
+            vegetables: { icon: '🥬', name: '蔬菜', color: 'cat-vegetables' },
+            fruits: { icon: '🍎', name: '水果', color: 'cat-fruits' },
+            dairy: { icon: '🥛', name: '乳製品', color: 'cat-dairy' },
+            meat: { icon: '🥩', name: '肉類', color: 'cat-meat' },
+            grains: { icon: '🌾', name: '穀物', color: 'cat-grains' },
+            other: { icon: '🍽️', name: '其他', color: 'cat-other' }
+        };
+
+        const recipes = [
+            { name: '蔬菜炒蛋', icon: '🍳', tags: ['快手法', '15分鐘'], ingredients: ['eggs', 'vegetables'] },
+            { name: '水果優格碗', icon: '🥣', tags: ['健康', '早餐'], ingredients: ['fruits', 'dairy'] },
+            { name: '剩飯炒飯', icon: '🍚', tags: ['經典', '零浪費'], ingredients: ['grains', 'vegetables'] },
+            { name: '蔬菜湯', icon: '🍲', tags: ['暖胃', '簡單'], ingredients: ['vegetables'] }
+        ];
+
+        let foods = JSON.parse(localStorage.getItem('foodItems')) || [];
+        let stats = JSON.parse(localStorage.getItem('foodStats')) || {
+            savedCount: 0,
+            moneySaved: 0,
+            co2Saved: 0,
+            monthSaved: 0,
+            streakDays: 0
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set default dates
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('purchaseDate').value = today;
+            
+            const threeDaysLater = new Date();
+            threeDaysLater.setDate(threeDaysLater.getDate() + 3);
+            document.getElementById('expiryDate').value = threeDaysLater.toISOString().split('T')[0];
+
+            renderFoods();
+            renderRecipes();
+            updateStats();
+        });
+
+        // Quick Add
+        function quickAdd(name) {
+            document.getElementById('quickInput').value = name;
+            openAddModal();
+        }
+
+        // Modal Functions
+        function openAddModal() {
+            const quickName = document.getElementById('quickInput').value;
+            if (quickName) {
+                document.getElementById('foodName').value = quickName;
+                // Auto-detect category
+                const name = quickName.toLowerCase();
+                if (name.includes('奶') || name.includes('cheese') || name.includes('yogurt')) {
+                    document.getElementById('foodCategory').value = 'dairy';
+                } else if (name.includes('蛋')) {
+                    document.getElementById('foodCategory').value = 'other';
+                } else if (name.includes('菜') || name.includes('菠') || name.includes('茄')) {
+                    document.getElementById('foodCategory').value = 'vegetables';
+                } else if (name.includes('果') || name.includes('蘋') || name.includes('橙')) {
+                    document.getElementById('foodCategory').value = 'fruits';
+                } else if (name.includes('肉') || name.includes('雞') || name.includes('牛')) {
+                    document.getElementById('foodCategory').value = 'meat';
+                } else if (name.includes('麵') || name.includes('飯') || name.includes('米')) {
+                    document.getElementById('foodCategory').value = 'grains';
+                }
+            }
+            document.getElementById('addModal').classList.add('active');
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').classList.remove('active');
+            document.getElementById('foodName').value = '';
+            document.getElementById('quantity').value = '';
+            document.getElementById('quickInput').value = '';
+        }
+
+        // Add Food
+        function addFood() {
+            const name = document.getElementById('foodName').value.trim();
+            const category = document.getElementById('foodCategory').value;
+            const purchaseDate = document.getElementById('purchaseDate').value;
+            const expiryDate = document.getElementById('expiryDate').value;
+            const quantity = document.getElementById('quantity').value || '1份';
+
+            if (!name) {
+                alert('請輸入食物名稱');
+                return;
+            }
+
+            const food = {
+                id: Date.now(),
+                name,
+                category,
+                purchaseDate,
+                expiryDate,
+                quantity,
+                addedAt: new Date().toISOString()
+            };
+
+            foods.push(food);
+            saveFoods();
+            renderFoods();
+            closeAddModal();
+            updateStats();
+        }
+
+        // Delete Food
+        function deleteFood(id) {
+            const food = foods.find(f => f.id === id);
+            if (food && confirm(`確定要刪除 ${food.name} 嗎？`)) {
+                foods = foods.filter(f => f.id !== id);
+                saveFoods();
+                renderFoods();
+            }
+        }
+
+        // Mark as Consumed
+        function consumeFood(id) {
+            const food = foods.find(f => f.id === id);
+            if (food) {
+                foods = foods.filter(f => f.id !== id);
+                stats.savedCount++;
+                stats.moneySaved += Math.floor(Math.random() * 30) + 10;
+                stats.co2Saved = (stats.co2Saved + 0.5).toFixed(1);
+                stats.monthSaved++;
+                saveFoods();
+                saveStats();
+                renderFoods();
+                updateStats();
+                
+                // Show celebration
+                showToast(`🎉 成功挽救 ${food.name}！`);
+            }
+        }
+
+        // Get Expiry Status
+        function getExpiryStatus(expiryDate) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const expiry = new Date(expiryDate);
+            const diffTime = expiry - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) return { text: '已過期', class: 'expiry-danger', days: diffDays };
+            if (diffDays === 0) return { text: '今天到期', class: 'expiry-danger', days: diffDays };
+            if (diffDays <= 2) return { text: `${diffDays}天後過期`, class: 'expiry-danger', days: diffDays };
+            if (diffDays <= 5) return { text: `${diffDays}天後過期`, class: 'expiry-warning', days: diffDays };
+            return { text: `${diffDays}天後過期`, class: 'expiry-safe', days: diffDays };
+        }
+
+        // Render Foods
+        function renderFoods() {
+            const expiringList = document.getElementById('expiringList');
+            const pantryList = document.getElementById('pantryList');
+            const expiringCount = document.getElementById('expiringCount');
+            const pantryCount = document.getElementById('pantryCount');
+
+            // Sort by expiry date
+            foods.sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
+
+            const expiring = foods.filter(f => {
+                const status = getExpiryStatus(f.expiryDate);
+                return status.days <= 3;
+            });
+
+            const pantry = foods.filter(f => {
+                const status = getExpiryStatus(f.expiryDate);
+                return status.days > 3;
+            });
+
+            expiringCount.textContent = expiring.length;
+            pantryCount.textContent = pantry.length;
+
+            // Render expiring
+            if (expiring.length === 0) {
+                expiringList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🎉</div>
+                        <div class="empty-text">暫無即將過期的食物</div>
+                    </div>
+                `;
+            } else {
+                expiringList.innerHTML = expiring.map(food => createFoodCard(food, true)).join('');
+            }
+
+            // Render pantry
+            if (pantry.length === 0 && expiring.length === 0) {
+                pantryList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🥗</div>
+                        <div class="empty-text">食物櫃是空的，新增一些食物吧！</div>
+                    </div>
+                `;
+            } else if (pantry.length === 0) {
+                pantryList.innerHTML = '';
+            } else {
+                pantryList.innerHTML = pantry.slice(0, 5).map(food => createFoodCard(food, false)).join('');
+            }
+        }
+
+        function createFoodCard(food, isExpiring) {
+            const cat = categories[food.category];
+            const status = getExpiryStatus(food.expiryDate);
+            
+            return `
+                <div class="food-card ${isExpiring ? 'expiring' : ''}">
+                    <div class="food-icon ${cat.color}">${cat.icon}</div>
+                    <div class="food-info">
+                        <div class="food-name">${food.name}</div>
+                        <div class="food-meta">
+                            <span>${food.quantity}</span>
+                            <span class="expiry-badge ${status.class}">${status.text}</span>
+                        </div>
+                    </div>
+                    <div class="food-actions">
+                        <button class="btn-icon" onclick="consumeFood(${food.id})" title="已食用">✓</button>
+                        <button class="btn-icon delete" onclick="deleteFood(${food.id})" title="刪除">🗑</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Recipes
+        function renderRecipes() {
+            const recipeList = document.getElementById('recipeList');
+            recipeList.innerHTML = recipes.map(recipe => `
+                <div class="recipe-card" onclick="showRecipeDetail('${recipe.name}')">
+                    <div class="recipe-image">${recipe.icon}</div>
+                    <div class="recipe-content">
+                        <div class="recipe-title">${recipe.name}</div>
+                        <div class="recipe-tags">
+                            ${recipe.tags.map(tag => `<span class="recipe-tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update Stats
+        function updateStats() {
+            document.getElementById('savedCount').textContent = stats.savedCount;
+            document.getElementById('moneySaved').textContent = `$${stats.moneySaved}`;
+            document.getElementById('co2Saved').textContent = stats.co2Saved;
+            document.getElementById('monthSaved').textContent = stats.monthSaved;
+            
+            // Calculate waste prevented percentage
+            const totalItems = stats.savedCount + foods.length;
+            const percentage = totalItems > 0 ? Math.round((stats.savedCount / totalItems) * 100) : 0;
+            document.getElementById('wastePrevented').textContent = `${percentage}%`;
+            document.getElementById('streakDays').textContent = stats.streakDays;
+        }
+
+        // Save Functions
+        function saveFoods() {
+            localStorage.setItem('foodItems', JSON.stringify(foods));
+        }
+
+        function saveStats() {
+            localStorage.setItem('foodStats', JSON.stringify(stats));
+        }
+
+        // Toast Notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--sage);
+                color: white;
+                padding: 14px 24px;
+                border-radius: 12px;
+                font-weight: 500;
+                z-index: 2000;
+                animation: slideDown 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Navigation
+        function showAllFoods() {
+            alert('查看全部功能開發中...');
+        }
+
+        function showRecipes() {
+            document.querySelector('.section:has(.recipe-grid)').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showStats() {
+            alert(`📊 統計詳情\n\n已挽救食物: ${stats.savedCount} 件\n節省金額: $${stats.moneySaved}\n減少碳排放: ${stats.co2Saved} kg\n本月挽救: ${stats.monthSaved} 件`);
+        }
+
+        function showRecipeDetail(name) {
+            alert(`👨‍🍳 ${name}\n\n使用您食物櫃中的食材製作！\n\n功能開發中...`);
+        }
+
+        // Close modal on outside click
+        document.getElementById('addModal').addEventListener('click', (e) => {
+            if (e.target.id === 'addModal') closeAddModal();
+        });
+    </script>
+</body>
+</html>

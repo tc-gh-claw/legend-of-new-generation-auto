@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>綠電追蹤 | Green Energy Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <h1>綠電追蹤</h1>
+            <p class="subtitle">SDG 7 - 經濟適用的清潔能源</p>
+        </header>
+
+        <!-- 電量儀表板 -->
+        <section class="dashboard">
+            <div class="gauge-container">
+                <div class="gauge" id="energyGauge">
+                    <div class="gauge-inner">
+                        <span class="gauge-value" id="currentUsage">0</span>
+                        <span class="gauge-unit">kWh</span>
+                        <span class="gauge-label">今日用電</span>
+                    </div>
+                    <svg class="gauge-svg" viewBox="0 0 200 120">
+                        <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100"/>
+                        <path class="gauge-fill" id="gaugeFill" d="M 20 100 A 80 80 0 0 1 20 100"/>
+                    </svg>
+                </div>
+                <div class="target-display">
+                    <span>目標: <strong id="dailyTarget">10</strong> kWh/日</span>
+                    <span class="renewable-badge" id="renewableBadge">
+                        <span class="sun-icon">☀️</span>
+                        <span id="renewablePercent">0%</span> 綠電
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 快速記錄 -->
+        <section class="quick-log">
+            <h2>⚡ 快速記錄電器使用</h2>
+            <div class="appliance-grid">
+                <button class="appliance-btn" data-watt="1200" data-time="0.5">
+                    <span class="icon">🎛️</span>
+                    <span class="name">冷氣</span>
+                    <span class="info">1.2kW × 30分鐘</span>
+                </button>
+                <button class="appliance-btn" data-watt="150" data-time="0.17">
+                    <span class="icon">☕</span>
+                    <span class="name">熱水壺</span>
+                    <span class="info">10分鐘煮沸</span>
+                </button>
+                <button class="appliance-btn" data-watt="300" data-time="0.5">
+                    <span class="icon">🍳</span>
+                    <span class="name">電磁爐</span>
+                    <span class="info">30分鐘烹調</span>
+                </button>
+                <button class="appliance-btn" data-watt="2000" data-time="0.75">
+                    <span class="icon">🌪️</span>
+                    <span class="name">抽濕機</span>
+                    <span class="info">2kW × 45分鐘</span>
+                </button>
+                <button class="appliance-btn" data-watt="500" data-time="1">
+                    <span class="icon">📺</span>
+                    <span class="name">電視</span>
+                    <span class="info">1小時收看</span>
+                </button>
+                <button class="appliance-btn" data-watt="60" data-time="2">
+                    <span class="icon">💡</span>
+                    <span class="name">LED燈</span>
+                    <span class="info">全屋2小時</span>
+                </button>
+                <button class="appliance-btn" data-watt="1500" data-time="0.5">
+                    <span class="icon">🌀</span>
+                    <span class="name">洗衣機</span>
+                    <span class="info">快洗模式</span>
+                </button>
+                <button class="appliance-btn" data-watt="2500" data-time="0.5">
+                    <span class="icon">🚿</span>
+                    <span class="name">電熱水器</span>
+                    <span class="info">30分鐘加熱</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 用電統計 -->
+        <section class="stats">
+            <h2>📊 用電分析</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-icon">💰</span>
+                    <span class="stat-value" id="costToday">$0</span>
+                    <span class="stat-label">今日電費</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">🌱</span>
+                    <span class="stat-value" id="carbonToday">0kg</span>
+                    <span class="stat-label">碳排放</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">⚡</span>
+                    <span class="stat-value" id="avgDaily">0</span>
+                    <span class="stat-label">平均用電</span>
+                </div>
+                <div class="stat-card highlight">
+                    <span class="stat-icon">🏆</span>
+                    <span class="stat-value" id="savings">0%</span>
+                    <span class="stat-label">節能達成</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 用電趨勢圖 -->
+        <section class="trend">
+            <h2>📈 過去7日用電趨勢</h2>
+            <div class="chart-container">
+                <div class="chart" id="weeklyChart">
+                    <!-- 動態生成 -->
+                </div>
+                <div class="chart-labels" id="chartLabels">
+                    <!-- 動態生成 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 綠電目標設定 -->
+        <section class="renewable-goals">
+            <h2>🌞 綠電目標</h2>
+            <div class="goal-slider">
+                <label for="renewableGoal">目標綠電比例: <span id="goalValue">30</span>%</label>
+                <input type="range" id="renewableGoal" min="0" max="100" value="30">
+            </div>
+            <div class="renewable-sources">
+                <div class="source-toggle">
+                    <label class="toggle">
+                        <input type="checkbox" id="solarPanel" checked>
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">🏠 家用太陽能</span>
+                    </label>
+                </div>
+                <div class="source-toggle">
+                    <label class="toggle">
+                        <input type="checkbox" id="greenProvider">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">🔌 綠色供電商</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- 節能錦囊 -->
+        <section class="tips">
+            <h2>💡 今日節能錦囊</h2>
+            <div class="tip-card" id="dailyTip">
+                <span class="tip-number">TIP #<span id="tipNumber">1</span></span>
+                <p class="tip-text" id="tipText">將冷氣溫度調高1度，可節省約6%電力。</p>
+                <button class="tip-next" id="nextTip">→</button>
+            </div>
+        </section>
+
+        <!-- 歷史記錄 -->
+        <section class="history">
+            <h2>📝 今日記錄</h2>
+            <div class="history-list" id="historyList">
+                <p class="empty-state">暫無記錄，點擊上方電器按鈕開始記錄</p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>為可持續能源未來行動 💚</p>
+            <p class="sdg-ref">聯合國可持續發展目標 7</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
