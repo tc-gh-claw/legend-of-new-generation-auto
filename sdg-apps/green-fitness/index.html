@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>綠動健身 Green Fitness | 健康 × 氣候行動</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --primary-light: #D1FAE5;
+            --accent: #F59E0B;
+            --accent-light: #FEF3C7;
+            --bg: linear-gradient(135deg, #064E3B 0%, #065F46 50%, #047857 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text: #1F2937;
+            --text-light: #6B7280;
+            --border: rgba(255, 255, 255, 0.2);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            color: white;
+        }
+
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent) 0%, #F97316 100%);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 36px;
+            box-shadow: 0 10px 40px rgba(245, 158, 11, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 15px;
+        }
+
+        /* Impact Dashboard */
+        .impact-dashboard {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .impact-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .impact-header h2 {
+            font-size: 18px;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .impact-header p {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .impact-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .impact-stat {
+            text-align: center;
+            padding: 16px 8px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, #ECFDF5 100%);
+            border-radius: 16px;
+            transition: transform 0.2s;
+        }
+
+        .impact-stat:hover {
+            transform: translateY(-2px);
+        }
+
+        .impact-stat i {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .impact-stat .value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            display: block;
+        }
+
+        .impact-stat .label {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .carbon-saved {
+            background: linear-gradient(135deg, var(--accent-light) 0%, #FDE68A 100%);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .carbon-saved i {
+            font-size: 32px;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .carbon-saved .value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #92400E;
+        }
+
+        .carbon-saved .label {
+            font-size: 14px;
+            color: #92400E;
+            opacity: 0.8;
+        }
+
+        /* Activity Tracker */
+        .activity-section {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .activity-types {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .activity-type {
+            background: #F3F4F6;
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .activity-type:hover, .activity-type.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .activity-type i {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .activity-type span {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .activity-type .eco-tag {
+            font-size: 10px;
+            color: var(--primary);
+            background: rgba(16, 185, 129, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 6px;
+            display: inline-block;
+        }
+
+        /* Timer */
+        .timer-display {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 20px;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .timer-display .time {
+            font-size: 56px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -2px;
+        }
+
+        .timer-display .label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .timer-btn {
+            flex: 1;
+            padding: 14px 24px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .timer-btn.primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .timer-btn.primary:hover {
+            background: #D97706;
+        }
+
+        .timer-btn.secondary {
+            background: #F3F4F6;
+            color: var(--text);
+        }
+
+        .timer-btn.secondary:hover {
+            background: #E5E7EB;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .weekly-goal {
+            margin-bottom: 20px;
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .goal-header span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .goal-header .progress-text {
+            color: var(--primary);
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: #E5E7EB;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        .weekly-chart {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            height: 120px;
+            padding-top: 20px;
+            border-top: 1px solid #E5E7EB;
+            margin-top: 20px;
+        }
+
+        .day-bar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bar {
+            width: 32px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 8px 8px 4px 4px;
+            transition: height 0.3s ease;
+            position: relative;
+        }
+
+        .bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--primary);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .bar:hover::after {
+            opacity: 1;
+        }
+
+        .day-label {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Daily Tips */
+        .tips-section {
+            background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6F 100%);
+            border-radius: 24px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .tips-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .tips-header i {
+            font-size: 20px;
+            color: #60A5FA;
+        }
+
+        .tips-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .tip-carousel {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tip-item {
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+            backdrop-filter: blur(10px);
+        }
+
+        .tip-item i {
+            color: #60A5FA;
+            margin-right: 8px;
+        }
+
+        .tip-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 16px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+        }
+
+        .dot.active {
+            background: #60A5FA;
+            width: 20px;
+            border-radius: 3px;
+        }
+
+        /* Log Section */
+        .log-section {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .log-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px;
+            background: #F9FAFB;
+            border-radius: 14px;
+            transition: all 0.2s;
+        }
+
+        .log-item:hover {
+            background: #F3F4F6;
+        }
+
+        .log-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--primary-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .log-details {
+            flex: 1;
+        }
+
+        .log-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .log-meta {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        .log-impact {
+            text-align: right;
+        }
+
+        .log-impact .value {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .log-impact .unit {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent) 0%, #F97316 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+            transition: all 0.2s;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+        /* SDG Badge */
+        .sdg-badge {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            padding: 16px;
+        }
+
+        .sdg-item {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .sdg-3 { background: #4C9F38; }
+        .sdg-11 { background: #F99D26; }
+        .sdg-13 { background: #48773E; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-icon">
+                <i class="fas fa-running"></i>
+            </div>
+            <h1>綠動健身</h1>
+            <p>每一次運動，都是對地球的貢獻</p>
+        </header>
+
+        <!-- Impact Dashboard -->
+        <div class="impact-dashboard">
+            <div class="impact-header">
+                <h2>🌍 永續影響力</h2>
+                <p>你的運動為地球帶來的改變</p>
+            </div>
+            
+            <div class="impact-stats">
+                <div class="impact-stat">
+                    <i class="fas fa-fire"></i>
+                    <span class="value">12,450</span>
+                    <span class="label">卡路里</span>
+                </div>
+                <div class="impact-stat">
+                    <i class="fas fa-route"></i>
+                    <span class="value">86.5</span>
+                    <span class="label">公里</span>
+                </div>
+                <div class="impact-stat">
+                    <i class="fas fa-clock"></i>
+                    <span class="value">14.2</span>
+                    <span class="label">小時</span>
+                </div>
+            </div>
+
+            <div class="carbon-saved">
+                <i class="fas fa-leaf"></i>
+                <div class="value">18.6 kg</div>
+                <div class="label">減少碳排放 💨</div>
+            </div>
+        </div>
+
+        <!-- Activity Tracker -->
+        <div class="activity-section">
+            <h2 class="section-title">
+                <i class="fas fa-play-circle"></i>
+                開始運動
+            </h2>
+
+            <div class="activity-types">
+                <div class="activity-type active" onclick="selectActivity(this, 'running')">
+                    <i class="fas fa-running"></i>
+                    <span>跑步</span>
+                    <div class="eco-tag">零排放 🌱</div>
+                </div>
+                <div class="activity-type" onclick="selectActivity(this, 'cycling')">
+                    <i class="fas fa-bicycle"></i>
+                    <span>單車</span>
+                    <div class="eco-tag">替代駕車 🚗➜🚲</div>
+                </div>
+                <div class="activity-type" onclick="selectActivity(this, 'walking')">
+                    <i class="fas fa-walking"></i>
+                    <span>步行</span>
+                    <div class="eco-tag">低碳通勤 🚶</div>
+                </div>
+                <div class="activity-type" onclick="selectActivity(this, 'hiking')">
+                    <i class="fas fa-hiking"></i>
+                    <span>行山</span>
+                    <div class="eco-tag">親近自然 🏔️</div>
+                </div>
+            </div>
+
+            <div class="timer-display">
+                <div class="time" id="timer">00:00:00</div>
+                <div class="label">運動時間</div>
+            </div>
+
+            <div class="timer-controls">
+                <button class="timer-btn primary" id="startBtn" onclick="toggleTimer()">
+                    <i class="fas fa-play"></i> 開始
+                </button>
+                <button class="timer-btn secondary" onclick="resetTimer()">
+                    <i class="fas fa-redo"></i> 重置
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <h2 class="section-title">
+                <i class="fas fa-chart-line"></i>
+                本週進度
+            </h2>
+
+            <div class="weekly-goal">
+                <div class="goal-header">
+                    <span>每週目標：150 分鐘</span>
+                    <span class="progress-text">105 / 150 分鐘</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 70%"></div>
+                </div>
+            </div>
+
+            <div class="weekly-chart">
+                <div class="day-bar">
+                    <div class="bar" style="height: 60%" data-value="30"></div>
+                    <span class="day-label">一</span>
+                </div>
+                <div class="day-bar">
+                    <div class="bar" style="height: 40%" data-value="20"></div>
+                    <span class="day-label">二</span>
+                </div>
+                <div class="day-bar">
+                    <div class="bar" style="height: 80%" data-value="45"></div>
+                    <span class="day-label">三</span>
+                </div>
+                <div class="day-bar">
+                    <div class="bar" style="height: 30%" data-value="15"></div>
+                    <span class="day-label">四</span>
+                </div>
+                <div class="day-bar">
+                    <div class="bar" style="height: 90%" data-value="50"></div>
+                    <span class="day-label">五</span>
+                </div>
+                <div class="day-bar">
+                    <div class="bar" style="height: 100%" data-value="60"></div>
+                    <span class="day-label">六</span>
+                </div>
+                <div class="day-bar">
+                    <div class="bar" style="height: 0%" data-value="0"></div>
+                    <span class="day-label">日</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Tips -->
+        <div class="tips-section">
+            <div class="tips-header">
+                <i class="fas fa-lightbulb"></i>
+                <h3>每日綠色健身錦囊</h3>
+            </div>
+            <div class="tip-carousel">
+                <div class="tip-item" id="currentTip">
+                    <i class="fas fa-quote-left"></i>
+                    <span id="tipText">選擇跑步或單車代替短途駕車，每公里可減少約 120g 二氧化碳排放。今日就嘗試綠色通勤！</span>
+                </div>
+            </div>
+            <div class="tip-dots">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+
+        <!-- Activity Log -->
+        <div class="log-section">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i>
+                最近活動
+            </h2>
+            <div class="log-list">
+                <div class="log-item">
+                    <div class="log-icon">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <div class="log-details">
+                        <div class="log-title">晨間跑步</div>
+                        <div class="log-meta">今天 07:30 • 45 分鐘 • 6.2 公里</div>
+                    </div>
+                    <div class="log-impact">
+                        <div class="value">-744g</div>
+                        <div class="unit">CO₂</div>
+                    </div>
+                </div>
+                <div class="log-item">
+                    <div class="log-icon">
+                        <i class="fas fa-bicycle"></i>
+                    </div>
+                    <div class="log-details">
+                        <div class="log-title">單車通勤</div>
+                        <div class="log-meta">昨天 18:15 • 30 分鐘 • 8.5 公里</div>
+                    </div>
+                    <div class="log-impact">
+                        <div class="value">-1.02kg</div>
+                        <div class="unit">CO₂</div>
+                    </div>
+                </div>
+                <div class="log-item">
+                    <div class="log-icon">
+                        <i class="fas fa-walking"></i>
+                    </div>
+                    <div class="log-details">
+                        <div class="log-title">午間步行</div>
+                        <div class="log-meta">昨天 12:30 • 20 分鐘 • 1.8 公里</div>
+                    </div>
+                    <div class="log-impact">
+                        <div class="value">-0kg</div>
+                        <div class="unit">CO₂</div>
+                    </div>
+                </div>
+                <div class="log-item">
+                    <div class="log-icon">
+                        <i class="fas fa-hiking"></i>
+                    </div>
+                    <div class="log-details">
+                        <div class="log-title">週末行山</div>
+                        <div class="log-meta">3月1日 • 180 分鐘 • 12 公里</div>
+                    </div>
+                    <div class="log-impact">
+                        <div class="value">-2.4kg</div>
+                        <div class="unit">CO₂</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SDG Badge -->
+        <div class="sdg-badge">
+            <div class="sdg-item sdg-3">SDG<br>3</div>
+            <div class="sdg-item sdg-11">SDG<br>11</div>
+            <div class="sdg-item sdg-13">SDG<br>13</div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="quickStart()">
+        <i class="fas fa-bolt"></i>
+    </button>
+
+    <script>
+        // Timer functionality
+        let timerInterval;
+        let seconds = 0;
+        let isRunning = false;
+        let currentActivity = 'running';
+
+        const tips = [
+            "選擇跑步或單車代替短途駕車，每公里可減少約 120g 二氧化碳排放。今日就嘗試綠色通勤！",
+            "戶外運動讓你親近自然，同時節省健身房電力消耗。一石二鳥的永續選擇！",
+            "晨間跑步時空氣質素最佳，避開交通繁忙時段，對健康同環境都有益。",
+            "步行 1 公里可減少約 120g 碳排放，相當於種植一棵樹 1 天的吸收量。每一步都算數！"
+        ];
+
+        function selectActivity(element, type) {
+            document.querySelectorAll('.activity-type').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            currentActivity = type;
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('startBtn');
+            
+            if (isRunning) {
+                clearInterval(timerInterval);
+                btn.innerHTML = '<i class="fas fa-play"></i> 繼續';
+                isRunning = false;
+            } else {
+                timerInterval = setInterval(updateTimer, 1000);
+                btn.innerHTML = '<i class="fas fa-pause"></i> 暫停';
+                isRunning = true;
+            }
+        }
+
+        function updateTimer() {
+            seconds++;
+            const hrs = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            document.getElementById('timer').textContent = 
+                `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            seconds = 0;
+            isRunning = false;
+            document.getElementById('timer').textContent = '00:00:00';
+            document.getElementById('startBtn').innerHTML = '<i class="fas fa-play"></i> 開始';
+        }
+
+        function quickStart() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => {
+                if (!isRunning) toggleTimer();
+            }, 500);
+        }
+
+        // Tips carousel
+        let currentTipIndex = 0;
+        
+        function rotateTip() {
+            currentTipIndex = (currentTipIndex + 1) % tips.length;
+            document.getElementById('tipText').textContent = tips[currentTipIndex];
+            
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentTipIndex);
+            });
+        }
+
+        setInterval(rotateTip, 5000);
+
+        // Animate progress bars on load
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.bar').forEach(bar => {
+                const height = bar.style.height;
+                bar.style.height = '0';
+                setTimeout(() => {
+                    bar.style.height = height;
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>

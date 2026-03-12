@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>城市永續行者 | City Sustainability Walker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #0d9488 0%, #059669 50%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .leaf-float {
+            animation: leafFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes leafFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+        
+        .pulse-soft {
+            animation: pulseSoft 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulseSoft {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.02); }
+        }
+        
+        .city-pulse {
+            animation: cityPulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes cityPulse {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.1); }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-card {
+            transition: all 0.3s ease;
+        }
+        
+        .action-card.completed {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-color: #10b981;
+        }
+        
+        .action-card.completed .action-icon {
+            background: #10b981;
+            color: white;
+        }
+        
+        .route-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawLine 3s ease-out forwards;
+        }
+        
+        @keyframes drawLine {
+            to { stroke-dashoffset: 0; }
+        }
+        
+        .neighborhood-node {
+            transition: all 0.3s ease;
+        }
+        
+        .neighborhood-node:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 4px 12px rgba(16, 185, 129, 0.4));
+        }
+        
+        .impact-bar {
+            transition: width 1s ease-out;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #0d9488 0%, #059669 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(5, 150, 105, 0.4);
+        }
+        
+        .tip-carousel {
+            transition: opacity 0.5s ease;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-teal-50 via-emerald-50 to-green-50 min-h-screen text-gray-800">
+    <!-- Header -->
+    <header class="glass sticky top-0 z-50 px-4 py-4 shadow-sm">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center leaf-float shadow-lg">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">城市永續行者</h1>
+                    <p class="text-xs text-gray-500">City Sustainability Walker</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-2xl font-bold text-teal-600" id="cityScore">73</div>
+                <div class="text-xs text-gray-500">城市指數</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 py-6 space-y-6">
+        <!-- Impact Dashboard -->
+        <section class="glass rounded-3xl p-5 shadow-lg">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                本週社區影響力
+            </h2>
+            <div class="grid grid-cols-3 gap-3">
+                <div class="text-center p-3 bg-gradient-to-br from-teal-100 to-teal-50 rounded-2xl">
+                    <div class="text-2xl font-bold text-teal-600" id="participationCount">12</div>
+                    <div class="text-xs text-gray-600">參與行動</div>
+                </div>
+                <div class="text-center p-3 bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-2xl">
+                    <div class="text-2xl font-bold text-emerald-600" id="communityHours">8.5</div>
+                    <div class="text-xs text-gray-600">社區時數</div>
+                </div>
+                <div class="text-center p-3 bg-gradient-to-br from-green-100 to-green-50 rounded-2xl">
+                    <div class="text-2xl font-bold text-green-600" id="peopleImpacted">156</div>
+                    <div class="text-xs text-gray-600">影響人數</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- City Neighborhood Map -->
+        <section class="glass rounded-3xl p-5 shadow-lg">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                社區網絡地圖
+            </h2>
+            <div class="relative bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl p-4 h-64 overflow-hidden">
+                <!-- City Silhouette -->
+                <svg class="absolute bottom-0 left-0 w-full h-32 city-pulse opacity-30" viewBox="0 0 400 100" preserveAspectRatio="none">
+                    <path fill="#94a3b8" d="M0,100 L0,60 L20,60 L20,40 L50,40 L50,70 L80,70 L80,30 L120,30 L120,50 L150,50 L150,20 L180,20 L180,60 L220,60 L220,35 L260,35 L260,55 L300,55 L300,25 L340,25 L340,65 L380,65 L380,45 L400,45 L400,100 Z"/>
+                </svg>
+                
+                <!-- Connection Lines -->
+                <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path class="route-line" stroke="#14b8a6" stroke-width="0.3" fill="none" opacity="0.6"
+                          d="M50,50 Q30,30 20,40 T10,60 Q25,70 50,50"/>
+                    <path class="route-line" stroke="#10b981" stroke-width="0.3" fill="none" opacity="0.6"
+                          d="M50,50 Q70,30 80,25 T90,45 Q75,65 50,50" style="animation-delay: 0.5s"/>
+                    <path class="route-line" stroke="#059669" stroke-width="0.3" fill="none" opacity="0.6"
+                          d="M50,50 Q40,70 35,80 T25,85 Q35,90 50,50" style="animation-delay: 1s"/>
+                    <path class="route-line" stroke="#0d9488" stroke-width="0.3" fill="none" opacity="0.6"
+                          d="M50,50 Q60,70 65,75 T75,80 Q65,85 50,50" style="animation-delay: 1.5s"/>
+                </svg>
+                
+                <!-- Neighborhood Nodes -->
+                <div class="neighborhood-node absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg pulse-soft cursor-pointer" onclick="showNeighborhood('center')">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                </div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center mt-10">
+                    <div class="text-xs font-semibold text-teal-700">市中心</div>
+                </div>
+                
+                <!-- Park Node -->
+                <div class="neighborhood-node absolute top-[25%] left-[20%] w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer" onclick="showNeighborhood('park')">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                    </svg>
+                </div>
+                <div class="absolute top-[25%] left-[20%] text-center mt-7 -ml-2">
+                    <div class="text-xs font-semibold text-green-700">綠色公園</div>
+                </div>
+                
+                <!-- School Node -->
+                <div class="neighborhood-node absolute top-[20%] right-[15%] w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer" onclick="showNeighborhood('school')">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                    </svg>
+                </div>
+                <div class="absolute top-[20%] right-[15%] text-center mt-7 -mr-2">
+                    <div class="text-xs font-semibold text-amber-700">教育區</div>
+                </div>
+                
+                <!-- Market Node -->
+                <div class="neighborhood-node absolute bottom-[20%] left-[25%] w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer" onclick="showNeighborhood('market')">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                </div>
+                <div class="absolute bottom-[20%] left-[25%] text-center mt-7 -ml-2">
+                    <div class="text-xs font-semibold text-purple-700">市集區</div>
+                </div>
+                
+                <!-- Community Center Node -->
+                <div class="neighborhood-node absolute bottom-[25%] right-[20%] w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer" onclick="showNeighborhood('community')">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                </div>
+                <div class="absolute bottom-[25%] right-[20%] text-center mt-7 -mr-2">
+                    <div class="text-xs font-semibold text-blue-700">社區中心</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="glass rounded-3xl p-5 shadow-lg">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                城市永續行動
+            </h2>
+            <div class="grid grid-cols-2 gap-3" id="actionGrid">
+                <!-- Action 1: Plant Trees -->
+                <div class="action-card card-hover bg-gradient-to-br from-white to-green-50 rounded-2xl p-4 border-2 border-green-200 cursor-pointer" onclick="toggleAction(this)">
+                    <div class="action-icon w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-3 transition-all">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 text-sm">植樹活動</h3>
+                    <p class="text-xs text-gray-500 mt-1">參與社區綠化</p>
+                    <div class="mt-2 flex items-center gap-1">
+                        <span class="text-xs font-medium text-green-600">+5 指數</span>
+                    </div>
+                </div>
+                
+                <!-- Action 2: Clean Up -->
+                <div class="action-card card-hover bg-gradient-to-br from-white to-teal-50 rounded-2xl p-4 border-2 border-teal-200 cursor-pointer" onclick="toggleAction(this)">
+                    <div class="action-icon w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mb-3 transition-all">
+                        <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 text-sm">社區清潔</h3>
+                    <p class="text-xs text-gray-500 mt-1">街道垃圾清理</p>
+                    <div class="mt-2 flex items-center gap-1">
+                        <span class="text-xs font-medium text-teal-600">+3 指數</span>
+                    </div>
+                </div>
+                
+                <!-- Action 3: Share Resources -->
+                <div class="action-card card-hover bg-gradient-to-br from-white to-blue-50 rounded-2xl p-4 border-2 border-blue-200 cursor-pointer" onclick="toggleAction(this)">
+                    <div class="action-icon w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-3 transition-all">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 text-sm">資源共享</h3>
+                    <p class="text-xs text-gray-500 mt-1">物品借閱分享</p>
+                    <div class="mt-2 flex items-center gap-1">
+                        <span class="text-xs font-medium text-blue-600">+4 指數</span>
+                    </div>
+                </div>
+                
+                <!-- Action 4: Local Market -->
+                <div class="action-card card-hover bg-gradient-to-br from-white to-amber-50 rounded-2xl p-4 border-2 border-amber-200 cursor-pointer" onclick="toggleAction(this)">
+                    <div class="action-icon w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-3 transition-all">
+                        <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 text-sm">本地市集</h3>
+                    <p class="text-xs text-gray-500 mt-1">支持本地農產</p>
+                    <div class="mt-2 flex items-center gap-1">
+                        <span class="text-xs font-medium text-amber-600">+3 指數</span>
+                    </div>
+                </div>
+                
+                <!-- Action 5: Cycling -->
+                <div class="action-card card-hover bg-gradient-to-br from-white to-emerald-50 rounded-2xl p-4 border-2 border-emerald-200 cursor-pointer" onclick="toggleAction(this)">
+                    <div class="action-icon w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-3 transition-all">
+                        <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 text-sm">綠色出行</h3>
+                    <p class="text-xs text-gray-500 mt-1">步行或踩單車</p>
+                    <div class="mt-2 flex items-center gap-1">
+                        <span class="text-xs font-medium text-emerald-600">+4 指數</span>
+                    </div>
+                </div>
+                
+                <!-- Action 6: Community Event -->
+                <div class="action-card card-hover bg-gradient-to-br from-white to-purple-50 rounded-2xl p-4 border-2 border-purple-200 cursor-pointer" onclick="toggleAction(this)">
+                    <div class="action-icon w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-3 transition-all">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 text-sm">社區活動</h3>
+                    <p class="text-xs text-gray-500 mt-1">參與鄰里活動</p>
+                    <div class="mt-2 flex items-center gap-1">
+                        <span class="text-xs font-medium text-purple-600">+5 指數</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Log -->
+        <section class="glass rounded-3xl p-5 shadow-lg">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold flex items-center gap-2">
+                    <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    社區日誌
+                </h2>
+                <button onclick="openLogModal()" class="btn-primary px-4 py-2 rounded-xl text-white text-sm font-medium flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    記錄
+                </button>
+            </div>
+            <div id="logList" class="space-y-3 max-h-64 overflow-y-auto">
+                <!-- Default log entries -->
+                <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-800">參與社區植樹日</div>
+                                <div class="text-xs text-gray-500">綠色公園 · 2小時前</div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold text-green-600">+5</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-800">週末農夫市集購物</div>
+                                <div class="text-xs text-gray-500">市集區 · 昨天</div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold text-amber-600">+3</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Tip -->
+        <section class="glass rounded-3xl p-5 shadow-lg">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+                每日永續錦囊
+            </h2>
+            <div id="tipCarousel" class="tip-carousel">
+                <div class="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl p-4 border border-teal-100">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-700 leading-relaxed" id="tipText">
+                                探索你社區內的本地商店！步行或踩單車前往，不僅減少碳排放，還能發現社區的獨特魅力。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center gap-2 mt-3">
+                <button onclick="prevTip()" class="w-8 h-8 rounded-full bg-white shadow flex items-center justify-center hover:bg-gray-50 transition-colors">
+                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <button onclick="nextTip()" class="w-8 h-8 rounded-full bg-white shadow flex items-center justify-center hover:bg-gray-50 transition-colors">
+                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- SDG Badges -->
+        <section class="glass rounded-3xl p-5 shadow-lg">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                </svg>
+                相關永續目標
+            </h2>
+            <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-semibold rounded-full shadow-sm">
+                    SDG 11 可持續城市
+                </span>
+                <span class="px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-green-500 text-white text-xs font-semibold rounded-full shadow-sm">
+                    SDG 13 氣候行動
+                </span>
+                <span class="px-3 py-1.5 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-xs font-semibold rounded-full shadow-sm">
+                    SDG 16 和平社區
+                </span>
+                <span class="px-3 py-1.5 bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-xs font-semibold rounded-full shadow-sm">
+                    SDG 17 伙伴關係
+                </span>
+            </div>
+        </section>
+    </main>
+
+    <!-- Log Modal -->
+    <div id="logModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+        <div class="glass rounded-3xl p-6 w-full max-w-sm">
+            <h3 class="text-lg font-semibold mb-4">記錄社區行動</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">行動類型</label>
+                    <select id="logType" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        <option value="tree">🌱 植樹綠化</option>
+                        <option value="clean">🧹 社區清潔</option>
+                        <option value="share">🤝 資源共享</option>
+                        <option value="market">🛒 本地市集</option>
+                        <option value="cycle">🚲 綠色出行</option>
+                        <option value="event">🎉 社區活動</option>
+                        <option value="other">✨ 其他行動</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">描述</label>
+                    <input type="text" id="logDesc" placeholder="例如：參與海灘清潔活動" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">地點</label>
+                    <input type="text" id="logLocation" placeholder="例如：維多利亞公園" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500">
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeLogModal()" class="flex-1 px-4 py-2 border border-gray-300 rounded-xl text-gray-600 font-medium hover:bg-gray-50 transition-colors">
+                    取消
+                </button>
+                <button onclick="addLog()" class="flex-1 btn-primary px-4 py-2 rounded-xl text-white font-medium">
+                    保存
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // City Score
+        let cityScore = 73;
+        
+        // Tips Data
+        const tips = [
+            { icon: 'location', text: '探索你社區內的本地商店！步行或踩單車前往，不僅減少碳排放，還能發現社區的獨特魅力。' },
+            { icon: 'users', text: '組織一個技能分享會！無論是園藝、編程還是烹飪，每個人都有可以教和學的東西。' },
+            { icon: 'heart', text: '關注社區內的弱勢群體，一個簡單的問候或幫忙購物都能帶來溫暖。' },
+            { icon: 'recycle', text: '建立社區物品交換站，讓閒置物品找到新主人，減少浪費。' },
+            { icon: 'sun', text: '參與社區太陽能計劃，共同投資可再生能源設施。' }
+        ];
+        
+        let currentTip = 0;
+        
+        // Neighborhood Info
+        const neighborhoods = {
+            center: { name: '市中心', desc: '社區心臟地帶，匯聚各類資源與活動' },
+            park: { name: '綠色公園', desc: '城市綠肺，舉辦植樹和戶外活動的理想場所' },
+            school: { name: '教育區', desc: '學習與分享知識的社區中心' },
+            market: { name: '市集區', desc: '本地農產品和手工藝品的聚集地' },
+            community: { name: '社區中心', desc: '鄰里互助和活動舉辦的核心' }
+        };
+        
+        // Toggle Action
+        function toggleAction(card) {
+            card.classList.toggle('completed');
+            const points = parseInt(card.querySelector('.text-xs.font-medium').textContent.match(/\d+/)[0]);
+            
+            if (card.classList.contains('completed')) {
+                cityScore += points;
+                incrementStat('participationCount');
+                incrementStatFloat('communityHours', 0.5);
+                incrementStat('peopleImpacted', 5);
+            } else {
+                cityScore -= points;
+                incrementStat('participationCount', -1);
+                incrementStatFloat('communityHours', -0.5);
+                incrementStat('peopleImpacted', -5);
+            }
+            
+            document.getElementById('cityScore').textContent = cityScore;
+        }
+        
+        function incrementStat(id, delta = 1) {
+            const el = document.getElementById(id);
+            el.textContent = parseInt(el.textContent) + delta;
+        }
+        
+        function incrementStatFloat(id, delta) {
+            const el = document.getElementById(id);
+            el.textContent = (parseFloat(el.textContent) + delta).toFixed(1);
+        }
+        
+        // Show Neighborhood
+        function showNeighborhood(id) {
+            const n = neighborhoods[id];
+            alert(`${n.name}\n\n${n.desc}`);
+        }
+        
+        // Tips Carousel
+        function nextTip() {
+            currentTip = (currentTip + 1) % tips.length;
+            updateTip();
+        }
+        
+        function prevTip() {
+            currentTip = (currentTip - 1 + tips.length) % tips.length;
+            updateTip();
+        }
+        
+        function updateTip() {
+            const carousel = document.getElementById('tipCarousel');
+            carousel.style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('tipText').textContent = tips[currentTip].text;
+                carousel.style.opacity = '1';
+            }, 250);
+        }
+        
+        // Log Modal
+        function openLogModal() {
+            document.getElementById('logModal').classList.remove('hidden');
+            document.getElementById('logModal').classList.add('flex');
+        }
+        
+        function closeLogModal() {
+            document.getElementById('logModal').classList.add('hidden');
+            document.getElementById('logModal').classList.remove('flex');
+            document.getElementById('logDesc').value = '';
+            document.getElementById('logLocation').value = '';
+        }
+        
+        function addLog() {
+            const type = document.getElementById('logType').value;
+            const desc = document.getElementById('logDesc').value || '社區行動';
+            const location = document.getElementById('logLocation').value || '社區';
+            
+            const typeConfig = {
+                tree: { icon: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z', color: 'green', points: 5 },
+                clean: { icon: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16', color: 'teal', points: 3 },
+                share: { icon: 'M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z', color: 'blue', points: 4 },
+                market: { icon: 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z', color: 'amber', points: 3 },
+                cycle: { icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z', color: 'emerald', points: 4 },
+                event: { icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', color: 'purple', points: 5 },
+                other: { icon: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z', color: 'gray', points: 2 }
+            };
+            
+            const config = typeConfig[type];
+            const now = new Date();
+            const timeStr = '剛剛';
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'bg-white rounded-xl p-3 shadow-sm border border-gray-100 animate-pulse';
+            logEntry.innerHTML = `
+                <div class="flex items-start justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-${config.color}-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4 text-${config.color}-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${config.icon}"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-sm font-medium text-gray-800">${desc}</div>
+                            <div class="text-xs text-gray-500">${location} · ${timeStr}</div>
+                        </div>
+                    </div>
+                    <span class="text-xs font-semibold text-${config.color}-600">+${config.points}</span>
+                </div>
+            `;
+            
+            document.getElementById('logList').insertBefore(logEntry, document.getElementById('logList').firstChild);
+            
+            cityScore += config.points;
+            document.getElementById('cityScore').textContent = cityScore;
+            incrementStat('participationCount');
+            incrementStatFloat('communityHours', 0.5);
+            incrementStat('peopleImpacted', 3);
+            
+            setTimeout(() => logEntry.classList.remove('animate-pulse'), 1000);
+            closeLogModal();
+        }
+        
+        // Close modal on outside click
+        document.getElementById('logModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('logModal')) {
+                closeLogModal();
+            }
+        });
+    </script>
+</body>
+</html>

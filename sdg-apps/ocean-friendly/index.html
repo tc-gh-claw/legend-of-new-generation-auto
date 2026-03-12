@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海洋友善消費者 | Ocean-Friendly Consumer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .ocean-gradient {
+            background: linear-gradient(180deg, #0ea5e9 0%, #06b6d4 30%, #14b8a6 70%, #0d9488 100%);
+        }
+        
+        .wave-float {
+            animation: waveFloat 4s ease-in-out infinite;
+        }
+        
+        @keyframes waveFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(2deg); }
+            75% { transform: translateY(-4px) rotate(-1deg); }
+        }
+        
+        .bubble {
+            animation: bubbleRise 6s ease-in infinite;
+            opacity: 0.6;
+        }
+        
+        @keyframes bubbleRise {
+            0% { transform: translateY(0) scale(1); opacity: 0.6; }
+            100% { transform: translateY(-100px) scale(0.5); opacity: 0; }
+        }
+        
+        .pulse-ocean {
+            animation: pulseOcean 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulseOcean {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.02); }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(14, 165, 233, 0.2);
+        }
+        
+        .action-card {
+            transition: all 0.3s ease;
+        }
+        
+        .action-card.completed {
+            background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%);
+            border-color: #14b8a6;
+        }
+        
+        .action-card.completed .action-icon {
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            color: white;
+        }
+        
+        .fish-swim {
+            animation: fishSwim 8s ease-in-out infinite;
+        }
+        
+        @keyframes fishSwim {
+            0%, 100% { transform: translateX(0) scaleX(1); }
+            49% { transform: translateX(20px) scaleX(1); }
+            50% { transform: translateX(20px) scaleX(-1); }
+            99% { transform: translateX(0) scaleX(-1); }
+        }
+        
+        .impact-bar {
+            transition: width 1s ease-out;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
+        }
+        
+        .sustainable-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .warning-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        
+        .avoid-badge {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+        
+        .tip-carousel {
+            transition: opacity 0.5s ease;
+        }
+        
+        .scan-overlay {
+            background: linear-gradient(180deg, transparent 0%, rgba(14, 165, 233, 0.1) 50%, transparent 100%);
+            animation: scanLine 2s ease-in-out infinite;
+        }
+        
+        @keyframes scanLine {
+            0%, 100% { transform: translateY(-100%); }
+            50% { transform: translateY(100%); }
+        }
+        
+        .plastic-counter {
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-sky-50 via-cyan-50 to-teal-50 min-h-screen text-gray-800">
+    <!-- Decorative Bubbles -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden">
+        <div class="bubble absolute bottom-20 left-[10%] w-4 h-4 bg-cyan-300 rounded-full" style="animation-delay: 0s;"></div>
+        <div class="bubble absolute bottom-32 left-[25%] w-6 h-6 bg-sky-300 rounded-full" style="animation-delay: 1s;"></div>
+        <div class="bubble absolute bottom-16 left-[60%] w-3 h-3 bg-teal-300 rounded-full" style="animation-delay: 2s;"></div>
+        <div class="bubble absolute bottom-40 left-[80%] w-5 h-5 bg-cyan-200 rounded-full" style="animation-delay: 3s;"></div>
+        <div class="bubble absolute bottom-24 left-[45%] w-4 h-4 bg-sky-200 rounded-full" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="glass sticky top-0 z-50 px-4 py-4 shadow-sm">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl ocean-gradient flex items-center justify-center wave-float shadow-lg">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">海洋友善消費者</h1>
+                    <p class="text-xs text-gray-500">Ocean-Friendly Consumer</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-2xl font-bold text-cyan-600 plastic-counter" id="oceanScore">68</div>
+                <div class="text-xs text-gray-500">海洋指數</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 py-6 space-y-6 relative">
+        <!-- Impact Dashboard -->
+        <section class="glass rounded-3xl p-5 shadow-lg">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                本週海洋影響力
+            </h2>
+            <div class="grid grid-cols-3 gap-3">
+                <div class="text-center p-3 bg-gradient-to-br from-cyan-100 to-cyan-50 rounded-2xl">
+                    <div class="text-2xl font-bold text-cyan-600 plastic-counter" id="plasticSaved">23</div>
+                    <div class="text-xs text-gray-600">件塑膠避免</div>
+                </div>
+                <div class="text-center p-3 bg-gradient-to-br from-teal-100 to-teal-50 rounded-2xl">
+                    <div class="text-2xl font-bold text-teal-600 plastic-counter" id="sustainableChoices">8</div>
+                    <div class="text-xs text-gray-600">永續選擇</div>
+                </div>
+                <div class="text-center p-3 bg-gradient-to-br from-sky-100 to-sky-50 rounded-2xl">
+                    <div class="text-2xl font-bold text-sky-600 plastic-counter" id="fishProtected">156</div>
+                    <div class="text-xs text-gray-600">條魚獲保護</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ocean Health Meter -->
+        <section class="glass rounded-3xl p-5 shadow-lg">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-cyan-600 fish-swim" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                海洋健康儀表板
+            </h2>
+            <div class="relative bg-gradient-to-b from-sky-100 via-cyan-100 to-teal-100 rounded-2xl p-4 overflow-hidden">
+                <!-- Wave Animation Background -->
+                <svg class="absolute bottom-0 left-0 w-full h-20 opacity-30" viewBox="0 0 400 50" preserveAspectRatio="none">
+                    <path fill="#0ea5e9" d="M0,25 Q50,0 100,25 T200,25 T300,25 T400,25 L400,50 L0,50 Z">
+                        <animate attributeName="d" dur="4s" repeatCount="indefinite"
+                            values="M0,25 Q50,0 100,25 T200,25 T300,25 T400,25 L400,50 L0,50 Z;
+                                    M0,25 Q50,50 100,25 T200,25 T300,25 T400,25 L400,50 L0,50 Z;
+                                    M0,25 Q50,0 100,25 T200,25 T300,25 T400,25 L400,50 L0,50 Z"/>
+                    </path>
+                </svg>
+                
+                <div class="relative z-10 flex items-center justify-between">
+                    <div class="text-center">
+                        <div class="w-20 h-20 rounded-full bg-white shadow-lg flex items-center justify-center mx-auto mb-2 pulse-ocean">
+                            <span class="text-3xl">🌊</span>
+                        </div>
+                        <div class="text-sm font-medium text-cyan-700">海洋活力</div>
+                    </div>
+                    <div class="flex-1 mx-4">
+                        <div class="flex justify-between text-xs text-gray-600 mb-1">
+                            <span>污染程度</span>
+                            <span id="pollutionLevel">中等</span>
+                        </div>
+                        <div class="h-3 bg-white rounded-full overflow-hidden shadow-inner">
+                            <div class="h-full bg-gradient-to-r from-red-400 via-yellow-400 to-green-400 rounded-full transition-all duration-1000" id="healthBar" style="width: 68%;"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>🚨 高危</span>
+                            <span>🌟 健康</span>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-cyan-600" id="healthPercent">68%</div>
+                        <div class="text-xs text-gray-600">健康度</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seafood Scanner -->
+        <section class="glass rounded-3xl p-5 shadow-lg">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4h2v-4zM6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                海鮮掃描器
+            </h2>
+            <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 text-center relative overflow-hidden">
+                <div class="scan-overlay absolute inset-0 pointer-events-none"></div>
+                <div class="relative z-10">
+                    <div class="w-20 h-20 bg-white rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+                        <svg class="w-10 h-10 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4h2v-4zM6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <p class="text-white text-sm mb-4">掃描包裝上的條碼或搜尋海鮮名稱</p>
+                    <div class="flex gap-2">
+                        <input type="text" placeholder="輸入海鮮名稱..." class="flex-1 px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400">
+                        <button onclick="scanSeafood()" class="btn-primary px-4 py-2 rounded-xl text-white font-medium">
+                            掃描
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seafood Guide -->
+            <div class="mt-4 space-y-2">
+                <div class="flex items-center gap-3 p-3 bg-green-50 rounded-xl border border-green-200">
+                    <span class="sustainable-badge text-white text-xs font-bold px-2 py-1 rounded-full">✓</span>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-gray-800">建議選擇</div>
+                        <div class="text-xs text-gray-600">養殖三文魚、本地海蝦、太平洋鱈魚</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-xl border border-yellow-200">
+                    <span class="warning-badge text-white text-xs font-bold px-2 py-1 rounded-full">!</span>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-gray-800">謹慎選擇</div>
+                        <div class="text-xs text-gray-600">吞拿魚(視來源而定)、部分貝類</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-red-50 rounded-xl border border-red-200">
+                    <span class="avoid-badge text-white text-xs font-bold px-2 py-1 rounded-full">✕</span>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-gray-800">避免選擇</div>
+                        <div class="text-xs text-gray-600">藍鰭吞拿、鯊魚、過度捕撈品種</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Plastic-Free Tracker -->
+        <section class="glass rounded-3xl p-5 shadow-lg">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+                減塑行動追蹤
+            </h2>
+            <div class="grid grid-cols-2 gap-3" id="plasticActionGrid">
+                <!-- Action 1: Reusable Bottle -->
+                <div class="action-card card-hover bg-gradient-to-br from-white to-cyan-50 rounded-2xl p-4 border-2 border-cyan-200 cursor-pointer" onclick="togglePlasticAction(this, 1)">
+                    <div class="action-icon w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center mb-3 transition-all">
+                        <span class="text-2xl">🥤</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 text-sm">自備水樽</h3>
+                    <p class="text-xs text-gray-500 mt-1">避免即棄膠樽</p>
+                    <div class="mt-2 flex items-center gap-1">
+                        <span class="text-xs font-medium text-cyan-600">+2 件塑膠</span>
+                    </div>
+                </div>
+                
+                <!-- Action 2: Reusable Bag -->
+                <div class="action-card card-hover bg-gradient-to-br from-white to-teal-50 rounded-2xl p-4 border-2 border-teal-200 cursor-pointer" onclick="togglePlasticAction(this, 3)">
+                    <div class="action-icon w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mb-3 transition-all">
+                        <span class="text-2xl">🛍️</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 text-sm">環保購物袋</h3>
+                    <p class="text-xs text-gray-500 mt-1">拒絕塑膠袋</p>
+                    <div class="mt-2 flex items-center gap-1">
+                        <span class="text-xs font-medium text-teal-600">+3 件塑膠</span>
+                    </div>
+                </div>
+                
+                <!-- Action 3: No Straws -->
+                <div class="action-card card-hover bg-gradient-to-br from-white to-sky-50 rounded-2xl p-4 border-2 border-sky-200 cursor-pointer" onclick="togglePlasticAction(this, 1)">
+                    <div class="action-icon w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center mb-3 transition-all">
+                        <span class="text-2xl">🚫</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 text-sm">拒絕飲管</h3>
+                    <p class="text-xs text-gray-500 mt-1">直接飲用或使用鋼飲管</p>
+                    <div class="mt-2 flex items-center gap-1">
+                        <span class="text-xs font-medium text-sky-600">+1 件塑膠</span>
+                    </div>
+                </div>
+                
+                <!-- Action 4: Plastic-Free Packaging -->
+                <div class="action-card card-hover bg-gradient-to-br from-white to-emerald-50 rounded-2xl p-4 border-2 border-emerald-200 cursor-pointer" onclick="togglePlasticAction(this, 5)">
+                    <div class="action-icon w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-3 transition-all">
+                        <span class="text-2xl">📦</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 text-sm">無塑包裝</h3>
+                    <p class="text-xs text-gray-500 mt-1">選擇紙質或可重複使用包裝</p>
+                    <div class="mt-2 flex items-center gap-1">
+                        <span class="text-xs font-medium text-emerald-600">+5 件塑膠</span>
+                    </div>
+                </div>
+                
+                <!-- Action 5: Refill Stations -->
+                <div class="action-card card-hover bg-gradient-to-br from-white to-blue-50 rounded-2xl p-4 border-2 border-blue-200 cursor-pointer" onclick="togglePlasticAction(this, 2)">
+                    <div class="action-icon w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-3 transition-all">
+                        <span class="text-2xl">🔄</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 text-sm">補充站購物</h3>
+                    <p class="text-xs text-gray-500 mt-1">自備容器購買日用品</p>
+                    <div class="mt-2 flex items-center gap-1">
+                        <span class="text-xs font-medium text-blue-600">+2 件塑膠</span>
+                    </div>
+                </div>
+                
+                <!-- Action 6: Ocean-Safe Products -->
+                <div class="action-card card-hover bg-gradient-to-br from-white to-indigo-50 rounded-2xl p-4 border-2 border-indigo-200 cursor-pointer" onclick="togglePlasticAction(this, 4)">
+                    <div class="action-icon w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-3 transition-all">
+                        <span class="text-2xl">🧴</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 text-sm">海洋友善產品</h3>
+                    <p class="text-xs text-gray-500 mt-1">無微膠珠洗護用品</p>
+                    <div class="mt-2 flex items-center gap-1">
+                        <span class="text-xs font-medium text-indigo-600">+4 件塑膠</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Action Log -->
+        <section class="glass rounded-3xl p-5 shadow-lg">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold flex items-center gap-2">
+                    <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    海洋行動日誌
+                </h2>
+                <button onclick="openLogModal()" class="btn-primary px-4 py-2 rounded-xl text-white text-sm font-medium flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    記錄
+                </button>
+            </div>
+            <div id="logList" class="space-y-3 max-h-64 overflow-y-auto">
+                <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-cyan-100 rounded-lg flex items-center justify-center">
+                                <span class="text-lg">🥤</span>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-800">自備水樽購物</div>
+                                <div class="text-xs text-gray-500">超市 · 2小時前</div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold text-cyan-600">+2 塑膠</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center">
+                                <span class="text-lg">🐟</span>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-800">選擇永續海鮮</div>
+                                <div class="text-xs text-gray-500">餐廳 · 昨天</div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold text-teal-600">+15 魚獲</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Tip -->
+        <section class="glass rounded-3xl p-5 shadow-lg">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+                每日海洋錦囊
+            </h2>
+            <div id="tipCarousel" class="tip-carousel">
+                <div class="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-2xl p-4 border border-cyan-100">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-cyan-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <span class="text-xl">🌊</span>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-700 leading-relaxed" id="tipText">
+                                微膠珠常見於洗面膏和牙膏中，這些細小塑膠會直接流入海洋。選擇標示「無微膠珠」的產品，保護海洋生態！
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center gap-2 mt-3">
+                <button onclick="prevTip()" class="w-8 h-8 rounded-full bg-white shadow flex items-center justify-center hover:bg-gray-50 transition-colors">
+                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <button onclick="nextTip()" class="w-8 h-8 rounded-full bg-white shadow flex items-center justify-center hover:bg-gray-50 transition-colors">
+                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- SDG Badges -->
+        <section class="glass rounded-3xl p-5 shadow-lg">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                </svg>
+                相關永續目標
+            </h2>
+            <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs font-semibold rounded-full shadow-sm">
+                    SDG 12 負責任消費
+                </span>
+                <span class="px-3 py-1.5 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-xs font-semibold rounded-full shadow-sm">
+                    SDG 14 水下生物
+                </span>
+            </div>
+        </section>
+    </main>
+
+    <!-- Log Modal -->
+    <div id="logModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+        <div class="glass rounded-3xl p-6 w-full max-w-sm">
+            <h3 class="text-lg font-semibold mb-4">記錄海洋行動</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">行動類型</label>
+                    <select id="logType" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        <option value="bottle">🥤 自備水樽</option>
+                        <option value="bag">🛍️ 環保購物袋</option>
+                        <option value="straw">🚫 拒絕飲管</option>
+                        <option value="packaging">📦 無塑包裝</option>
+                        <option value="refill">🔄 補充站</option>
+                        <option value="product">🧴 海洋友善產品</option>
+                        <option value="seafood">🐟 永續海鮮</option>
+                        <option value="cleanup">🧹 海灘清潔</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">描述</label>
+                    <input type="text" id="logDesc" placeholder="例如：購買無包裝蔬果" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">地點</label>
+                    <input type="text" id="logLocation" placeholder="例如：街市" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeLogModal()" class="flex-1 px-4 py-2 border border-gray-300 rounded-xl text-gray-600 font-medium hover:bg-gray-50 transition-colors">
+                    取消
+                </button>
+                <button onclick="addLog()" class="flex-1 btn-primary px-4 py-2 rounded-xl text-white font-medium">
+                    保存
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Ocean Score
+        let oceanScore = 68;
+        let plasticSaved = 23;
+        let sustainableChoices = 8;
+        let fishProtected = 156;
+        
+        // Tips Data
+        const tips = [
+            { text: '微膠珠常見於洗面膏和牙膏中，這些細小塑膠會直接流入海洋。選擇標示「無微膠珠」的產品，保護海洋生態！' },
+            { text: '每年有多達 800 萬噸塑膠流入海洋。自備購物袋和水樽，每年可減少使用超過 500 件即棄塑膠！' },
+            { text: '選擇有 MSC (海洋管理委員會) 認證的海鮮，確保你的選擇支持可持續漁業，保護海洋生態系統。' },
+            { text: '防曬霜中的化學成分會傷害珊瑚礁。選擇「海洋友善」或「珊瑚安全」的物理防曬產品。' },
+            { text: '參與本地海灘清潔活動！一小時的行動可以清理數十件海洋垃圾，直接保護海洋生物。' }
+        ];
+        
+        let currentTip = 0;
+        
+        // Toggle Plastic Action
+        function togglePlasticAction(card, plasticCount) {
+            card.classList.toggle('completed');
+            
+            if (card.classList.contains('completed')) {
+                oceanScore += 2;
+                plasticSaved += plasticCount;
+                sustainableChoices += 1;
+                updateDisplay();
+            } else {
+                oceanScore -= 2;
+                plasticSaved -= plasticCount;
+                sustainableChoices -= 1;
+                updateDisplay();
+            }
+        }
+        
+        function updateDisplay() {
+            document.getElementById('oceanScore').textContent = oceanScore;
+            document.getElementById('plasticSaved').textContent = plasticSaved;
+            document.getElementById('sustainableChoices').textContent = sustainableChoices;
+            document.getElementById('fishProtected').textContent = fishProtected;
+            document.getElementById('healthPercent').textContent = oceanScore + '%';
+            document.getElementById('healthBar').style.width = oceanScore + '%';
+            
+            // Update pollution level text
+            const pollutionEl = document.getElementById('pollutionLevel');
+            if (oceanScore >= 80) {
+                pollutionEl.textContent = '優良';
+                pollutionEl.className = 'text-green-600 font-medium';
+            } else if (oceanScore >= 60) {
+                pollutionEl.textContent = '中等';
+                pollutionEl.className = 'text-yellow-600 font-medium';
+            } else if (oceanScore >= 40) {
+                pollutionEl.textContent = '輕度污染';
+                pollutionEl.className = 'text-orange-600 font-medium';
+            } else {
+                pollutionEl.textContent = '高度污染';
+                pollutionEl.className = 'text-red-600 font-medium';
+            }
+        }
+        
+        // Scan Seafood
+        function scanSeafood() {
+            alert('🐟 掃描功能示範\n\n輸入「三文魚」會顯示：\n✓ 養殖三文魚 - 建議選擇\n\n輸入「藍鰭吞拿」會顯示：\n✕ 避免選擇 - 過度捕撈品種');
+        }
+        
+        // Tips Carousel
+        function nextTip() {
+            currentTip = (currentTip + 1) % tips.length;
+            updateTip();
+        }
+        
+        function prevTip() {
+            currentTip = (currentTip - 1 + tips.length) % tips.length;
+            updateTip();
+        }
+        
+        function updateTip() {
+            const carousel = document.getElementById('tipCarousel');
+            carousel.style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('tipText').textContent = tips[currentTip].text;
+                carousel.style.opacity = '1';
+            }, 250);
+        }
+        
+        // Log Modal
+        function openLogModal() {
+            document.getElementById('logModal').classList.remove('hidden');
+            document.getElementById('logModal').classList.add('flex');
+        }
+        
+        function closeLogModal() {
+            document.getElementById('logModal').classList.add('hidden');
+            document.getElementById('logModal').classList.remove('flex');
+            document.getElementById('logDesc').value = '';
+            document.getElementById('logLocation').value = '';
+        }
+        
+        function addLog() {
+            const type = document.getElementById('logType').value;
+            const desc = document.getElementById('logDesc').value || '海洋友善行動';
+            const location = document.getElementById('logLocation').value || '社區';
+            
+            const typeConfig = {
+                bottle: { icon: '🥤', color: 'cyan', points: 2, label: '塑膠' },
+                bag: { icon: '🛍️', color: 'teal', points: 3, label: '塑膠' },
+                straw: { icon: '🚫', color: 'sky', points: 1, label: '塑膠' },
+                packaging: { icon: '📦', color: 'emerald', points: 5, label: '塑膠' },
+                refill: { icon: '🔄', color: 'blue', points: 2, label: '塑膠' },
+                product: { icon: '🧴', color: 'indigo', points: 4, label: '塑膠' },
+                seafood: { icon: '🐟', color: 'teal', points: 15, label: '魚獲' },
+                cleanup: { icon: '🧹', color: 'green', points: 20, label: '垃圾' }
+            };
+            
+            const config = typeConfig[type];
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'bg-white rounded-xl p-3 shadow-sm border border-gray-100 animate-pulse';
+            logEntry.innerHTML = `
+                <div class="flex items-start justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-${config.color}-100 rounded-lg flex items-center justify-center">
+                            <span class="text-lg">${config.icon}</span>
+                        </div>
+                        <div>
+                            <div class="text-sm font-medium text-gray-800">${desc}</div>
+                            <div class="text-xs text-gray-500">${location} · 剛剛</div>
+                        </div>
+                    </div>
+                    <span class="text-xs font-semibold text-${config.color}-600">+${config.points} ${config.label}</span>
+                </div>
+            `;
+            
+            document.getElementById('logList').insertBefore(logEntry, document.getElementById('logList').firstChild);
+            
+            // Update stats
+            oceanScore += 3;
+            if (config.label === '塑膠') {
+                plasticSaved += config.points;
+            } else if (config.label === '魚獲') {
+                fishProtected += config.points;
+            }
+            sustainableChoices += 1;
+            updateDisplay();
+            
+            setTimeout(() => logEntry.classList.remove('animate-pulse'), 1000);
+            closeLogModal();
+        }
+        
+        // Close modal on outside click
+        document.getElementById('logModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('logModal')) {
+                closeLogModal();
+            }
+        });
+        
+        // Initialize
+        updateDisplay();
+    </script>
+</body>
+</html>

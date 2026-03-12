@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDG Hub - 可持續發展儀表板</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --sdg-1: #E5243B; --sdg-2: #DDA63A; --sdg-3: #4C9F38;
+            --sdg-4: #C5192D; --sdg-5: #FF3A21; --sdg-6: #26BDE2;
+            --sdg-7: #FCC30B; --sdg-8: #A21942; --sdg-9: #FD6925;
+            --sdg-10: #DD1367; --sdg-11: #FD9D24; --sdg-12: #BF8B2E;
+            --sdg-13: #3F7E44; --sdg-14: #0A97D9; --sdg-15: #56C02B;
+            --sdg-16: #00689D; --sdg-17: #19486A;
+            --bg: #0F172A; --card: #1E293B; --text: #F8FAFC; --muted: #94A3B8;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: linear-gradient(135deg, var(--bg) 0%, #1e3a5f 100%);
+            border-bottom: 1px solid #334155;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #60A5FA, #A78BFA, #F472B6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            color: var(--muted);
+            font-size: 1.1rem;
+        }
+
+        .global-impact {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 32px 0;
+        }
+
+        .impact-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            border: 1px solid #334155;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .impact-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .impact-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .impact-label {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .impact-card:nth-child(1) .impact-number { color: var(--sdg-13); }
+        .impact-card:nth-child(2) .impact-number { color: var(--sdg-6); }
+        .impact-card:nth-child(3) .impact-number { color: var(--sdg-7); }
+        .impact-card:nth-child(4) .impact-number { color: var(--sdg-3); }
+
+        .sdg-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .sdg-card {
+            background: var(--card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .sdg-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+        }
+
+        .sdg-header {
+            padding: 20px;
+            position: relative;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .sdg-number {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .sdg-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .sdg-content {
+            padding: 16px 20px;
+        }
+
+        .sdg-app-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .sdg-progress {
+            background: #334155;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .sdg-progress-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .sdg-status {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 48px 0 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #334155;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 24px 0;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59,130,246,0.4);
+        }
+
+        .sdg-1 .sdg-header { background: var(--sdg-1); }
+        .sdg-2 .sdg-header { background: var(--sdg-2); }
+        .sdg-3 .sdg-header { background: var(--sdg-3); }
+        .sdg-4 .sdg-header { background: var(--sdg-4); }
+        .sdg-5 .sdg-header { background: var(--sdg-5); }
+        .sdg-6 .sdg-header { background: var(--sdg-6); }
+        .sdg-7 .sdg-header { background: var(--sdg-7); color: #1a1a1a; }
+        .sdg-8 .sdg-header { background: var(--sdg-8); }
+        .sdg-9 .sdg-header { background: var(--sdg-9); }
+        .sdg-10 .sdg-header { background: var(--sdg-10); }
+        .sdg-11 .sdg-header { background: var(--sdg-11); color: #1a1a1a; }
+        .sdg-12 .sdg-header { background: var(--sdg-12); }
+        .sdg-13 .sdg-header { background: var(--sdg-13); }
+        .sdg-14 .sdg-header { background: var(--sdg-14); }
+        .sdg-15 .sdg-header { background: var(--sdg-15); }
+        .sdg-16 .sdg-header { background: var(--sdg-16); }
+        .sdg-17 .sdg-header { background: var(--sdg-17); }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--muted);
+            border-top: 1px solid #334155;
+            margin-top: 48px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8rem; }
+            .sdg-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🌍 SDG Hub</h1>
+        <p>17 個可持續發展目標 · 一站式追蹤平台</p>
+    </header>
+
+    <div class="container">
+        <div class="global-impact">
+            <div class="impact-card">
+                <div class="impact-number" id="total-actions">0</div>
+                <div class="impact-label">今日行動</div>
+            </div>
+            <div class="impact-card">
+                <div class="impact-number" id="total-co2">0kg</div>
+                <div class="impact-label">減少碳排放</div>
+            </div>
+            <div class="impact-card">
+                <div class="impact-number" id="total-water">0L</div>
+                <div class="impact-label">節約用水</div>
+            </div>
+            <div class="impact-card">
+                <div class="impact-number" id="active-apps">17</div>
+                <div class="impact-label">活躍應用</div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <button class="action-btn" onclick="syncAllData()">🔄 同步所有數據</button>
+            <button class="action-btn" onclick="exportReport()">📊 導出報告</button>
+            <button class="action-btn" onclick="randomChallenge()">🎯 隨機挑戰</button>
+        </div>
+
+        <h2 class="section-title">📱 我的 SDG 應用</h2>
+
+        <div class="sdg-grid">
+            <a href="../low-carbon-commute/index.html" class="sdg-card sdg-13">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 13</span>
+                    <div class="sdg-title">氣候行動</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">🚲 低碳通勤追蹤器</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 75%; background: var(--sdg-13)"></div></div>
+                    <div class="sdg-status"><span>本週通勤</span><span>12.5km 減碳</span></div>
+                </div>
+            </a>
+
+            <a href="../food-waste-saver/index.html" class="sdg-card sdg-12">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 12</span>
+                    <div class="sdg-title">負責任消費和生產</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">🍱 惜食管家</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 60%; background: var(--sdg-12)"></div></div>
+                    <div class="sdg-status"><span>本週節省</span><span>3 餐食物</span></div>
+                </div>
+            </a>
+
+            <a href="../water-wise/index.html" class="sdg-card sdg-6">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 6</span>
+                    <div class="sdg-title">清潔飲水和衛生設施</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">💧 智水管家</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 82%; background: var(--sdg-6)"></div></div>
+                    <div class="sdg-status"><span>本週用水</span><span>45L 節約</span></div>
+                </div>
+            </a>
+
+            <a href="../energy-tracker/index.html" class="sdg-card sdg-7">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 7</span>
+                    <div class="sdg-title">經濟適用的清潔能源</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">⚡ 綠電追蹤</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 68%; background: var(--sdg-7)"></div></div>
+                    <div class="sdg-status"><span>綠電比例</span><span>35%</span></div>
+                </div>
+            </a>
+
+            <a href="../sleep-wellness/index.html" class="sdg-card sdg-3">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 3</span>
+                    <div class="sdg-title">良好健康與福祉</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">😴 好眠助手</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 90%; background: var(--sdg-3)"></div></div>
+                    <div class="sdg-status"><span>睡眠質量</span><span>7.5/10</span></div>
+                </div>
+            </a>
+
+            <a href="../community-garden/index.html" class="sdg-card sdg-11">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 11</span>
+                    <div class="sdg-title">可持續城市和社區</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">🌱 社區花園</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 55%; background: var(--sdg-11)"></div></div>
+                    <div class="sdg-status"><span>植物狀態</span><span>8 株健康</span></div>
+                </div>
+            </a>
+
+            <a href="../ocean-guardian/index.html" class="sdg-card sdg-14">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 14</span>
+                    <div class="sdg-title">水下生物</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">🐋 海洋守護者</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 70%; background: var(--sdg-14)"></div></div>
+                    <div class="sdg-status"><span>海洋貢獻</span><span>本月 5 項</span></div>
+                </div>
+            </a>
+
+            <a href="../green-plate/index.html" class="sdg-card sdg-2">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 2</span>
+                    <div class="sdg-title">零饥饿</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">🥗 綠色餐盤</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 65%; background: var(--sdg-2)"></div></div>
+                    <div class="sdg-status"><span>營養均衡</span><span>良好</span></div>
+                </div>
+            </a>
+
+            <a href="../forest-guardian/index.html" class="sdg-card sdg-15">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 15</span>
+                    <div class="sdg-title">陸地生物</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">🌲 森林守護者</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 58%; background: var(--sdg-15)"></div></div>
+                    <div class="sdg-status"><span>森林貢獻</span><span>本月 3 項</span></div>
+                </div>
+            </a>
+
+            <a href="../eco-learn/index.html" class="sdg-card sdg-4">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 4</span>
+                    <div class="sdg-title">優質教育</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">📚 綠色學習助手</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 78%; background: var(--sdg-4)"></div></div>
+                    <div class="sdg-status"><span>學習連續</span><span>12 天</span></div>
+                </div>
+            </a>
+
+            <a href="../equity-tracker/index.html" class="sdg-card sdg-5">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 5</span>
+                    <div class="sdg-title">性別平等</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">⚖️ 平等職場追蹤器</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 72%; background: var(--sdg-5)"></div></div>
+                    <div class="sdg-status"><span>平等指數</span><span>良好</span></div>
+                </div>
+            </a>
+
+            <a href="../career-growth/index.html" class="sdg-card sdg-8">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 8</span>
+                    <div class="sdg-title">體面工作和經濟增長</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">💼 職涯成長追蹤器</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 85%; background: var(--sdg-8)"></div></div>
+                    <div class="sdg-status"><span>工作平衡</span><span>優秀</span></div>
+                </div>
+            </a>
+
+            <a href="../innovation-workshop/index.html" class="sdg-card sdg-9">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 9</span>
+                    <div class="sdg-title">產業、創新和基礎設施</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">🔧 創新工坊</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 62%; background: var(--sdg-9)"></div></div>
+                    <div class="sdg-status"><span>維修項目</span><span>4 進行中</span></div>
+                </div>
+            </a>
+
+            <a href="../inclusion-bridge/index.html" class="sdg-card sdg-10">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 10</span>
+                    <div class="sdg-title">減少不平等</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">🤝 共融橋樑</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 66%; background: var(--sdg-10)"></div></div>
+                    <div class="sdg-status"><span>共融行動</span><span>本週 3 次</span></div>
+                </div>
+            </a>
+
+            <a href="../community-aid/index.html" class="sdg-card sdg-1">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 1</span>
+                    <div class="sdg-title">消除貧窮</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">🏘️ 社區互助站</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 74%; background: var(--sdg-1)"></div></div>
+                    <div class="sdg-status"><span>本月幫助</span><span>6 人</span></div>
+                </div>
+            </a>
+
+            <a href="../voice-of-peace/index.html" class="sdg-card sdg-16">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 16</span>
+                    <div class="sdg-title">和平、正義與強大機構</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">🕊️ 和平之聲</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 80%; background: var(--sdg-16)"></div></div>
+                    <div class="sdg-status"><span>和平指數</span><span>高</span></div>
+                </div>
+            </a>
+
+            <a href="../global-partners/index.html" class="sdg-card sdg-17">
+                <div class="sdg-header">
+                    <span class="sdg-number">SDG 17</span>
+                    <div class="sdg-title">促進目標實現的伙伴關係</div>
+                </div>
+                <div class="sdg-content">
+                    <div class="sdg-app-name">🌐 全球伙伴</div>
+                    <div class="sdg-progress"><div class="sdg-progress-bar" style="width: 77%; background: var(--sdg-17)"></div></div>
+                    <div class="sdg-status"><span>伙伴連結</span><span>12 個</span></div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <p>🌍 每一個小行動，都是改變世界的一步</p>
+        <p style="margin-top: 8px; font-size: 0.9rem;">SDG Hub · 2026 · 為可持續發展而行動</p>
+    </footer>
+
+    <script>
+        // Animate numbers on load
+        function animateValue(id, start, end, duration, suffix = '') {
+            const obj = document.getElementById(id);
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= end) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                obj.textContent = Math.floor(current) + suffix;
+            }, 16);
+        }
+
+        // Load data from all apps
+        function loadAllData() {
+            const apps = ['low-carbon-commute', 'food-waste-saver', 'water-wise', 'energy-tracker', 
+                         'sleep-wellness', 'community-garden', 'ocean-guardian', 'green-plate',
+                         'forest-guardian', 'eco-learn', 'equity-tracker', 'career-growth',
+                         'innovation-workshop', 'inclusion-bridge', 'community-aid', 'voice-of-peace', 'global-partners'];
+            
+            let totalActions = 0;
+            let totalCO2 = 0;
+            let totalWater = 0;
+
+            apps.forEach(app => {
+                const data = localStorage.getItem(`${app}-data`);
+                if (data) {
+                    try {
+                        const parsed = JSON.parse(data);
+                        if (parsed.actions) totalActions += parsed.actions;
+                        if (parsed.co2) totalCO2 += parsed.co2;
+                        if (parsed.water) totalWater += parsed.water;
+                    } catch (e) {}
+                }
+            });
+
+            animateValue('total-actions', 0, totalActions || 23, 1000);
+            animateValue('total-co2', 0, totalCO2 || 45, 1000, 'kg');
+            animateValue('total-water', 0, totalWater || 120, 1000, 'L');
+        }
+
+        function syncAllData() {
+            loadAllData();
+            alert('🔄 數據同步完成！');
+        }
+
+        function exportReport() {
+            const date = new Date().toLocaleDateString('zh-TW');
+            const report = {
+                date,
+                summary: {
+                    actions: document.getElementById('total-actions').textContent,
+                    co2: document.getElementById('total-co2').textContent,
+                    water: document.getElementById('total-water').textContent
+                },
+                sdgs: '17 個應用全部運作中'
+            };
+            
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sdg-report-${date}.json`;
+            a.click();
+        }
+
+        function randomChallenge() {
+            const challenges = [
+                '🚲 今日試用低碳出行方式',
+                '🍱 檢查冰箱，規劃零浪費菜單',
+                '💧 設定今日節水目標',
+                '⚡ 檢查家中待機電器',
+                '😴 今晚提早 30 分鐘入睡',
+                '🌱 為家中植物澆水',
+                '🐋 學習一個海洋保護知識',
+                '🥗 規劃一個均衡營養餐',
+                '🌲 了解本地樹木品種',
+                '📚 閱讀一篇永續發展文章',
+                '⚖️ 分享一個平等議題',
+                '💼 記錄今日工作成就',
+                '🔧 修理一件小物件',
+                '🤝 主動幫助身邊的人',
+                '🏘️ 參與社區活動',
+                '🕊️ 學習一個人權知識',
+                '🌐 連結一位志同道合的朋友'
+            ];
+            
+            const challenge = challenges[Math.floor(Math.random() * challenges.length)];
+            alert(`🎯 今日挑戰：\n\n${challenge}\n\n一起為可持續發展行動！`);
+        }
+
+        // Initialize
+        window.addEventListener('load', loadAllData);
+    </script>
+</body>
+</html>

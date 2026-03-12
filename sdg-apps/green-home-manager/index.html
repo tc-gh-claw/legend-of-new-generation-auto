@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>綠色家居管家 | Green Home Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Jasper Morrison 極簡美學 + 斯堪的納維亞自然色調 */
+            --primary: #5D7A68;
+            --primary-light: #8BA895;
+            --primary-dark: #3D5749;
+            --accent: #D4A574;
+            --accent-light: #E8D5C4;
+            --background: #FAFAF8;
+            --surface: #FFFFFF;
+            --surface-alt: #F5F3EF;
+            --text: #2C3E2D;
+            --text-secondary: #6B7B6C;
+            --text-light: #9AAA9B;
+            --border: #E8E6E1;
+            --shadow: rgba(93, 122, 104, 0.08);
+            --shadow-strong: rgba(93, 122, 104, 0.15);
+            
+            /* 房間顏色 */
+            --kitchen: #E07A5F;
+            --living: #81B29A;
+            --bedroom: #F2CC8F;
+            --bathroom: #98C1D9;
+            
+            /* 狀態顏色 */
+            --good: #5D7A68;
+            --warning: #D4A574;
+            --alert: #E07A5F;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 頂部導航 - 極簡風格 */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .date-display {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* 主要內容 */
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* 歡迎區塊 */
+        .welcome-section {
+            margin-bottom: 2rem;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .welcome-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+        }
+
+        /* 家居健康評分卡 */
+        .health-card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 12px var(--shadow);
+        }
+
+        .health-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .health-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .health-score {
+            display: flex;
+            align-items: baseline;
+            gap: 0.25rem;
+        }
+
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .score-unit {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .score-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .health-meter {
+            height: 8px;
+            background: var(--surface-alt);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1.25rem;
+        }
+
+        .health-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+        }
+
+        .health-dimensions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+        }
+
+        .dimension-item {
+            text-align: center;
+            padding: 0.75rem 0.5rem;
+            background: var(--surface-alt);
+            border-radius: 12px;
+        }
+
+        .dimension-icon {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .dimension-name {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .dimension-score {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* 房間選擇器 */
+        .room-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .room-tab {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .room-tab:hover {
+            background: var(--surface-alt);
+        }
+
+        .room-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .room-tab-icon {
+            font-size: 1rem;
+        }
+
+        /* 房間儀表板 */
+        .room-dashboard {
+            display: none;
+        }
+
+        .room-dashboard.active {
+            display: block;
+        }
+
+        .room-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .room-name {
+            font-size: 1.125rem;
+            font-weight: 500;
+        }
+
+        .room-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--good);
+        }
+
+        /* 任務卡片 */
+        .tasks-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .card-action {
+            font-size: 0.875rem;
+            color: var(--primary);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem;
+            background: var(--surface-alt);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .task-item:hover {
+            background: var(--border);
+        }
+
+        .task-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--primary-light);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .task-checkbox:hover {
+            border-color: var(--primary);
+        }
+
+        .task-checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .task-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-name {
+            font-size: 0.9375rem;
+            margin-bottom: 0.125rem;
+        }
+
+        .task-name.completed {
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+
+        .task-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .task-points {
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-weight: 500;
+            padding: 0.25rem 0.5rem;
+            background: var(--accent-light);
+            border-radius: 6px;
+        }
+
+        /* 統計卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .stat-icon.energy { background: #FEF3C7; }
+        .stat-icon.water { background: #DBEAFE; }
+        .stat-icon.waste { background: #D1FAE5; }
+        .stat-icon.health { background: #FCE7F3; }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .stat-change {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: var(--good);
+        }
+
+        .stat-change.negative {
+            color: var(--alert);
+        }
+
+        /* 永續錦囊 */
+        .tips-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 16px;
+            padding: 1.25rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .tips-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .tips-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .tips-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tips-action:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* 底部導航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 0.75rem 1.5rem calc(0.75rem + env(safe-area-inset-bottom));
+            display: flex;
+            justify-content: space-around;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.2s;
+            border: none;
+            background: none;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 1.25rem;
+        }
+
+        .nav-label {
+            font-size: 0.6875rem;
+        }
+
+        /* 彈出層 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 200;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surface);
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 1.125rem;
+            font-weight: 500;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--surface-alt);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .modal-body {
+            padding: 1.25rem;
+            overflow-y: auto;
+            max-height: calc(80vh - 70px);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* 響應式 */
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .health-dimensions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .room-tabs {
+                gap: 0.375rem;
+            }
+
+            .room-tab {
+                padding: 0.625rem 0.875rem;
+                font-size: 0.8125rem;
+            }
+        }
+
+        /* 動畫 */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🏠</div>
+                <div class="logo-text">綠色家居管家</div>
+            </div>
+            <div class="date-display" id="currentDate"></div>
+        </div>
+    </header>
+
+    <main class="main-container" style="padding-bottom: 100px;">
+        <!-- 歡迎區塊 -->
+        <section class="welcome-section">
+            <h1 class="welcome-title">你好，歡迎回家！👋</h1>
+            <p class="welcome-subtitle">今日讓我們一起打造更永續嘅生活空間</p>
+        </section>
+
+        <!-- 家居健康評分 -->
+        <div class="health-card">
+            <div class="health-header">
+                <div class="health-title">家居永續健康指數</div>
+                <div class="health-score">
+                    <span class="score-value" id="healthScore">78</span>
+                    <span class="score-unit">/100</span>
+                </div>
+            </div>
+            <div class="health-meter">
+                <div class="health-fill" id="healthMeter" style="width: 78%"></div>
+            </div>
+            <div class="score-label" style="margin-bottom: 1rem;">
+                <span id="healthStatus">狀態良好</span> · 比上星期改善 <span style="color: var(--good)">+5%</span>
+            </div>
+            <div class="health-dimensions">
+                <div class="dimension-item">
+                    <div class="dimension-icon">⚡</div>
+                    <div class="dimension-name">能源</div>
+                    <div class="dimension-score" id="energyScore">82</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-icon">💧</div>
+                    <div class="dimension-name">水資源</div>
+                    <div class="dimension-score" id="waterScore">75</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-icon">♻️</div>
+                    <div class="dimension-name">廢物</div>
+                    <div class="dimension-score" id="wasteScore">80</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-icon">🌿</div>
+                    <div class="dimension-name">健康</div>
+                    <div class="dimension-score" id="healthScoreDim">76</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快速統計 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon energy">⚡</div>
+                    <span class="stat-label">本月用電</span>
+                </div>
+                <div class="stat-value">234<span style="font-size: 1rem; color: var(--text-secondary);"> kWh</span></div>
+                <div class="stat-change positive">↓ 比上個月減少 12%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon water">💧</div>
+                    <span class="stat-label">本月用水</span>
+                </div>
+                <div class="stat-value">8.5<span style="font-size: 1rem; color: var(--text-secondary);"> m³</span></div>
+                <div class="stat-change positive">↓ 比上個月減少 8%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon waste">♻️</div>
+                    <span class="stat-label">回收比例</span>
+                </div>
+                <div class="stat-value">68<span style="font-size: 1rem; color: var(--text-secondary);"> %</span></div>
+                <div class="stat-change positive">↑ 比上個月提升 5%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon health">🌿</div>
+                    <span class="stat-label">室內空氣</span>
+                </div>
+                <div class="stat-value">良好</div>
+                <div class="stat-change positive">AQI: 35</div>
+            </div>
+        </div>
+
+        <!-- 永續錦囊 -->
+        <div class="tips-card">
+            <div class="tips-header">
+                <span>💡</span>
+                <span>今日永續錦囊</span>
+            </div>
+            <div class="tips-content" id="dailyTip">
+                開窗通風可以減少空調使用，每減少1小時空調，可節省約 0.8 kWh 電力，相等於減少 0.5 kg 碳排放。
+            </div>
+            <div class="tips-action" onclick="nextTip()">
+                <span>下一個錦囊</span>
+                <span>→</span>
+            </div>
+        </div>
+
+        <!-- 房間選擇器 -->
+        <div class="room-tabs">
+            <button class="room-tab active" data-room="all">
+                <span class="room-tab-icon">🏠</span>
+                <span>全部</span>
+            </button>
+            <button class="room-tab" data-room="kitchen">
+                <span class="room-tab-icon">🍳</span>
+                <span>廚房</span>
+            </button>
+            <button class="room-tab" data-room="living">
+                <span class="room-tab-icon">🛋️</span>
+                <span>客廳</span>
+            </button>
+            <button class="room-tab" data-room="bedroom">
+                <span class="room-tab-icon">🛏️</span>
+                <span>睡房</span>
+            </button>
+            <button class="room-tab" data-room="bathroom">
+                <span class="room-tab-icon">🚿</span>
+                <span>浴室</span>
+            </button>
+        </div>
+
+        <!-- 全部任務 -->
+        <div class="room-dashboard active" id="room-all">
+            <div class="tasks-card">
+                <div class="card-header">
+                    <h3 class="card-title">今日永續任務</h3>
+                    <button class="card-action" onclick="openModal()">+ 新增</button>
+                </div>
+                <div class="task-list" id="taskList">
+                    <div class="task-item" data-task="1">
+                        <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                        <div class="task-content">
+                            <div class="task-name">關閉唔用嘅電器插座</div>
+                            <div class="task-meta">客廳 · 慳電小貼士</div>
+                        </div>
+                        <span class="task-points">+5 分</span>
+                    </div>
+                    <div class="task-item" data-task="2">
+                        <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                        <div class="task-content">
+                            <div class="task-name">檢查水龍頭有冇漏水</div>
+                            <div class="task-meta">浴室 · 節水行動</div>
+                        </div>
+                        <span class="task-points">+3 分</span>
+                    </div>
+                    <div class="task-item" data-task="3">
+                        <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                        <div class="task-content">
+                            <div class="task-name">分類今日嘅廚餘</div>
+                            <div class="task-meta">廚房 · 源頭減廢</div>
+                        </div>
+                        <span class="task-points">+5 分</span>
+                    </div>
+                    <div class="task-item" data-task="4">
+                        <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                        <div class="task-content">
+                            <div class="task-name">開窗通風15分鐘</div>
+                            <div class="task-meta">睡房 · 健康家居</div>
+                        </div>
+                        <span class="task-points">+4 分</span>
+                    </div>
+                    <div class="task-item" data-task="5">
+                        <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                        <div class="task-content">
+                            <div class="task-name">將可回收物品放入回收箱</div>
+                            <div class="task-meta">廚房 · 循環再造</div>
+                        </div>
+                        <span class="task-points">+3 分</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 廚房 -->
+        <div class="room-dashboard" id="room-kitchen">
+            <div class="room-header">
+                <h3 class="room-name">🍳 廚房</h3>
+                <div class="room-status">
+                    <span class="status-dot" style="background: var(--kitchen);"></span>
+                    <span>能源使用正常</span>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: #FEE2E2;">⚡</div>
+                        <span class="stat-label">本月用電</span>
+                    </div>
+                    <div class="stat-value">89<span style="font-size: 1rem;"> kWh</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: #DBEAFE;">💧</div>
+                        <span class="stat-label">本月用水</span>
+                    </div>
+                    <div class="stat-value">3.2<span style="font-size: 1rem;"> m³</span></div>
+                </div>
+            </div>
+            <div class="tasks-card">
+                <div class="card-header">
+                    <h3 class="card-title">廚房任務</h3>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                        <div class="task-content">
+                            <div class="task-name">清潔冰箱冷凝器</div>
+                            <div class="task-meta">每月一次 · 提升效率</div>
+                        </div>
+                        <span class="task-points">+8 分</span>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                        <div class="task-content">
+                            <div class="task-name">使用鍋蓋煮食</div>
+                            <div class="task-meta">節省 30% 能源</div>
+                        </div>
+                        <span class="task-points">+4 分</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 客廳 -->
+        <div class="room-dashboard" id="room-living">
+            <div class="room-header">
+                <h3 class="room-name">🛋️ 客廳</h3>
+                <div class="room-status">
+                    <span class="status-dot" style="background: var(--living);"></span>
+                    <span>空氣質素良好</span>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: #FEF3C7;">⚡</div>
+                        <span class="stat-label">本月用電</span>
+                    </div>
+                    <div class="stat-value">76<span style="font-size: 1rem;"> kWh</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: #D1FAE5;">🌿</div>
+                        <span class="stat-label">室內植物</span>
+                    </div>
+                    <div class="stat-value">4<span style="font-size: 1rem;"> 盆</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 睡房 -->
+        <div class="room-dashboard" id="room-bedroom">
+            <div class="room-header">
+                <h3 class="room-name">🛏️ 睡房</h3>
+                <div class="room-status">
+                    <span class="status-dot" style="background: var(--bedroom);"></span>
+                    <span>濕度適中</span>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: #FEF3C7;">⚡</div>
+                        <span class="stat-label">本月用電</span>
+                    </div>
+                    <div class="stat-value">42<span style="font-size: 1rem;"> kWh</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: #FCE7F3;">😴</div>
+                        <span class="stat-label">平均睡眠</span>
+                    </div>
+                    <div class="stat-value">7.2<span style="font-size: 1rem;"> 小時</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 浴室 -->
+        <div class="room-dashboard" id="room-bathroom">
+            <div class="room-header">
+                <h3 class="room-name">🚿 浴室</h3>
+                <div class="room-status">
+                    <span class="status-dot" style="background: var(--bathroom);"></span>
+                    <span>節水進行中</span>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: #DBEAFE;">💧</div>
+                        <span class="stat-label">本月用水</span>
+                    </div>
+                    <div class="stat-value">2.8<span style="font-size: 1rem;"> m³</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: #D1FAE5;">🚿</div>
+                        <span class="stat-label">平均淋浴</span>
+                    </div>
+                    <div class="stat-value">6<span style="font-size: 1rem;"> 分鐘</span></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部導航 -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('home')">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">家居</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('tasks')">
+            <span class="nav-icon">📋</span>
+            <span class="nav-label">任務</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('stats')">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">統計</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('settings')">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label">設定</span>
+        </button>
+    </nav>
+
+    <!-- 新增任務彈出層 -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">新增永續任務</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">任務名稱</label>
+                    <input type="text" class="form-input" placeholder="例如：更換LED燈泡" id="newTaskName">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">房間</label>
+                    <select class="form-select" id="newTaskRoom">
+                        <option value="kitchen">廚房</option>
+                        <option value="living">客廳</option>
+                        <option value="bedroom">睡房</option>
+                        <option value="bathroom">浴室</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">類別</label>
+                    <select class="form-select" id="newTaskCategory">
+                        <option value="energy">節能</option>
+                        <option value="water">節水</option>
+                        <option value="waste">減廢</option>
+                        <option value="health">健康</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="addTask()">新增任務</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 永續錦囊數據
+        const tips = [
+            "開窗通風可以減少空調使用，每減少1小時空調，可節省約 0.8 kWh 電力，相等於減少 0.5 kg 碳排放。",
+            "使用保溫壺代替即熱水機，可以減少待機耗電，每年可節省約 $200 電費。",
+            "將洗衣機設定為冷水洗，可節省 90% 的洗衣能源消耗。",
+            "在冰箱同牆壁之間預留 5-8cm 空間，有助散熱，提升能源效率達 15%。",
+            "使用雙層玻璃窗簾，可減少 25% 的熱量流失，冬暖夏涼。",
+            "將充電器從插座拔出，每個充電器每年可節省約 $10 電費。",
+            "安裝慳水龍頭，可減少 30-50% 的用水量，同時不影響使用體驗。",
+            "定期清潔燈罩同燈泡，可提升照明效率達 20%。"
+        ];
+
+        let currentTipIndex = 0;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDate();
+            loadData();
+            setupRoomTabs();
+        });
+
+        // 更新日期
+        function updateDate() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('zh-Hant', options);
+        }
+
+        // 設置房間標籤
+        function setupRoomTabs() {
+            const tabs = document.querySelectorAll('.room-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const room = this.dataset.room;
+                    document.querySelectorAll('.room-dashboard').forEach(d => {
+                        d.classList.remove('active');
+                    });
+                    document.getElementById(`room-${room}`).classList.add('active');
+                });
+            });
+        }
+
+        // 切換任務完成狀態
+        function toggleTask(checkbox) {
+            checkbox.classList.toggle('checked');
+            const taskItem = checkbox.closest('.task-item');
+            const taskName = taskItem.querySelector('.task-name');
+            taskName.classList.toggle('completed');
+            
+            if (checkbox.classList.contains('checked')) {
+                updateScore(5);
+            }
+            
+            saveData();
+        }
+
+        // 更新分數
+        function updateScore(points) {
+            const scoreEl = document.getElementById('healthScore');
+            let currentScore = parseInt(scoreEl.textContent);
+            currentScore = Math.min(100, currentScore + points);
+            scoreEl.textContent = currentScore;
+            document.getElementById('healthMeter').style.width = currentScore + '%';
+            
+            // 更新狀態文字
+            const statusEl = document.getElementById('healthStatus');
+            if (currentScore >= 90) statusEl.textContent = '優秀！';
+            else if (currentScore >= 75) statusEl.textContent = '狀態良好';
+            else if (currentScore >= 60) statusEl.textContent = '尚有進步空間';
+            else statusEl.textContent = '需要改善';
+        }
+
+        // 下一個錦囊
+        function nextTip() {
+            currentTipIndex = (currentTipIndex + 1) % tips.length;
+            document.getElementById('dailyTip').textContent = tips[currentTipIndex];
+        }
+
+        // 打開彈出層
+        function openModal() {
+            document.getElementById('addModal').classList.add('active');
+        }
+
+        // 關閉彈出層
+        function closeModal() {
+            document.getElementById('addModal').classList.remove('active');
+        }
+
+        // 新增任務
+        function addTask() {
+            const name = document.getElementById('newTaskName').value;
+            const room = document.getElementById('newTaskRoom').value;
+            const category = document.getElementById('newTaskCategory').value;
+            
+            if (!name) return;
+            
+            const roomNames = {
+                kitchen: '廚房',
+                living: '客廳',
+                bedroom: '睡房',
+                bathroom: '浴室'
+            };
+            
+            const categoryNames = {
+                energy: '節能',
+                water: '節水',
+                waste: '減廢',
+                health: '健康'
+            };
+            
+            const taskList = document.getElementById('taskList');
+            const newTask = document.createElement('div');
+            newTask.className = 'task-item';
+            newTask.innerHTML = `
+                <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                <div class="task-content">
+                    <div class="task-name">${name}</div>
+                    <div class="task-meta">${roomNames[room]} · ${categoryNames[category]}</div>
+                </div>
+                <span class="task-points">+5 分</span>
+            `;
+            taskList.appendChild(newTask);
+            
+            // 清空表單
+            document.getElementById('newTaskName').value = '';
+            closeModal();
+            saveData();
+        }
+
+        // 切換底部標籤
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.nav-item').classList.add('active');
+        }
+
+        // 儲存數據
+        function saveData() {
+            const data = {
+                score: document.getElementById('healthScore').textContent,
+                tasks: []
+            };
+            
+            document.querySelectorAll('.task-item').forEach(task => {
+                data.tasks.push({
+                    completed: task.querySelector('.task-checkbox').classList.contains('checked'),
+                    name: task.querySelector('.task-name').textContent
+                });
+            });
+            
+            localStorage.setItem('greenHomeData', JSON.stringify(data));
+        }
+
+        // 載入數據
+        function loadData() {
+            const saved = localStorage.getItem('greenHomeData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.score) {
+                    document.getElementById('healthScore').textContent = data.score;
+                    document.getElementById('healthMeter').style.width = data.score + '%';
+                }
+            }
+        }
+
+        // 點擊彈出層外部關閉
+        document.getElementById('addModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
+</body>
+</html>

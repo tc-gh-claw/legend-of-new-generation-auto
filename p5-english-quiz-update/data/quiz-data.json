@@ -1,0 +1,210 @@
+{
+  "units": [
+    {
+      "id": "unit2",
+      "name": "Unit 2 - 家居 (Home)",
+      "vocabulary": [
+        {"word": "apartment", "ipa": "/əˈpɑːrtmənt/", "type": "n.", "meaning": "公寓"},
+        {"word": "furniture", "ipa": "/ˈfɜːrnɪtʃər/", "type": "n.", "meaning": "傢俬"},
+        {"word": "appliance", "ipa": "/əˈplaɪəns/", "type": "n.", "meaning": "電器"},
+        {"word": "shelf", "ipa": "/ʃelf/", "type": "n.", "meaning": "架子"},
+        {"word": "spacious", "ipa": "/ˈspeɪʃəs/", "type": "adj.", "meaning": "寬敞的"},
+        {"word": "cosy", "ipa": "/ˈkoʊzi/", "type": "adj.", "meaning": "舒適溫馨的"},
+        {"word": "efficient", "ipa": "/ɪˈfɪʃnt/", "type": "adj.", "meaning": "有效率的"},
+        {"word": "renovate", "ipa": "/ˈrenəveɪt/", "type": "v.", "meaning": "翻新"},
+        {"word": "electricity", "ipa": "/ɪˌlekˈtrɪsəti/", "type": "n.", "meaning": "電力"}
+      ]
+    },
+    {
+      "id": "unit3",
+      "name": "Unit 3 - 運動比賽 (Sports Competition)",
+      "vocabulary": [
+        {"word": "challenge", "ipa": "/ˈtʃælɪndʒ/", "type": "n.", "meaning": "挑戰"},
+        {"word": "competition", "ipa": "/ˌkɑːmpəˈtɪʃn/", "type": "n.", "meaning": "比賽"},
+        {"word": "athlete", "ipa": "/ˈæθliːt/", "type": "n.", "meaning": "運動員"},
+        {"word": "participate", "ipa": "/pɑːrˈtɪsɪpeɪt/", "type": "v.", "meaning": "參加"},
+        {"word": "compete", "ipa": "/kəmˈpiːt/", "type": "v.", "meaning": "競爭"},
+        {"word": "encourage", "ipa": "/ɪnˈkɜːrɪdʒ/", "type": "v.", "meaning": "鼓勵"},
+        {"word": "announce", "ipa": "/əˈnaʊns/", "type": "v.", "meaning": "宣佈"},
+        {"word": "opponent", "ipa": "/əˈpoʊnənt/", "type": "n.", "meaning": "對手"},
+        {"word": "exhausted", "ipa": "/ɪɡˈzɔːstɪd/", "type": "adj.", "meaning": "筋疲力盡的"},
+        {"word": "tournament", "ipa": "/ˈtʊrnəmənt/", "type": "n.", "meaning": "錦標賽"}
+      ]
+    },
+    {
+      "id": "unit4",
+      "name": "Unit 4 - 外出用餐 (Dining Out)",
+      "vocabulary": [
+        {"word": "delicious", "ipa": "/dɪˈlɪʃəs/", "type": "adj.", "meaning": "美味的"},
+        {"word": "recommend", "ipa": "/ˌrekəˈmend/", "type": "v.", "meaning": "推薦"},
+        {"word": "reservation", "ipa": "/ˌrezərˈveɪʃn/", "type": "n.", "meaning": "預訂"},
+        {"word": "service", "ipa": "/ˈsɜːrvɪs/", "type": "n.", "meaning": "服務"},
+        {"word": "ambience", "ipa": "/ˈæmbiəns/", "type": "n.", "meaning": "氛圍"},
+        {"word": "cuisine", "ipa": "/kwɪˈziːn/", "type": "n.", "meaning": "菜式"},
+        {"word": "waiter", "ipa": "/ˈweɪtər/", "type": "n.", "meaning": "男侍應"},
+        {"word": "menu", "ipa": "/ˈmenjuː/", "type": "n.", "meaning": "菜單"},
+        {"word": "expensive", "ipa": "/ɪkˈspensɪv/", "type": "adj.", "meaning": "昂貴的"},
+        {"word": "crowded", "ipa": "/ˈkraʊdɪd/", "type": "adj.", "meaning": "擁擠的"}
+      ]
+    }
+  ],
+  "fill_in_blanks": [
+    {
+      "sentence": "We live in a spacious __________ in the city centre.",
+      "answer": "apartment",
+      "chinese": "我們住在市中心一間寬敞的公寓。",
+      "unit": "unit2"
+    },
+    {
+      "sentence": "The __________ in our house includes a sofa and chairs.",
+      "answer": "furniture",
+      "chinese": "我們房子的傢俬包括沙發和椅子。",
+      "unit": "unit2"
+    },
+    {
+      "sentence": "Please put the books back on the __________.",
+      "answer": "shelf",
+      "chinese": "請把書放回架子上。",
+      "unit": "unit2"
+    },
+    {
+      "sentence": "The athletes took part in the sports __________ last week.",
+      "answer": "competition",
+      "chinese": "運動員們上週參加了體育比賽。",
+      "unit": "unit3"
+    },
+    {
+      "sentence": "It was a difficult __________, but she never gave up.",
+      "answer": "challenge",
+      "chinese": "這是個困難的挑戰，但她從不放棄。",
+      "unit": "unit3"
+    },
+    {
+      "sentence": "The coach will __________ the names of the winners.",
+      "answer": "announce",
+      "chinese": "教練將會宣佈勝利者的名字。",
+      "unit": "unit3"
+    },
+    {
+      "sentence": "My father will __________ me to try my best.",
+      "answer": "encourage",
+      "chinese": "我爸爸會鼓勵我盡力而為。",
+      "unit": "unit3"
+    },
+    {
+      "sentence": "The food at this restaurant is very __________.",
+      "answer": "delicious",
+      "chinese": "這間餐廳的食物非常美味。",
+      "unit": "unit4"
+    },
+    {
+      "sentence": "I would __________ this restaurant to my friends.",
+      "answer": "recommend",
+      "chinese": "我會向朋友推薦這間餐廳。",
+      "unit": "unit4"
+    },
+    {
+      "sentence": "We need to make a __________ for dinner tonight.",
+      "answer": "reservation",
+      "chinese": "我們需要預訂今晚的晚餐。",
+      "unit": "unit4"
+    },
+    {
+      "sentence": "The __________ at this restaurant is excellent.",
+      "answer": "service",
+      "chinese": "這間餐廳的服務非常好。",
+      "unit": "unit4"
+    },
+    {
+      "sentence": "Italian __________ is famous for pasta and pizza.",
+      "answer": "cuisine",
+      "chinese": "意大利菜式以意粉和薄餅聞名。",
+      "unit": "unit4"
+    }
+  ],
+  "grammar": {
+    "tenses": [
+      {
+        "type": "multiple_choice",
+        "question": "She __________ to school every day.",
+        "options": ["go", "goes", "going", "went"],
+        "answer": 1,
+        "explanation": "Present Simple - 習慣性動作用第三人稱單數加 'es'"
+      },
+      {
+        "type": "multiple_choice",
+        "question": "Look! The children __________ in the playground.",
+        "options": ["play", "are playing", "played", "have played"],
+        "answer": 1,
+        "explanation": "Present Continuous - 'Look!' 表示正在發生的動作"
+      },
+      {
+        "type": "multiple_choice",
+        "question": "I __________ my homework already.",
+        "options": ["finish", "finished", "have finished", "am finishing"],
+        "answer": 2,
+        "explanation": "Present Perfect - 'already' 表示已完成的動作"
+      },
+      {
+        "type": "multiple_choice",
+        "question": "They __________ a movie last night.",
+        "options": ["watch", "watched", "have watched", "watching"],
+        "answer": 1,
+        "explanation": "Past Simple - 'last night' 表示過去特定時間"
+      },
+      {
+        "type": "multiple_choice",
+        "question": "We __________ visit grandma tomorrow.",
+        "options": ["will", "are", "were", "have"],
+        "answer": 0,
+        "explanation": "Simple Future - 'will' 表示將來的動作"
+      }
+    ],
+    "articles": [
+      {
+        "type": "multiple_choice",
+        "question": "I ate __________ apple for breakfast.",
+        "options": ["a", "an", "the", "-"],
+        "answer": 1,
+        "explanation": "'Apple' 以元音開頭，用 'an'"
+      },
+      {
+        "type": "multiple_choice",
+        "question": "__________ sun is very hot today.",
+        "options": ["A", "An", "The", "-"],
+        "answer": 2,
+        "explanation": "世上獨一無二的事物前用 'the'"
+      },
+      {
+        "type": "multiple_choice",
+        "question": "She is __________ teacher.",
+        "options": ["a", "an", "the", "-"],
+        "answer": 0,
+        "explanation": "泛指一位老師，用 'a'"
+      }
+    ],
+    "relative_pronouns": [
+      {
+        "type": "multiple_choice",
+        "question": "This is the boy __________ won the competition.",
+        "options": ["who", "which", "where", "whose"],
+        "answer": 0,
+        "explanation": "指人用 'who'"
+      },
+      {
+        "type": "multiple_choice",
+        "question": "The book __________ I bought is interesting.",
+        "options": ["who", "which", "where", "whose"],
+        "answer": 1,
+        "explanation": "指物用 'which' 或 'that'"
+      },
+      {
+        "type": "multiple_choice",
+        "question": "This is the restaurant __________ we had dinner.",
+        "options": ["who", "which", "where", "whose"],
+        "answer": 2,
+        "explanation": "指地點用 'where'"
+      }
+    ]
+  }
+}

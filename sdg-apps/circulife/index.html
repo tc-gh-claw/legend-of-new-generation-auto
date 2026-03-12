@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>循環生活助手 | CircuLife</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    colors: {
+                        'eco': {
+                            50: '#f2f9f5',
+                            100: '#e1f3e8',
+                            200: '#c3e6d1',
+                            300: '#94d4b4',
+                            400: '#5bb88f',
+                            500: '#369b70',
+                            600: '#287c58',
+                            700: '#236349',
+                            800: '#1f4f3d',
+                            900: '#1a4133',
+                        },
+                        'circular': {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        'earth': {
+                            50: '#faf8f5',
+                            100: '#f0ece3',
+                            200: '#ddd4c3',
+                            300: '#c4b69d',
+                            400: '#a89574',
+                            500: '#8c7857',
+                            600: '#6e5d43',
+                            700: '#544535',
+                            800: '#40382e',
+                            900: '#362f28',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .circular-progress {
+            transform: rotate(-90deg);
+        }
+        .circular-progress circle {
+            transition: stroke-dashoffset 0.5s ease;
+        }
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .spin-slow {
+            animation: spin 8s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-earth-100 via-eco-50 to-circular-100 min-h-screen font-sans text-gray-800">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass-card shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-circular-500 to-eco-600 rounded-full flex items-center justify-center pulse-ring">
+                        <i class="fas fa-recycle text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">循環生活助手</h1>
+                        <p class="text-xs text-gray-500">CircuLife - 第二季跨領域整合</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-circular-600" id="circularScore">0</div>
+                    <div class="text-xs text-gray-500">循環指數</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+
+        <!-- Hero: Circular Dashboard -->
+        <section class="glass-card rounded-2xl p-6 card-hover transition-all duration-300">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <div class="relative w-48 h-48">
+                    <svg class="w-full h-full circular-progress" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="42" fill="none" stroke="#e5e7eb" stroke-width="8"/>
+                        <circle id="circularRing" cx="50" cy="50" r="42" fill="none" stroke="url(#circularGradient)" stroke-width="8" 
+                                stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264"/>
+                        <defs>
+                            <linearGradient id="circularGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#22c55e"/>
+                                <stop offset="100%" style="stop-color:#369b70"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <i class="fas fa-leaf text-3xl text-circular-500 mb-1 floating"></i>
+                        <span class="text-3xl font-bold text-gray-800" id="centerScore">0</span>
+                        <span class="text-xs text-gray-500">循環指數</span>
+                    </div>
+                    <div class="absolute -top-1 -right-1 w-12 h-12 bg-gradient-to-br from-circular-400 to-circular-600 rounded-full flex items-center justify-center shadow-lg spin-slow">
+                        <i class="fas fa-sync-alt text-white text-sm"></i>
+                    </div>
+                </div>
+                
+                <div class="flex-1 text-center md:text-left">
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">今日循環狀態</h2>
+                    <p class="text-gray-600 mb-4" id="statusText">開始你的循環生活之旅！每一個小行動都在為地球創造大改變。</p>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="bg-circular-50 rounded-xl p-3 text-center">
+                            <i class="fas fa-hammer text-circular-600 text-lg mb-1"></i>
+                            <div class="text-xl font-bold text-gray-800" id="repairCount">0</div>
+                            <div class="text-xs text-gray-500">維修物品</div>
+                        </div>
+                        <div class="bg-blue-50 rounded-xl p-3 text-center">
+                            <i class="fas fa-handshake text-blue-600 text-lg mb-1"></i>
+                            <div class="text-xl font-bold text-gray-800" id="shareCount">0</div>
+                            <div class="text-xs text-gray-500">共享次數</div>
+                        </div>
+                        <div class="bg-amber-50 rounded-xl p-3 text-center">
+                            <i class="fas fa-recycle text-amber-600 text-lg mb-1"></i>
+                            <div class="text-xl font-bold text-gray-800" id="recycleCount">0</div>
+                            <div class="text-xs text-gray-500">回收重量(kg)</div>
+                        </div>
+                        <div class="bg-purple-50 rounded-xl p-3 text-center">
+                            <i class="fas fa-shopping-bag text-purple-600 text-lg mb-1"></i>
+                            <div class="text-xl font-bold text-gray-800" id="purchaseCount">0</div>
+                            <div class="text-xs text-gray-500">永續購買</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section>
+            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fas fa-bolt text-circular-500"></i>
+                快速記錄
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button onclick="openModal('repairModal')" class="glass-card rounded-xl p-4 card-hover transition-all duration-300 text-left group">
+                    <div class="w-12 h-12 bg-circular-100 rounded-xl flex items-center justify-center mb-3 group-hover:bg-circular-200 transition-colors">
+                        <i class="fas fa-tools text-circular-600 text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800">維修物品</h4>
+                    <p class="text-xs text-gray-500">修復而非丟棄</p>
+                </button>
+                
+                <button onclick="openModal('shareModal')" class="glass-card rounded-xl p-4 card-hover transition-all duration-300 text-left group">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-3 group-hover:bg-blue-200 transition-colors">
+                        <i class="fas fa-share-alt text-blue-600 text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800">共享資源</h4>
+                    <p class="text-xs text-gray-500">借出或借用</p>
+                </button>
+                
+                <button onclick="openModal('recycleModal')" class="glass-card rounded-xl p-4 card-hover transition-all duration-300 text-left group">
+                    <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-3 group-hover:bg-amber-200 transition-colors">
+                        <i class="fas fa-recycle text-amber-600 text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800">回收記錄</h4>
+                    <p class="text-xs text-gray-500">正確分類回收</p>
+                </button>
+                
+                <button onclick="openModal('purchaseModal')" class="glass-card rounded-xl p-4 card-hover transition-all duration-300 text-left group">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-3 group-hover:bg-purple-200 transition-colors">
+                        <i class="fas fa-seedling text-purple-600 text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800">永續購買</h4>
+                    <p class="text-xs text-gray-500">環保產品選擇</p>
+                </button>
+            </div>
+        </section>
+
+        <!-- Impact Stats -->
+        <section class="glass-card rounded-2xl p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fas fa-chart-bar text-circular-500"></i>
+                你的循環影響力
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-gradient-to-br from-circular-500 to-circular-600 rounded-xl p-4 text-white">
+                    <i class="fas fa-tree text-3xl mb-2 opacity-80"></i>
+                    <div class="text-2xl font-bold" id="treesSaved">0</div>
+                    <div class="text-sm opacity-80">相當於拯救樹木</div>
+                </div>
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 text-white">
+                    <i class="fas fa-tint text-3xl mb-2 opacity-80"></i>
+                    <div class="text-2xl font-bold" id="waterSaved">0</div>
+                    <div class="text-sm opacity-80">節約用水 (L)</div>
+                </div>
+                <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-4 text-white">
+                    <i class="fas fa-cloud text-3xl mb-2 opacity-80"></i>
+                    <div class="text-2xl font-bold" id="co2Saved">0</div>
+                    <div class="text-sm opacity-80">減少碳排放 (kg)</div>
+                </div>
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4 text-white">
+                    <i class="fas fa-coins text-3xl mb-2 opacity-80"></i>
+                    <div class="text-2xl font-bold" id="moneySaved">0</div>
+                    <div class="text-sm opacity-80">節省金額 (HKD)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Tasks -->
+        <section class="glass-card rounded-2xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                    <i class="fas fa-tasks text-circular-500"></i>
+                    今日循環任務
+                </h3>
+                <button onclick="generateDailyTasks()" class="text-sm text-circular-600 hover:text-circular-700">
+                    <i class="fas fa-refresh mr-1"></i>刷新任務
+                </button>
+            </div>
+            <div id="dailyTasks" class="space-y-3">
+                <!-- Tasks will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Tip Carousel -->
+        <section class="glass-card rounded-2xl p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fas fa-lightbulb text-circular-500"></i>
+                每日循環錦囊
+            </h3>
+            <div class="bg-gradient-to-r from-earth-100 to-circular-50 rounded-xl p-5 border border-earth-200">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-circular-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-quote-left text-white"></i>
+                    </div>
+                    <div>
+                        <p class="text-gray-700 italic mb-2" id="tipText">循環經濟不僅是回收，更是重新思考我們與物品的關係。</p>
+                        <p class="text-sm text-circular-600 font-medium" id="tipCategory">循環經濟理念</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center gap-2 mt-4">
+                <button onclick="prevTip()" class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors">
+                    <i class="fas fa-chevron-left text-gray-600"></i>
+                </button>
+                <button onclick="nextTip()" class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors">
+                    <i class="fas fa-chevron-right text-gray-600"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Activity Log -->
+        <section class="glass-card rounded-2xl p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fas fa-history text-circular-500"></i>
+                循環日誌
+            </h3>
+            <div id="activityLog" class="space-y-3 max-h-64 overflow-y-auto">
+                <!-- Log entries will appear here -->
+            </div>
+        </section>
+
+        <!-- SDG Alignment -->
+        <section class="glass-card rounded-2xl p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">對應永續發展目標</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-4 text-white">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-bold">12</div>
+                        <div>
+                            <div class="font-bold">負責任消費和生產</div>
+                            <div class="text-xs opacity-80">Responsible Consumption</div>
+                        </div>
+                    </div>
+                    <p class="text-sm opacity-90">透過維修、共享和回收減少浪費</p>
+                </div>
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-4 text-white">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-bold">9</div>
+                        <div>
+                            <div class="font-bold">產業、創新和基礎設施</div>
+                            <div class="text-xs opacity-80">Industry & Innovation</div>
+                        </div>
+                    </div>
+                    <p class="text-sm opacity-90">促進永續基礎設施和創新</p>
+                </div>
+                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-4 text-white">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-bold">13</div>
+                        <div>
+                            <div class="font-bold">氣候行動</div>
+                            <div class="text-xs opacity-80">Climate Action</div>
+                        </div>
+                    </div>
+                    <p class="text-sm opacity-90">減少碳足跡，對抗氣候變化</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Repair Modal -->
+    <div id="repairModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-gray-800">記錄維修</h3>
+                <button onclick="closeModal('repairModal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form onsubmit="addActivity(event, 'repair')">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">物品名稱</label>
+                        <input type="text" name="item" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-circular-500 focus:border-transparent" placeholder="例如：牛仔褲、電風扇">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">維修類型</label>
+                        <select name="repairType" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-circular-500">
+                            <option value="clothing">衣物修補</option>
+                            <option value="electronics">電子產品</option>
+                            <option value="furniture">家具</option>
+                            <option value="appliance">家用電器</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">節省金額 (HKD)</label>
+                        <input type="number" name="savings" min="0" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-circular-500" placeholder="估計購買新品的費用">
+                    </div>
+                    <button type="submit" class="w-full bg-circular-500 hover:bg-circular-600 text-white font-semibold py-3 rounded-xl transition-colors">
+                        記錄維修
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="shareModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-gray-800">記錄共享</h3>
+                <button onclick="closeModal('shareModal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form onsubmit="addActivity(event, 'share')">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">共享類型</label>
+                        <select name="shareType" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500">
+                            <option value="lend">借出物品</option>
+                            <option value="borrow">借用物品</option>
+                            <option value="skill">技能交換</option>
+                            <option value="space">空間共享</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">物品/服務描述</label>
+                        <input type="text" name="description" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500" placeholder="例如：借出相機給朋友">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">共享對象</label>
+                        <input type="text" name="person" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500" placeholder="例如：朋友、鄰居、社區">
+                    </div>
+                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition-colors">
+                        記錄共享
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Recycle Modal -->
+    <div id="recycleModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-gray-800">記錄回收</h3>
+                <button onclick="closeModal('recycleModal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form onsubmit="addActivity(event, 'recycle')">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">回收類型</label>
+                        <select name="recycleType" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-500">
+                            <option value="paper">紙張</option>
+                            <option value="plastic">塑膠</option>
+                            <option value="glass">玻璃</option>
+                            <option value="metal">金屬</option>
+                            <option value="electronics">電子產品</option>
+                            <option value="textile">紡織品</option>
+                            <option value="food">廚餘</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">重量 (kg)</label>
+                        <input type="number" name="weight" step="0.1" min="0" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-500" placeholder="例如：2.5">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">回收地點</label>
+                        <input type="text" name="location" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-500" placeholder="例如：綠在區區、社區回收站">
+                    </div>
+                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 rounded-xl transition-colors">
+                        記錄回收
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Purchase Modal -->
+    <div id="purchaseModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-gray-800">記錄永續購買</h3>
+                <button onclick="closeModal('purchaseModal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form onsubmit="addActivity(event, 'purchase')">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">購買物品</label>
+                        <input type="text" name="item" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500" placeholder="例如：竹牙刷">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">永續特性</label>
+                        <select name="ecoFeature" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500">
+                            <option value="plastic-free">無塑包裝</option>
+                            <option value="secondhand">二手物品</option>
+                            <option value="local">本地生產</option>
+                            <option value="organic">有機認證</option>
+                            <option value="fairtrade">公平貿易</option>
+                            <option value="recycled">再生材料</option>
+                            <option value="biodegradable">可生物降解</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">購買金額 (HKD)</label>
+                        <input type="number" name="amount" min="0" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500" placeholder="選填">
+                    </div>
+                    <button type="submit" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 rounded-xl transition-colors">
+                        記錄購買
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let appData = {
+            circularScore: 0,
+            repairCount: 0,
+            shareCount: 0,
+            recycleCount: 0,
+            purchaseCount: 0,
+            treesSaved: 0,
+            waterSaved: 0,
+            co2Saved: 0,
+            moneySaved: 0,
+            activities: [],
+            dailyTasks: [],
+            currentTipIndex: 0
+        };
+
+        // Tips database
+        const tips = [
+            { text: "循環經濟不僅是回收，更是重新思考我們與物品的關係。", category: "循環經濟理念" },
+            { text: "維修一件物品比購買新的平均減少 85% 的碳排放。", category: "維修的力量" },
+            { text: "借出物品一年可以減少製造 20-30 件新產品的需求。", category: "共享經濟" },
+            { text: "購買二手衣物可減少 82% 的水資源消耗。", category: "永續購物" },
+            { text: "正確回收 1 公斤紙張可拯救 17 棵樹。", category: "回收知識" },
+            { text: "選擇無塑包裝產品，每年可減少 22 公斤塑膠垃圾。", category: "減塑生活" },
+            { text: "本地生產的食物平均比進口食物減少 80% 的運輸碳排放。", category: "本地消費" },
+            { text: "延長物品使用壽命 9 個月可減少 20-30% 的碳足跡。", category: "持久使用" }
+        ];
+
+        // Task templates
+        const taskTemplates = [
+            { text: "檢查家中有無需要維修的物品", category: "repair", points: 15 },
+            { text: "整理可回收物品並送至回收站", category: "recycle", points: 20 },
+            { text: "向朋友借一件需要但不想買的物品", category: "share", points: 15 },
+            { text: "尋找一件二手物品代替新品購買", category: "purchase", points: 25 },
+            { text: "修理一件小物品（縫扣、黏合等）", category: "repair", points: 20 },
+            { text: "分享一個不需要的物品給他人", category: "share", points: 15 },
+            { text: "正確分類家中垃圾並記錄回收量", category: "recycle", points: 15 },
+            { text: "購買時選擇無塑包裝的替代品", category: "purchase", points: 20 },
+            { text: "參與社區的共享活動或工具圖書館", category: "share", points: 25 },
+            { text: "學習一個新的維修技能（網上教程）", category: "repair", points: 20 }
+        ];
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('circulifeData');
+            if (saved) {
+                appData = JSON.parse(saved);
+            }
+            updateUI();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('circulifeData', JSON.stringify(appData));
+        }
+
+        // Update UI
+        function updateUI() {
+            document.getElementById('circularScore').textContent = Math.round(appData.circularScore);
+            document.getElementById('centerScore').textContent = Math.round(appData.circularScore);
+            document.getElementById('repairCount').textContent = appData.repairCount;
+            document.getElementById('shareCount').textContent = appData.shareCount;
+            document.getElementById('recycleCount').textContent = appData.recycleCount.toFixed(1);
+            document.getElementById('purchaseCount').textContent = appData.purchaseCount;
+            document.getElementById('treesSaved').textContent = appData.treesSaved.toFixed(1);
+            document.getElementById('waterSaved').textContent = appData.waterSaved.toFixed(0);
+            document.getElementById('co2Saved').textContent = appData.co2Saved.toFixed(1);
+            document.getElementById('moneySaved').textContent = appData.moneySaved.toFixed(0);
+
+            // Update circular progress ring
+            const maxScore = 1000;
+            const percentage = Math.min(appData.circularScore / maxScore, 1);
+            const offset = 264 - (264 * percentage);
+            document.getElementById('circularRing').style.strokeDashoffset = offset;
+
+            // Update status text
+            updateStatusText();
+            renderActivityLog();
+            renderDailyTasks();
+        }
+
+        function updateStatusText() {
+            const score = appData.circularScore;
+            let text = "";
+            if (score === 0) {
+                text = "開始你的循環生活之旅！每一個小行動都在為地球創造大改變。";
+            } else if (score < 100) {
+                text = "很好的開始！你的循環行動正在減少浪費。繼續加油！";
+            } else if (score < 300) {
+                text = "太棒了！你已經建立了良好的循環習慣，影響力逐漸擴大中。";
+            } else if (score < 600) {
+                text = "驚人的成就！你是循環生活的典範，正在為地球帶來真正的改變。";
+            } else {
+                text = "循環大師！你的生活方式是永續發展的最佳示範。🌟";
+            }
+            document.getElementById('statusText').textContent = text;
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Add activity
+        function addActivity(event, type) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            let activity = {
+                type: type,
+                date: new Date().toISOString(),
+                points: 0
+            };
+
+            switch(type) {
+                case 'repair':
+                    activity.item = formData.get('item');
+                    activity.repairType = formData.get('repairType');
+                    activity.savings = parseFloat(formData.get('savings')) || 0;
+                    activity.points = 20 + Math.floor(activity.savings / 50) * 5;
+                    appData.repairCount++;
+                    appData.moneySaved += activity.savings;
+                    appData.co2Saved += activity.savings * 0.5;
+                    break;
+                    
+                case 'share':
+                    activity.shareType = formData.get('shareType');
+                    activity.description = formData.get('description');
+                    activity.person = formData.get('person');
+                    activity.points = 15;
+                    appData.shareCount++;
+                    appData.co2Saved += 5;
+                    break;
+                    
+                case 'recycle':
+                    activity.recycleType = formData.get('recycleType');
+                    activity.weight = parseFloat(formData.get('weight'));
+                    activity.location = formData.get('location');
+                    activity.points = Math.floor(activity.weight * 10);
+                    appData.recycleCount += activity.weight;
+                    
+                    // Calculate impact
+                    appData.treesSaved += activity.weight * 0.02;
+                    appData.waterSaved += activity.weight * 50;
+                    appData.co2Saved += activity.weight * 2;
+                    break;
+                    
+                case 'purchase':
+                    activity.item = formData.get('item');
+                    activity.ecoFeature = formData.get('ecoFeature');
+                    activity.amount = parseFloat(formData.get('amount')) || 0;
+                    activity.points = 25;
+                    appData.purchaseCount++;
+                    appData.co2Saved += 3;
+                    appData.waterSaved += 100;
+                    break;
+            }
+
+            appData.circularScore += activity.points;
+            appData.activities.unshift(activity);
+            
+            saveData();
+            updateUI();
+            closeModal(type + 'Modal');
+            form.reset();
+        }
+
+        // Render activity log
+        function renderActivityLog() {
+            const container = document.getElementById('activityLog');
+            if (appData.activities.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">還沒有記錄，開始你的第一個循環行動吧！</p>';
+                return;
+            }
+
+            container.innerHTML = appData.activities.slice(0, 20).map(activity => {
+                const date = new Date(activity.date);
+                const timeStr = date.toLocaleString('zh-HK', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                
+                let icon, color, text;
+                switch(activity.type) {
+                    case 'repair':
+                        icon = 'fa-tools';
+                        color = 'text-circular-600 bg-circular-100';
+                        text = `維修了 ${activity.item}`;
+                        break;
+                    case 'share':
+                        icon = 'fa-handshake';
+                        color = 'text-blue-600 bg-blue-100';
+                        text = activity.description;
+                        break;
+                    case 'recycle':
+                        icon = 'fa-recycle';
+                        color = 'text-amber-600 bg-amber-100';
+                        text = `回收了 ${activity.weight}kg ${activity.recycleType === 'paper' ? '紙張' : activity.recycleType === 'plastic' ? '塑膠' : activity.recycleType === 'glass' ? '玻璃' : activity.recycleType === 'metal' ? '金屬' : '物品'}`;
+                        break;
+                    case 'purchase':
+                        icon = 'fa-seedling';
+                        color = 'text-purple-600 bg-purple-100';
+                        text = `購買了永續產品: ${activity.item}`;
+                        break;
+                }
+
+                return `
+                    <div class="flex items-center gap-3 p-3 bg-white/50 rounded-xl fade-in">
+                        <div class="w-10 h-10 ${color} rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-800 truncate">${text}</p>
+                            <p class="text-xs text-gray-500">${timeStr}</p>
+                        </div>
+                        <div class="text-sm font-bold text-circular-600">+${activity.points}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Generate daily tasks
+        function generateDailyTasks() {
+            const shuffled = [...taskTemplates].sort(() => 0.5 - Math.random());
+            appData.dailyTasks = shuffled.slice(0, 3).map((task, index) => ({
+                ...task,
+                id: Date.now() + index,
+                completed: false
+            }));
+            saveData();
+            renderDailyTasks();
+        }
+
+        // Render daily tasks
+        function renderDailyTasks() {
+            const container = document.getElementById('dailyTasks');
+            if (appData.dailyTasks.length === 0) {
+                generateDailyTasks();
+                return;
+            }
+
+            container.innerHTML = appData.dailyTasks.map(task => {
+                const categoryColors = {
+                    repair: 'border-circular-500 bg-circular-50',
+                    share: 'border-blue-500 bg-blue-50',
+                    recycle: 'border-amber-500 bg-amber-50',
+                    purchase: 'border-purple-500 bg-purple-50'
+                };
+
+                const categoryIcons = {
+                    repair: 'fa-tools text-circular-600',
+                    share: 'fa-handshake text-blue-600',
+                    recycle: 'fa-recycle text-amber-600',
+                    purchase: 'fa-shopping-bag text-purple-600'
+                };
+
+                return `
+                    <div class="flex items-center gap-3 p-4 border-2 ${categoryColors[task.category]} rounded-xl transition-all ${task.completed ? 'opacity-50' : ''}">
+                        <button onclick="toggleTask(${task.id})" class="w-6 h-6 rounded-full border-2 ${task.completed ? 'bg-circular-500 border-circular-500' : 'border-gray-300'} flex items-center justify-center transition-colors">
+                            ${task.completed ? '<i class="fas fa-check text-white text-xs"></i>' : ''}
+                        </button>
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-800 ${task.completed ? 'line-through' : ''}">${task.text}</p>
+                            <p class="text-xs text-gray-500">+${task.points} 循環積分</p>
+                        </div>
+                        <i class="fas ${categoryIcons[task.category]}"></i>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Toggle task completion
+        function toggleTask(taskId) {
+            const task = appData.dailyTasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                if (task.completed) {
+                    appData.circularScore += task.points;
+                } else {
+                    appData.circularScore -= task.points;
+                }
+                saveData();
+                updateUI();
+            }
+        }
+
+        // Tip navigation
+        function showTip(index) {
+            const tip = tips[index];
+            document.getElementById('tipText').textContent = tip.text;
+            document.getElementById('tipCategory').textContent = tip.category;
+        }
+
+        function nextTip() {
+            appData.currentTipIndex = (appData.currentTipIndex + 1) % tips.length;
+            showTip(appData.currentTipIndex);
+            saveData();
+        }
+
+        function prevTip() {
+            appData.currentTipIndex = (appData.currentTipIndex - 1 + tips.length) % tips.length;
+            showTip(appData.currentTipIndex);
+            saveData();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            showTip(appData.currentTipIndex);
+            
+            // Check if we need new daily tasks
+            if (appData.dailyTasks.length === 0) {
+                generateDailyTasks();
+            }
+        });
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('fixed')) {
+                event.target.classList.add('hidden');
+            }
+        }
+    </script>
+
+</body>
+</html>

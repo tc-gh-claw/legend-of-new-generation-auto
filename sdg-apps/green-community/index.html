@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>綠色社區行動 | Green Community Action</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { font-family: 'Noto Sans TC', sans-serif; }
+        
+        :root {
+            --sustainable-green: #4CAF50;
+            --fresh-green: #8BC34A;
+            --nature-green: #2E7D32;
+            --earth-brown: #795548;
+            --sky-blue: #29B6F6;
+            --sun-orange: #FF9800;
+        }
+        
+        .gradient-sustainability {
+            background: linear-gradient(135deg, #2E7D32 0%, #4CAF50 50%, #8BC34A 100%);
+        }
+        
+        .gradient-climate {
+            background: linear-gradient(135deg, #0277BD 0%, #29B6F6 50%, #4FC3F7 100%);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+        
+        .community-pulse {
+            animation: pulse-community 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-community {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.02); opacity: 0.9; }
+        }
+        
+        .network-line {
+            stroke-dasharray: 5, 5;
+            animation: dash 20s linear infinite;
+        }
+        
+        @keyframes dash {
+            to { stroke-dashoffset: -100; }
+        }
+        
+        .action-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(46, 125, 50, 0.15);
+        }
+        
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        
+        .tip-carousel {
+            animation: slideTips 15s ease-in-out infinite;
+        }
+        
+        @keyframes slideTips {
+            0%, 20% { transform: translateY(0); }
+            25%, 45% { transform: translateY(-100%); }
+            50%, 70% { transform: translateY(-200%); }
+            75%, 95% { transform: translateY(-300%); }
+            100% { transform: translateY(-400%); }
+        }
+        
+        .heatmap-cell {
+            transition: all 0.3s ease;
+        }
+        
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+        
+        .initiative-badge {
+            transition: all 0.2s ease;
+        }
+        
+        .initiative-badge:hover {
+            transform: scale(1.05);
+        }
+        
+        .connection-node {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .connection-node:nth-child(2) { animation-delay: 0.5s; }
+        .connection-node:nth-child(3) { animation-delay: 1s; }
+        .connection-node:nth-child(4) { animation-delay: 1.5s; }
+        .connection-node:nth-child(5) { animation-delay: 2s; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        
+        .impact-counter {
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-sustainability text-white py-6 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                    <i class="fas fa-city text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold">綠色社區行動</h1>
+                    <p class="text-green-100 text-sm">Green Community Action</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <p class="text-xs text-green-100">本週活躍社區</p>
+                    <p class="font-bold text-lg">香港・灣仔區</p>
+                </div>
+                <button onclick="showNotification('社區公告：週末植樹活動報名開始！')" class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center hover:bg-white/30 transition relative">
+                    <i class="fas fa-bell"></i>
+                    <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center">3</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Community Impact Dashboard -->
+        <section class="mb-8">
+            <div class="glass-card rounded-3xl p-6 community-pulse">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">社區影響力儀表板</h2>
+                        <p class="text-gray-500 text-sm mt-1">Climate Action Community Impact</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                            <i class="fas fa-leaf mr-1"></i>SDG 11
+                        </span>
+                        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                            <i class="fas fa-globe mr-1"></i>SDG 13
+                        </span>
+                        <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+                            <i class="fas fa-handshake mr-1"></i>SDG 17
+                        </span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="text-center p-4 bg-green-50 rounded-2xl">
+                        <div class="w-16 h-16 mx-auto mb-2 rounded-full gradient-sustainability flex items-center justify-center text-white text-2xl">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-green-700 impact-counter" data-target="2847">0</p>
+                        <p class="text-gray-600 text-sm">參與居民</p>
+                        <p class="text-green-600 text-xs mt-1">+156 本週新加入</p>
+                    </div>
+                    <div class="text-center p-4 bg-blue-50 rounded-2xl">
+                        <div class="w-16 h-16 mx-auto mb-2 rounded-full gradient-climate flex items-center justify-center text-white text-2xl">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-blue-700 impact-counter" data-target="45.2">0</p>
+                        <p class="text-gray-600 text-sm">噸 CO₂ 減排</p>
+                        <p class="text-blue-600 text-xs mt-1">本月累計</p>
+                    </div>
+                    <div class="text-center p-4 bg-orange-50 rounded-2xl">
+                        <div class="w-16 h-16 mx-auto mb-2 rounded-full bg-gradient-to-br from-orange-500 to-yellow-500 flex items-center justify-center text-white text-2xl">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-orange-700 impact-counter" data-target="128">0</p>
+                        <p class="text-gray-600 text-sm">社區活動</p>
+                        <p class="text-orange-600 text-xs mt-1">本季舉辦</p>
+                    </div>
+                    <div class="text-center p-4 bg-purple-50 rounded-2xl">
+                        <div class="w-16 h-16 mx-auto mb-2 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-2xl">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-purple-700 impact-counter" data-target="892">0</p>
+                        <p class="text-gray-600 text-sm">義工時數</p>
+                        <p class="text-purple-600 text-xs mt-1">社區貢獻</p>
+                    </div>
+                </div>
+
+                <!-- Community Network Visualization -->
+                <div class="bg-gray-900 rounded-2xl p-6 relative overflow-hidden">
+                    <h3 class="text-white font-semibold mb-4 flex items-center gap-2">
+                        <i class="fas fa-project-diagram text-green-400"></i>
+                        社區連結網絡
+                    </h3>
+                    <div class="flex justify-around items-center py-4">
+                        <div class="connection-node text-center">
+                            <div class="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center text-white text-xl mb-2">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <p class="text-white text-xs">個人</p>
+                        </div>
+                        <div class="flex-1 h-0.5 bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 mx-2 network-line"></div>
+                        <div class="connection-node text-center">
+                            <div class="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl mb-2">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <p class="text-white text-xs">大廈</p>
+                        </div>
+                        <div class="flex-1 h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mx-2 network-line"></div>
+                        <div class="connection-node text-center">
+                            <div class="w-16 h-16 rounded-full bg-purple-500 flex items-center justify-center text-white text-xl mb-2">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <p class="text-white text-xs">社區</p>
+                        </div>
+                        <div class="flex-1 h-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 mx-2 network-line"></div>
+                        <div class="connection-node text-center">
+                            <div class="w-16 h-16 rounded-full bg-pink-500 flex items-center justify-center text-white text-xl mb-2">
+                                <i class="fas fa-city"></i>
+                            </div>
+                            <p class="text-white text-xs">城市</p>
+                        </div>
+                        <div class="flex-1 h-0.5 bg-gradient-to-r from-pink-500 to-red-500 mx-2 network-line"></div>
+                        <div class="connection-node text-center">
+                            <div class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center text-white text-xl mb-2">
+                                <i class="fas fa-globe-asia"></i>
+                            </div>
+                            <p class="text-white text-xs">全球</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm text-center mt-4">你的每個行動都透過社區網絡放大影響力</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Action Areas -->
+        <section class="grid md:grid-cols-2 gap-6 mb-8">
+            <!-- Green Spaces -->
+            <div class="action-card glass-card rounded-2xl p-6 bg-gradient-to-br from-green-50 to-emerald-50">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-green-500 flex items-center justify-center text-white text-xl">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                    <span class="px-3 py-1 bg-green-200 text-green-800 rounded-full text-xs font-medium">SDG 11</span>
+                </div>
+                <h3 class="font-bold text-gray-800 mb-2">綠色空間共享</h3>
+                <p class="text-gray-600 text-sm mb-4">參與社區農圃、天台花園、垂直綠化項目</p>
+                
+                <div class="space-y-3 mb-4">
+                    <div class="flex items-center justify-between p-3 bg-white rounded-xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-green-600">
+                                <i class="fas fa-seedling"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-800">週末植樹日</p>
+                                <p class="text-xs text-gray-500">3月8日・維多利亞公園</p>
+                            </div>
+                        </div>
+                        <button onclick="joinInitiative(this, '植樹日')" class="px-4 py-2 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600 transition">
+                            報名
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-white rounded-xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                <i class="fas fa-leaf"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-800">天台農圃計劃</p>
+                                <p class="text-xs text-gray-500">持續招募・灣仔</p>
+                            </div>
+                        </div>
+                        <button onclick="joinInitiative(this, '天台農圃')" class="px-4 py-2 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600 transition">
+                            報名
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between text-sm text-gray-600">
+                    <span><i class="fas fa-user-friends mr-1"></i>234 人參與</span>
+                    <span class="text-green-600 font-medium">+12 活動進行中</span>
+                </div>
+            </div>
+
+            <!-- Climate Action -->
+            <div class="action-card glass-card rounded-2xl p-6 bg-gradient-to-br from-blue-50 to-cyan-50">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center text-white text-xl">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <span class="px-3 py-1 bg-blue-200 text-blue-800 rounded-full text-xs font-medium">SDG 13</span>
+                </div>
+                <h3 class="font-bold text-gray-800 mb-2">氣候行動挑戰</h3>
+                <p class="text-gray-600 text-sm mb-4">參與社區減碳挑戰，追蹤集體影響力</p>
+                
+                <div class="bg-white rounded-xl p-4 mb-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-medium text-gray-800">本月挑戰：零塑生活</span>
+                        <span class="text-blue-600 font-bold">18/30 天</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3 mb-3">
+                        <div class="bg-gradient-to-r from-blue-500 to-cyan-500 h-3 rounded-full transition-all duration-1000" style="width: 60%"></div>
+                    </div>
+                    <div class="flex justify-between text-sm text-gray-600">
+                        <span>個人進度</span>
+                        <span class="text-blue-600">社區平均: 65%</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="text-center p-2 bg-white rounded-lg">
+                        <p class="text-xl font-bold text-blue-600">156</p>
+                        <p class="text-xs text-gray-600">挑戰者</p>
+                    </div>
+                    <div class="text-center p-2 bg-white rounded-lg">
+                        <p class="text-xl font-bold text-blue-600">2.3</p>
+                        <p class="text-xs text-gray-600">噸減碳</p>
+                    </div>
+                    <div class="text-center p-2 bg-white rounded-lg">
+                        <p class="text-xl font-bold text-blue-600">89%</p>
+                        <p class="text-xs text-gray-600">完成率</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Community Partnership -->
+            <div class="action-card glass-card rounded-2xl p-6 bg-gradient-to-br from-purple-50 to-pink-50">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500 flex items-center justify-center text-white text-xl">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <span class="px-3 py-1 bg-purple-200 text-purple-800 rounded-full text-xs font-medium">SDG 17</span>
+                </div>
+                <h3 class="font-bold text-gray-800 mb-2">社區互助網絡</h3>
+                <p class="text-gray-600 text-sm mb-4">技能分享、資源互換、鄰里支援</p>
+                
+                <div class="space-y-3 mb-4">
+                    <div class="flex items-center gap-3 p-3 bg-white rounded-xl">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-bold text-sm">
+                            陳
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-800">電器維修工作坊</p>
+                            <p class="text-xs text-gray-500">陳師傅・週六下午</p>
+                        </div>
+                        <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">8人感興趣</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-white rounded-xl">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center text-white font-bold text-sm">
+                            李
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-800">二手物品交換會</p>
+                            <p class="text-xs text-gray-500">李小姐・社區中心</p>
+                        </div>
+                        <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">23人物品</span>
+                    </div>
+                </div>
+
+                <button onclick="showModal('initiativeModal')" class="w-full py-3 bg-purple-500 text-white rounded-xl font-medium hover:bg-purple-600 transition">
+                    <i class="fas fa-plus mr-2"></i>發起互助項目
+                </button>
+            </div>
+
+            <!-- Local Impact Map -->
+            <div class="action-card glass-card rounded-2xl p-6 bg-gradient-to-br from-orange-50 to-amber-50">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-orange-500 flex items-center justify-center text-white text-xl">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <span class="px-3 py-1 bg-orange-200 text-orange-800 rounded-full text-xs font-medium">社區熱圖</span>
+                </div>
+                <h3 class="font-bold text-gray-800 mb-2">社區影響力熱圖</h3>
+                <p class="text-gray-600 text-sm mb-4">查看各區域的永續活躍度</p>
+                
+                <!-- Heatmap Grid -->
+                <div class="grid grid-cols-5 gap-1 mb-4">
+                    <div class="heatmap-cell aspect-square rounded bg-green-500 cursor-pointer" title="灣仔公園：高活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-green-400 cursor-pointer" title="皇后大道東：中高活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-green-300 cursor-pointer" title="莊士敦道：中活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-yellow-400 cursor-pointer" title="摩理臣山：中低活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-green-500 cursor-pointer" title="維多利亞公園：高活躍"></div>
+                    
+                    <div class="heatmap-cell aspect-square rounded bg-green-400 cursor-pointer" title="軒尼詩道：中高活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-green-600 cursor-pointer" title="社區中心：最高活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-green-500 cursor-pointer" title="街市：高活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-green-400 cursor-pointer" title="圖書館：中高活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-yellow-300 cursor-pointer" title="學校區：中活躍"></div>
+                    
+                    <div class="heatmap-cell aspect-square rounded bg-yellow-400 cursor-pointer" title="住宅區A：中低活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-green-500 cursor-pointer" title="花園道：高活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-green-600 cursor-pointer" title="天台農圃：最高活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-green-400 cursor-pointer" title="商業區：中高活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-yellow-400 cursor-pointer" title="工業區：中低活躍"></div>
+                    
+                    <div class="heatmap-cell aspect-square rounded bg-green-300 cursor-pointer" title="海濱長廊：中活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-yellow-300 cursor-pointer" title="碼頭區：中活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-green-400 cursor-pointer" title="文化區：中高活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-yellow-400 cursor-pointer" title="醫院區：中低活躍"></div>
+                    <div class="heatmap-cell aspect-square rounded bg-green-300 cursor-pointer" title="公園B：中活躍"></div>
+                </div>
+
+                <div class="flex items-center justify-between text-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-green-600 rounded"></span>
+                        <span class="text-gray-600">最高</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-green-400 rounded"></span>
+                        <span class="text-gray-600">高</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-yellow-400 rounded"></span>
+                        <span class="text-gray-600">中</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-orange-300 rounded"></span>
+                        <span class="text-gray-600">低</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Activity Log & Tips -->
+        <section class="grid md:grid-cols-3 gap-6">
+            <!-- Activity Feed -->
+            <div class="md:col-span-2 glass-card rounded-2xl p-6">
+                <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-stream text-green-500"></i>
+                    社區動態
+                </h3>
+                <div class="space-y-4 max-h-80 overflow-y-auto" id="activityFeed">
+                    <div class="flex gap-3 p-3 bg-green-50 rounded-xl">
+                        <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white flex-shrink-0">
+                            <i class="fas fa-tree"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-gray-800"><span class="font-semibold">灣仔綠色小組</span> 完成了植樹活動</p>
+                            <p class="text-sm text-gray-500">種植了 50 棵樹苗・2 小時前</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded">-125kg CO₂</span>
+                                <span class="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded">50人參與</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 p-3 bg-blue-50 rounded-xl">
+                        <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white flex-shrink-0">
+                            <i class="fas fa-recycle"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-gray-800"><span class="font-semibold">陳大文</span> 完成了本週零塑挑戰</p>
+                            <p class="text-sm text-gray-500">連續 7 天無塑膠・3 小時前</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="text-xs bg-purple-200 text-purple-800 px-2 py-1 rounded">獲得徽章</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 p-3 bg-purple-50 rounded-xl">
+                        <div class="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white flex-shrink-0">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-gray-800"><span class="font-semibold">李師傅</span> 分享了一項維修技能</p>
+                            <p class="text-sm text-gray-500">家電維修基礎課程・5 小時前</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="text-xs bg-orange-200 text-orange-800 px-2 py-1 rounded">12人報名</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 p-3 bg-orange-50 rounded-xl">
+                        <div class="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white flex-shrink-0">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-gray-800"><span class="font-semibold">王小姐</span> 發起了社區共享圖書計劃</p>
+                            <p class="text-sm text-gray-500">共享書架・昨日</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded">87本書共享</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Tips -->
+            <div class="glass-card rounded-2xl p-6 bg-gradient-to-br from-green-600 to-teal-600 text-white">
+                <h3 class="font-bold mb-4 flex items-center gap-2">
+                    <i class="fas fa-lightbulb"></i>
+                    每日社區錦囊
+                </h3>
+                <div class="h-32 overflow-hidden relative">
+                    <div class="tip-carousel">
+                        <div class="h-32 flex flex-col justify-center">
+                            <i class="fas fa-users text-3xl mb-2 opacity-80"></i>
+                            <p class="text-lg font-medium">「與鄰居分享一件你唔需要嘅物品，減少浪費同建立連結。」</p>
+                        </div>
+                        <div class="h-32 flex flex-col justify-center">
+                            <i class="fas fa-bicycle text-3xl mb-2 opacity-80"></i>
+                            <p class="text-lg font-medium">「提議同鄰居一齊行山或者踩單車，建立健康嘅社區文化。」</p>
+                        </div>
+                        <div class="h-32 flex flex-col justify-center">
+                            <i class="fas fa-seedling text-3xl mb-2 opacity-80"></i>
+                            <p class="text-lg font-medium">「在窗台種植香草，同鄰居交換收成，創造社區綠色網絡。」</p>
+                        </div>
+                        <div class="h-32 flex flex-col justify-center">
+                            <i class="fas fa-hands-helping text-3xl mb-2 opacity-80"></i>
+                            <p class="text-lg font-medium">「組織社區維修日，互相幫手修理小電器，延長物品壽命。」</p>
+                        </div>
+                        <div class="h-32 flex flex-col justify-center">
+                            <i class="fas fa-users text-3xl mb-2 opacity-80"></i>
+                            <p class="text-lg font-medium">「與鄰居分享一件你唔需要嘅物品，減少浪費同建立連結。」</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 pt-6 border-t border-white/20">
+                    <p class="text-sm opacity-80 mb-3">你的社區影響力</p>
+                    <div class="flex items-center gap-3">
+                        <div class="flex-1 bg-white/20 rounded-full h-3">
+                            <div class="bg-white h-3 rounded-full transition-all duration-1000" style="width: 72%"></div>
+                        </div>
+                        <span class="font-bold">72%</span>
+                    </div>
+                    <p class="text-xs mt-2 opacity-80">超越 68% 的社區成員</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="fixed bottom-8 right-8 bg-gray-800 text-white px-6 py-4 rounded-2xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 max-w-sm">
+        <div class="flex items-start gap-3">
+            <i class="fas fa-info-circle text-green-400 text-xl mt-0.5"></i>
+            <div>
+                <p id="notificationText" class="font-medium"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Initiative Modal -->
+    <div id="initiativeModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="glass-card rounded-3xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-800">發起互助項目</h3>
+                <button onclick="closeModal('initiativeModal')" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+                    <i class="fas fa-times text-gray-600"></i>
+                </button>
+            </div>
+            
+            <form id="initiativeForm" onsubmit="submitInitiative(event)">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">項目名稱</label>
+                        <input type="text" placeholder="例如：社區二手市集" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">類型</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" class="category-btn p-3 rounded-xl border-2 border-gray-200 text-center hover:border-purple-500 transition" onclick="selectCategory(this)">
+                                <i class="fas fa-tools text-purple-500 mb-1"></i>
+                                <p class="text-sm">技能分享</p>
+                            </button>
+                            <button type="button" class="category-btn p-3 rounded-xl border-2 border-gray-200 text-center hover:border-purple-500 transition" onclick="selectCategory(this)">
+                                <i class="fas fa-exchange-alt text-purple-500 mb-1"></i>
+                                <p class="text-sm">物品交換</p>
+                            </button>
+                            <button type="button" class="category-btn p-3 rounded-xl border-2 border-gray-200 text-center hover:border-purple-500 transition" onclick="selectCategory(this)">
+                                <i class="fas fa-hands-helping text-purple-500 mb-1"></i>
+                                <p class="text-sm">鄰里支援</p>
+                            </button>
+                            <button type="button" class="category-btn p-3 rounded-xl border-2 border-gray-200 text-center hover:border-purple-500 transition" onclick="selectCategory(this)">
+                                <i class="fas fa-lightbulb text-purple-500 mb-1"></i>
+                                <p class="text-sm">其他</p>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">描述</label>
+                        <textarea rows="3" placeholder="簡單描述你的項目..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition resize-none"></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">日期</label>
+                            <input type="date" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">時間</label>
+                            <input type="time" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">地點</label>
+                        <input type="text" placeholder="例如：灣仔社區中心" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full mt-6 py-4 bg-purple-500 text-white rounded-xl font-medium hover:bg-purple-600 transition">
+                    發起項目
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Animate counters on load
+        function animateCounters() {
+            const counters = document.querySelectorAll('.impact-counter');
+            counters.forEach(counter => {
+                const target = parseFloat(counter.dataset.target);
+                const duration = 2000;
+                const increment = target / (duration / 16);
+                let current = 0;
+                
+                const updateCounter = () => {
+                    current += increment;
+                    if (current < target) {
+                        counter.textContent = target % 1 === 0 ? Math.floor(current) : current.toFixed(1);
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target;
+                    }
+                };
+                updateCounter();
+            });
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            notificationText.textContent = message;
+            notification.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                notification.classList.add('translate-y-20', 'opacity-0');
+            }, 4000);
+        }
+
+        // Join initiative
+        function joinInitiative(btn, name) {
+            btn.textContent = '已報名';
+            btn.classList.remove('bg-green-500', 'hover:bg-green-600');
+            btn.classList.add('bg-gray-400');
+            btn.disabled = true;
+            showNotification(`成功報名：${name}！活動詳情將發送至你的郵箱。`);
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+            document.getElementById(modalId).classList.add('flex');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            document.getElementById(modalId).classList.remove('flex');
+        }
+
+        // Category selection
+        let selectedCategory = null;
+        function selectCategory(btn) {
+            document.querySelectorAll('.category-btn').forEach(b => {
+                b.classList.remove('border-purple-500', 'bg-purple-50');
+                b.classList.add('border-gray-200');
+            });
+            btn.classList.remove('border-gray-200');
+            btn.classList.add('border-purple-500', 'bg-purple-50');
+            selectedCategory = btn;
+        }
+
+        // Submit initiative
+        function submitInitiative(e) {
+            e.preventDefault();
+            closeModal('initiativeModal');
+            showNotification('項目發起成功！已發送至社區成員。');
+            document.getElementById('initiativeForm').reset();
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('fixed')) {
+                event.target.classList.add('hidden');
+                event.target.classList.remove('flex');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', animateCounters);
+
+        // Add new activity to feed
+        function addActivity(icon, color, title, subtitle, tags) {
+            const feed = document.getElementById('activityFeed');
+            const activityDiv = document.createElement('div');
+            activityDiv.className = `flex gap-3 p-3 bg-${color}-50 rounded-xl animate-fade-in`;
+            activityDiv.innerHTML = `
+                <div class="w-10 h-10 rounded-full bg-${color}-500 flex items-center justify-center text-white flex-shrink-0">
+                    <i class="fas ${icon}"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-gray-800">${title}</p>
+                    <p class="text-sm text-gray-500">${subtitle}</p>
+                    <div class="flex gap-2 mt-2">
+                        ${tags.map(tag => `<span class="text-xs bg-${color}-200 text-${color}-800 px-2 py-1 rounded">${tag}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+            feed.insertBefore(activityDiv, feed.firstChild);
+        }
+    </script>
+</body>
+</html>

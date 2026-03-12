@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoLens 綠色透視鏡</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', 'Noto Sans TC', sans-serif; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #064e3b 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .scanner-line {
+            animation: scan 2s ease-in-out infinite;
+        }
+        @keyframes scan {
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(200px); opacity: 1; }
+        }
+        .pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.8; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        .score-ring {
+            transition: stroke-dashoffset 1s ease-out;
+        }
+        .sustainability-badge {
+            transition: all 0.3s ease;
+        }
+        .sustainability-badge:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass-card border-b border-white/10">
+        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center">
+                    <i class="fas fa-leaf text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg">EcoLens</h1>
+                    <p class="text-xs text-white/60">綠色透視鏡</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="text-right">
+                    <p class="text-xs text-white/60">本週影響力</p>
+                    <p class="text-sm font-bold text-emerald-400">+<span id="weekly-impact">0</span>kg</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 py-6 pb-24">
+        <!-- Scanner Section -->
+        <section class="mb-8">
+            <div class="glass-card rounded-2xl p-6 text-center relative overflow-hidden">
+                <div class="absolute inset-0 scanner-line bg-gradient-to-b from-transparent via-emerald-500/20 to-transparent pointer-events-none"></div>
+                
+                <div class="relative z-10">
+                    <div class="w-32 h-32 mx-auto mb-4 relative">
+                        <div class="absolute inset-0 rounded-2xl border-2 border-dashed border-emerald-400/50"></div>
+                        <div class="absolute inset-2 rounded-xl border border-emerald-400/30"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="relative">
+                                <div class="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                    <i class="fas fa-camera text-emerald-400 text-2xl"></i>
+                                </div>
+                                <div class="absolute inset-0 rounded-full border-2 border-emerald-400 pulse-ring"></div>
+                            </div>
+                        </div>
+                        <!-- Corner markers -->
+                        <div class="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-emerald-400"></div>
+                        <div class="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-emerald-400"></div>
+                        <div class="absolute bottom-0 left-0 w-4 h-4 border-l-2 border-b-2 border-emerald-400"></div>
+                        <div class="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-emerald-400"></div>
+                    </div>
+                    
+                    <h2 class="text-xl font-bold mb-2">掃描產品條碼</h2>
+                    <p class="text-sm text-white/60 mb-4">了解產品的可持續評分與環保替代方案</p>
+                    
+                    <button onclick="simulateScan()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl font-semibold hover:shadow-lg hover:shadow-emerald-500/25 transition-all">
+                        <i class="fas fa-barcode mr-2"></i>開始掃描
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Categories -->
+        <section class="mb-8">
+            <h3 class="text-sm font-semibold text-white/60 uppercase tracking-wider mb-3">快速分類</h3>
+            <div class="grid grid-cols-4 gap-3">
+                <button onclick="showCategory('fashion')" class="glass-card rounded-xl p-3 text-center hover:bg-white/10 transition-all">
+                    <div class="w-10 h-10 mx-auto mb-2 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                        <i class="fas fa-tshirt text-purple-400"></i>
+                    </div>
+                    <p class="text-xs">時尚</p>
+                </button>
+                <button onclick="showCategory('food')" class="glass-card rounded-xl p-3 text-center hover:bg-white/10 transition-all">
+                    <div class="w-10 h-10 mx-auto mb-2 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                        <i class="fas fa-utensils text-orange-400"></i>
+                    </div>
+                    <p class="text-xs">食品</p>
+                </button>
+                <button onclick="showCategory('home')" class="glass-card rounded-xl p-3 text-center hover:bg-white/10 transition-all">
+                    <div class="w-10 h-10 mx-auto mb-2 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                        <i class="fas fa-home text-blue-400"></i>
+                    </div>
+                    <p class="text-xs">家居</p>
+                </button>
+                <button onclick="showCategory('beauty')" class="glass-card rounded-xl p-3 text-center hover:bg-white/10 transition-all">
+                    <div class="w-10 h-10 mx-auto mb-2 rounded-lg bg-pink-500/20 flex items-center justify-center">
+                        <i class="fas fa-spa text-pink-400"></i>
+                    </div>
+                    <p class="text-xs">美容</p>
+                </button>
+            </div>
+        </section>
+
+        <!-- Product Scan Result (Hidden by default) -->
+        <section id="scan-result" class="mb-8 hidden">
+            <div class="glass-card rounded-2xl p-5">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="w-20 h-20 rounded-xl bg-white/10 flex items-center justify-center text-3xl">
+                        👕
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg mb-1">有機棉 T-Shirt</h3>
+                        <p class="text-sm text-white/60 mb-2">Patagonia · 男裝</p>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium">A+ 級</span>
+                            <span class="text-xs text-white/40">可持續評分 92/100</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Score Ring -->
+                <div class="flex justify-center mb-4">
+                    <div class="relative w-32 h-32">
+                        <svg class="w-full h-full transform -rotate-90">
+                            <circle cx="64" cy="64" r="56" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="none"/>
+                            <circle cx="64" cy="64" r="56" stroke="#10b981" stroke-width="8" fill="none" 
+                                    stroke-dasharray="351.86" stroke-dashoffset="28.15" stroke-linecap="round" class="score-ring"/>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span class="text-3xl font-bold">92</span>
+                            <span class="text-xs text-white/60">總評分</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Scores -->
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="bg-white/5 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fas fa-recycle text-emerald-400 text-sm"></i>
+                            <span class="text-xs text-white/60">材料</span>
+                        </div>
+                        <p class="font-semibold">95/100</p>
+                        <p class="text-xs text-white/40">100% 有機棉</p>
+                    </div>
+                    <div class="bg-white/5 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fas fa-industry text-blue-400 text-sm"></i>
+                            <span class="text-xs text-white/60">生產</span>
+                        </div>
+                        <p class="font-semibold">88/100</p>
+                        <p class="text-xs text-white/40">公平貿易認證</p>
+                    </div>
+                    <div class="bg-white/5 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fas fa-truck text-orange-400 text-sm"></i>
+                            <span class="text-xs text-white/60">運輸</span>
+                        </div>
+                        <p class="font-semibold">85/100</p>
+                        <p class="text-xs text-white/40">碳中和物流</p>
+                    </div>
+                    <div class="bg-white/5 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fas fa-sync text-purple-400 text-sm"></i>
+                            <span class="text-xs text-white/60">壽命</span>
+                        </div>
+                        <p class="font-semibold">98/100</p>
+                        <p class="text-xs text-white/40">終身維修保證</p>
+                    </div>
+                </div>
+
+                <!-- Impact Calculation -->
+                <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 mb-4">
+                    <h4 class="font-semibold mb-2 flex items-center gap-2">
+                        <i class="fas fa-leaf text-emerald-400"></i>
+                        環境影響對比
+                    </h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-white/60">vs 傳統棉質 T-Shirt</span>
+                            <span class="text-emerald-400 font-bold">-45% 碳排放</span>
+                        </div>
+                        <div class="w-full bg-white/10 rounded-full h-2">
+                            <div class="bg-emerald-500 h-2 rounded-full" style="width: 55%"></div>
+                        </div>
+                        <p class="text-xs text-white/40">節省 2.1kg CO₂ 排放</p>
+                    </div>
+                </div>
+
+                <!-- Badges -->
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="sustainability-badge px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs">
+                        <i class="fas fa-check-circle mr-1"></i>B Corp 認證
+                    </span>
+                    <span class="sustainability-badge px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-xs">
+                        <i class="fas fa-water mr-1"></i>節水 91%
+                    </span>
+                    <span class="sustainability-badge px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 text-xs">
+                        <i class="fas fa-sun mr-1"></i>可再生能源
+                    </span>
+                </div>
+
+                <button onclick="addToList()" class="w-full py-3 bg-emerald-500 rounded-xl font-semibold hover:bg-emerald-600 transition-all">
+                    <i class="fas fa-plus mr-2"></i>加入購物清單
+                </button>
+            </div>
+        </section>
+
+        <!-- Shopping List -->
+        <section class="mb-8">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-white/60 uppercase tracking-wider">我的購物清單</h3>
+                <span id="list-count" class="px-2 py-1 rounded-full bg-white/10 text-xs">0 件</span>
+            </div>
+            
+            <div id="shopping-list" class="space-y-3">
+                <div class="glass-card rounded-xl p-4 text-center text-white/40">
+                    <i class="fas fa-shopping-basket text-3xl mb-2"></i>
+                    <p class="text-sm">清單暫時為空</p>
+                    <p class="text-xs">掃描產品並加入清單</p>
+                </div>
+            </div>
+
+            <!-- List Summary (Hidden by default) -->
+            <div id="list-summary" class="hidden mt-4 glass-card rounded-xl p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-sm text-white/60">清單可持續評分</span>
+                    <span id="list-score" class="text-xl font-bold text-emerald-400">-</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-white/60">預計減少碳排放</span>
+                    <span id="list-carbon" class="text-emerald-400 font-semibold">- kg</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Tips -->
+        <section class="mb-8">
+            <h3 class="text-sm font-semibold text-white/60 uppercase tracking-wider mb-3">今日綠色錦囊</h3>
+            <div class="glass-card rounded-xl p-4">
+                <div class="flex gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-lightbulb text-amber-400"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-1">購買前先問自己</h4>
+                        <p class="text-sm text-white/60">「我需要這個嗎？」「我會用多久？」「有二手替代品嗎？」這三個問題可以幫助你避免衝動消費，減少浪費。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Brand Rankings -->
+        <section>
+            <h3 class="text-sm font-semibold text-white/60 uppercase tracking-wider mb-3">可持續品牌榜</h3>
+            <div class="space-y-2">
+                <div class="glass-card rounded-xl p-3 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center font-bold text-emerald-400">1</div>
+                    <div class="flex-1">
+                        <p class="font-semibold">Patagonia</p>
+                        <p class="text-xs text-white/60">戶外服飾 · A+ 級</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-emerald-400 font-bold">98</span>
+                    </div>
+                </div>
+                <div class="glass-card rounded-xl p-3 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center font-bold text-emerald-400">2</div>
+                    <div class="flex-1">
+                        <p class="font-semibold">Veja</p>
+                        <p class="text-xs text-white/60">運動鞋 · A 級</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-emerald-400 font-bold">95</span>
+                    </div>
+                </div>
+                <div class="glass-card rounded-xl p-3 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center font-bold text-emerald-400">3</div>
+                    <div class="flex-1">
+                        <p class="font-semibold">Seventh Generation</p>
+                        <p class="text-xs text-white/60">家居清潔 · A 級</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-emerald-400 font-bold">93</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Nav -->
+    <nav class="fixed bottom-0 left-0 right-0 glass-card border-t border-white/10">
+        <div class="max-w-md mx-auto px-4 py-2 flex justify-around">
+            <button class="p-3 text-emerald-400 flex flex-col items-center gap-1">
+                <i class="fas fa-search text-xl"></i>
+                <span class="text-xs">掃描</span>
+            </button>
+            <button class="p-3 text-white/40 hover:text-white flex flex-col items-center gap-1">
+                <i class="fas fa-list text-xl"></i>
+                <span class="text-xs">清單</span>
+            </button>
+            <button class="p-3 text-white/40 hover:text-white flex flex-col items-center gap-1">
+                <i class="fas fa-chart-line text-xl"></i>
+                <span class="text-xs">影響力</span>
+            </button>
+            <button class="p-3 text-white/40 hover:text-white flex flex-col items-center gap-1">
+                <i class="fas fa-user text-xl"></i>
+                <span class="text-xs">我的</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        let shoppingItems = [];
+        let weeklyImpact = 0;
+
+        function simulateScan() {
+            const btn = document.querySelector('button[onclick="simulateScan()"]');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>掃描中...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                document.getElementById('scan-result').classList.remove('hidden');
+                btn.innerHTML = '<i class="fas fa-check mr-2"></i>掃描完成';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-barcode mr-2"></i>開始掃描';
+                    btn.disabled = false;
+                }, 2000);
+            }, 1500);
+        }
+
+        function addToList() {
+            const item = {
+                name: '有機棉 T-Shirt',
+                brand: 'Patagonia',
+                score: 92,
+                carbon: 2.1,
+                icon: '👕'
+            };
+            
+            shoppingItems.push(item);
+            updateShoppingList();
+            
+            // Update weekly impact
+            weeklyImpact += item.carbon;
+            document.getElementById('weekly-impact').textContent = weeklyImpact.toFixed(1);
+            
+            // Visual feedback
+            const btn = document.querySelector('button[onclick="addToList()"]');
+            btn.innerHTML = '<i class="fas fa-check mr-2"></i>已加入';
+            btn.classList.add('bg-emerald-600');
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-plus mr-2"></i>加入購物清單';
+                btn.classList.remove('bg-emerald-600');
+            }, 1500);
+        }
+
+        function updateShoppingList() {
+            const listContainer = document.getElementById('shopping-list');
+            const summary = document.getElementById('list-summary');
+            const count = document.getElementById('list-count');
+            
+            count.textContent = shoppingItems.length + ' 件';
+            
+            if (shoppingItems.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="glass-card rounded-xl p-4 text-center text-white/40">
+                        <i class="fas fa-shopping-basket text-3xl mb-2"></i>
+                        <p class="text-sm">清單暫時為空</p>
+                        <p class="text-xs">掃描產品並加入清單</p>
+                    </div>
+                `;
+                summary.classList.add('hidden');
+            } else {
+                let html = '';
+                let totalScore = 0;
+                let totalCarbon = 0;
+                
+                shoppingItems.forEach((item, index) => {
+                    totalScore += item.score;
+                    totalCarbon += item.carbon;
+                    
+                    let scoreColor = item.score >= 90 ? 'text-emerald-400' : item.score >= 70 ? 'text-amber-400' : 'text-red-400';
+                    
+                    html += `
+                        <div class="glass-card rounded-xl p-3 flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center text-2xl">
+                                ${item.icon}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-semibold truncate">${item.name}</p>
+                                <p class="text-xs text-white/60">${item.brand}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="${scoreColor} font-bold">${item.score}</span>
+                                <p class="text-xs text-emerald-400">-${item.carbon}kg</p>
+                            </div>
+                            <button onclick="removeItem(${index})" class="p-2 text-white/40 hover:text-red-400">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+                
+                listContainer.innerHTML = html;
+                summary.classList.remove('hidden');
+                
+                const avgScore = Math.round(totalScore / shoppingItems.length);
+                document.getElementById('list-score').textContent = avgScore;
+                document.getElementById('list-carbon').textContent = totalCarbon.toFixed(1) + ' kg';
+            }
+        }
+
+        function removeItem(index) {
+            weeklyImpact -= shoppingItems[index].carbon;
+            document.getElementById('weekly-impact').textContent = weeklyImpact.toFixed(1);
+            shoppingItems.splice(index, 1);
+            updateShoppingList();
+        }
+
+        function showCategory(category) {
+            // Simulate showing category products
+            const categories = {
+                fashion: '時尚類別',
+                food: '食品類別',
+                home: '家居類別',
+                beauty: '美容類別'
+            };
+            alert(`正在載入 ${categories[category]} 的熱門可持續產品...`);
+        }
+    </script>
+</body>
+</html>

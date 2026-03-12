@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全球伙伴 | Global Partners - SDG 17</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #19486a;
+            --primary-light: #2d5f87;
+            --primary-dark: #0f2d42;
+            --accent: #fcc30b;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 24px 0 32px;
+            position: relative;
+        }
+
+        .sdg-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .sdg-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        /* Network Visual */
+        .network-visual {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: var(--radius-lg);
+            padding: 32px 24px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .network-visual::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(252, 195, 11, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .network-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .partnership-score {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .score-label {
+            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .score-value {
+            color: white;
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .score-sublabel {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* Connection Nodes */
+        .connection-nodes {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .node {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .node:hover, .node.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .node.connected {
+            background: rgba(252, 195, 11, 0.3);
+            border-color: var(--accent);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(252, 195, 11, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(252, 195, 11, 0.8); }
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 16px 12px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Quick Actions */
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .action-card {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .action-card.completed {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .action-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .action-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Partnership Log */
+        .log-section {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .log-entry {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .log-content {
+            flex: 1;
+        }
+
+        .log-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .log-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Tip Carousel */
+        .tip-card {
+            background: linear-gradient(135deg, #fef9e7 0%, #fcf3cf 100%);
+            border: 1px solid #f9e79f;
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .tip-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .tip-text {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow: hidden;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .modal-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 20px;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-family: inherit;
+            background: white;
+            cursor: pointer;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            padding: 0 20px 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Impact Visualization */
+        .impact-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .impact-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, #f39c12 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Connection Lines Animation */
+        .connection-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(252, 195, 11, 0.5), transparent);
+            transform-origin: left center;
+            animation: linePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes linePulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="sdg-badge">SDG 17 - Partnerships</div>
+            <h1>全球伙伴</h1>
+            <p class="subtitle">攜手共創永續未來</p>
+        </header>
+
+        <!-- Network Visual -->
+        <div class="network-visual">
+            <div class="connection-lines" id="connectionLines"></div>
+            <div class="network-content">
+                <div class="partnership-score">
+                    <div class="score-label">伙伴關係指數</div>
+                    <div class="score-value" id="partnershipScore">42</div>
+                    <div class="score-sublabel">連結的力量</div>
+                </div>
+                <div class="connection-nodes" id="connectionNodes">
+                    <div class="node" data-type="individual">👤</div>
+                    <div class="node" data-type="community">👥</div>
+                    <div class="node connected" data-type="organization">🏢</div>
+                    <div class="node" data-type="global">🌍</div>
+                    <div class="node connected" data-type="knowledge">📚</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="collabCount">7</div>
+                <div class="stat-label">合作項目</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="networkSize">23</div>
+                <div class="stat-label">網絡規模</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="impactScore">156</div>
+                <div class="stat-label">影響力</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="section-title">今日伙伴行動</div>
+        <div class="actions-grid" id="actionsGrid">
+            <div class="action-card" data-action="share">
+                <div class="action-icon">🔄</div>
+                <div class="action-name">分享資源</div>
+            </div>
+            <div class="action-card" data-action="connect">
+                <div class="action-icon">🤝</div>
+                <div class="action-name">建立連結</div>
+            </div>
+            <div class="action-card completed" data-action="learn">
+                <div class="action-icon">📖</div>
+                <div class="action-name">知識交流</div>
+            </div>
+            <div class="action-card" data-action="support">
+                <div class="action-icon">💪</div>
+                <div class="action-name">互相支持</div>
+            </div>
+        </div>
+
+        <!-- Partnership Log -->
+        <div class="log-section">
+            <div class="section-title">伙伴日誌</div>
+            <div id="logContainer">
+                <div class="log-entry">
+                    <div class="log-icon">🤝</div>
+                    <div class="log-content">
+                        <div class="log-title">與本地環保組織建立聯繫</div>
+                        <div class="log-meta">今日 · 合作項目 +1</div>
+                        <div class="impact-bar">
+                            <div class="impact-fill" style="width: 70%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="log-entry">
+                    <div class="log-icon">📚</div>
+                    <div class="log-content">
+                        <div class="log-title">參加永續發展線上研討會</div>
+                        <div class="log-meta">昨日 · 知識交流</div>
+                        <div class="impact-bar">
+                            <div class="impact-fill" style="width: 45%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="log-entry">
+                    <div class="log-icon">🔄</div>
+                    <div class="log-content">
+                        <div class="log-title">分享 SDG 教育資源給同事</div>
+                        <div class="log-meta">3天前 · 資源分享</div>
+                        <div class="impact-bar">
+                            <div class="impact-fill" style="width: 30%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Tip -->
+        <div class="tip-card">
+            <div class="tip-icon">💡</div>
+            <div class="tip-text" id="tipText">
+                「沒有任何一個國家能夠單獨實現永續發展目標。唯有通過全球伙伴關係，我們才能創造更美好的未來。」— 聯合國秘書長
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon" id="modalIcon">🤝</div>
+                <div class="modal-title" id="modalTitle">記錄伙伴行動</div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">行動類型</label>
+                    <select class="form-select" id="actionType">
+                        <option value="share">分享資源</option>
+                        <option value="connect">建立連結</option>
+                        <option value="learn">知識交流</option>
+                        <option value="support">互相支持</option>
+                        <option value="collab">合作項目</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">描述</label>
+                    <input type="text" class="form-input" id="actionDesc" placeholder="描述你的伙伴行動...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">相關 SDGs</label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="sdg1" value="1">
+                        <label for="sdg1">SDG 1-6</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="sdg2" value="2">
+                        <label for="sdg2">SDG 7-12</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="sdg3" value="3">
+                        <label for="sdg3">SDG 13-17</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveAction()">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let partnershipScore = 42;
+        let actions = {
+            share: false,
+            connect: false,
+            learn: true,
+            support: false
+        };
+
+        const tips = [
+            "「沒有任何一個國家能夠單獨實現永續發展目標。唯有通過全球伙伴關係，我們才能創造更美好的未來。」— 聯合國秘書長",
+            "分享知識是建立伙伴關係的基礎。你今天學到了什麼可以分享給他人？",
+            "跨領域合作能激發創新。試著與不同背景的人交流想法！",
+            "小型行動也能產生漣漪效應。每一次連結都是改變的開始。",
+            "支持本地社區是實現全球目標的重要一步。"
+        ];
+
+        // Action Cards
+        document.querySelectorAll('.action-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const action = card.dataset.action;
+                openModal(action);
+            });
+        });
+
+        // Connection Nodes
+        document.querySelectorAll('.node').forEach(node => {
+            node.addEventListener('click', () => {
+                node.classList.toggle('connected');
+                updateScore();
+            });
+        });
+
+        // Modal Functions
+        function openModal(action) {
+            const modal = document.getElementById('modal');
+            const icons = {
+                share: '🔄',
+                connect: '🤝',
+                learn: '📖',
+                support: '💪',
+                collab: '🎯'
+            };
+            const titles = {
+                share: '分享資源',
+                connect: '建立連結',
+                learn: '知識交流',
+                support: '互相支持',
+                collab: '合作項目'
+            };
+            
+            document.getElementById('modalIcon').textContent = icons[action] || '🤝';
+            document.getElementById('modalTitle').textContent = titles[action] || '記錄伙伴行動';
+            document.getElementById('actionType').value = action;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.getElementById('actionDesc').value = '';
+        }
+
+        function saveAction() {
+            const type = document.getElementById('actionType').value;
+            const desc = document.getElementById('actionDesc').value || '完成伙伴行動';
+            
+            // Update action card
+            const card = document.querySelector(`[data-action="${type}"]`);
+            if (card) {
+                card.classList.add('completed');
+                actions[type] = true;
+            }
+            
+            // Add to log
+            addLogEntry(type, desc);
+            
+            // Update score
+            partnershipScore += 5;
+            updateScore();
+            
+            closeModal();
+        }
+
+        function addLogEntry(type, desc) {
+            const icons = {
+                share: '🔄',
+                connect: '🤝',
+                learn: '📖',
+                support: '💪',
+                collab: '🎯'
+            };
+            
+            const container = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `
+                <div class="log-icon">${icons[type] || '🤝'}</div>
+                <div class="log-content">
+                    <div class="log-title">${desc}</div>
+                    <div class="log-meta">剛剛 · 伙伴行動</div>
+                    <div class="impact-bar">
+                        <div class="impact-fill" style="width: 60%"></div>
+                    </div>
+                </div>
+            `;
+            container.insertBefore(entry, container.firstChild);
+        }
+
+        function updateScore() {
+            const connectedNodes = document.querySelectorAll('.node.connected').length;
+            partnershipScore = 42 + (connectedNodes * 10) + (Object.values(actions).filter(a => a).length * 5);
+            document.getElementById('partnershipScore').textContent = partnershipScore;
+        }
+
+        // Rotate tips
+        let tipIndex = 0;
+        setInterval(() => {
+            tipIndex = (tipIndex + 1) % tips.length;
+            document.getElementById('tipText').textContent = tips[tipIndex];
+        }, 10000);
+
+        // Generate connection lines
+        function generateLines() {
+            const container = document.getElementById('connectionLines');
+            const nodes = document.querySelectorAll('.node');
+            
+            nodes.forEach((node, i) => {
+                if (i < nodes.length - 1) {
+                    const line = document.createElement('div');
+                    line.className = 'line';
+                    line.style.width = '60px';
+                    line.style.left = `${20 + i * 60}px`;
+                    line.style.top = '50%';
+                    line.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+                    line.style.animationDelay = `${i * 0.5}s`;
+                    container.appendChild(line);
+                }
+            });
+        }
+
+        generateLines();
+
+        // Close modal on overlay click
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.id === 'modal') closeModal();
+        });
+    </script>
+</body>
+</html>

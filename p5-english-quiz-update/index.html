@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小五英文測驗 - 蝦仔出題</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- ResponsiveVoice for better TTS -->
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=ktuS1y2e"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .shrimp-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #5a67d8;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Menu Buttons */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .menu-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 25px 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            min-height: 120px;
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .menu-btn:active {
+            transform: scale(0.98);
+        }
+
+        .menu-btn .icon {
+            font-size: 2rem;
+        }
+
+        .menu-btn.secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .menu-btn.success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .menu-btn.warning {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        /* Quiz Mode Selection */
+        .quiz-mode-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            background: #f7fafc;
+            border: 3px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .mode-btn:hover {
+            border-color: #667eea;
+            background: #e0e7ff;
+        }
+
+        .mode-btn.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* Quiz Section */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .quiz-progress {
+            font-size: 1rem;
+            color: #718096;
+            font-weight: 600;
+        }
+
+        .quiz-score {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #5a67d8;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Question */
+        .question-card {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .question-type {
+            font-size: 0.85rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2d3748;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .word-highlight {
+            color: #5a67d8;
+            background: #e0e7ff;
+            padding: 2px 8px;
+            border-radius: 5px;
+        }
+
+        /* Options */
+        .options-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 20px 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-height: 70px;
+        }
+
+        .option-btn:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+        }
+
+        .option-btn:active {
+            transform: scale(0.98);
+        }
+
+        .option-btn.selected {
+            border-color: #667eea;
+            background: #e0e7ff;
+        }
+
+        .option-btn.correct {
+            border-color: #48bb78;
+            background: #c6f6d5;
+        }
+
+        .option-btn.wrong {
+            border-color: #f56565;
+            background: #fed7d7;
+        }
+
+        .option-letter {
+            width: 40px;
+            height: 40px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #4a5568;
+            flex-shrink: 0;
+        }
+
+        .option-btn.selected .option-letter {
+            background: #667eea;
+            color: white;
+        }
+
+        .option-btn.correct .option-letter {
+            background: #48bb78;
+            color: white;
+        }
+
+        .option-btn.wrong .option-letter {
+            background: #f56565;
+            color: white;
+        }
+
+        /* Fill in the blank */
+        .fill-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.3rem;
+            border: 3px solid #e2e8f0;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .fill-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .sentence-context {
+            font-size: 1.1rem;
+            color: #718096;
+            margin-top: 15px;
+            padding: 15px;
+            background: #e6fffa;
+            border-radius: 10px;
+            border-left: 4px solid #38b2ac;
+        }
+
+        /* Action Buttons */
+        .action-btns {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 60px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Feedback */
+        .feedback {
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.correct {
+            display: block;
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .feedback.wrong {
+            display: block;
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .feedback .explanation {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        /* Results */
+        .result-summary {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .result-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .result-message {
+            font-size: 1.3rem;
+            color: #4a5568;
+            margin-bottom: 30px;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #5a67d8;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        /* Vocabulary List */
+        .vocab-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .vocab-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.2s;
+        }
+
+        .vocab-item:hover {
+            background: #f7fafc;
+        }
+
+        .vocab-left {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .vocab-word {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .vocab-ipa {
+            font-size: 0.95rem;
+            color: #667eea;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .vocab-type {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-left: 8px;
+        }
+
+        .vocab-meaning {
+            color: #4a5568;
+            font-size: 1rem;
+            text-align: right;
+        }
+
+        .vocab-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .vocab-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .vocab-btn.pronounce {
+            background: #e0e7ff;
+            color: #5a67d8;
+        }
+
+        .vocab-btn.pronounce:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Hidden sections */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Hint Box */
+        .hint-box {
+            background: #fef5e7;
+            border-left: 4px solid #f6ad55;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .hint-title {
+            font-weight: 700;
+            color: #c05621;
+            margin-bottom: 5px;
+        }
+
+        .hint-text {
+            color: #744210;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-mode-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-btns {
+                flex-direction: column;
+            }
+
+            .vocab-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .vocab-meaning {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="shrimp-icon">🦐</div>
+            <h1>小五英文測驗</h1>
+            <p class="subtitle">蝦仔幫你溫書 ❤️‍🔥</p>
+        </div>
+
+        <!-- Main Menu -->
+        <div id="menu-section" class="section active">
+            <div class="card">
+                <h2 class="card-title">📚 選擇測驗類型</h2>
+                <div class="menu-grid">
+                    <button class="menu-btn" onclick="showQuizModeSelection('unit2')">
+                        <span class="icon">🏠</span>
+                        <span>Unit 2<br>家居</span>
+                    </button>
+                    <button class="menu-btn" onclick="showQuizModeSelection('unit3')">
+                        <span class="icon">🏆</span>
+                        <span>Unit 3<br>運動比賽</span>
+                    </button>
+                    <button class="menu-btn" onclick="showQuizModeSelection('unit4')">
+                        <span class="icon">🍽️</span>
+                        <span>Unit 4<br>外出用餐</span>
+                    </button>
+                    <button class="menu-btn warning" onclick="startFillInBlankQuiz()">
+                        <span class="icon">✍️</span>
+                        <span>填空題練習</span>
+                    </button>
+                    <button class="menu-btn secondary" onclick="startGrammarQuiz()">
+                        <span class="icon">✏️</span>
+                        <span>文法練習</span>
+                    </button>
+                    <button class="menu-btn secondary" onclick="startMixedQuiz()">
+                        <span class="icon">🎲</span>
+                        <span>混合測驗</span>
+                    </button>
+                    <button class="menu-btn success" onclick="showVocabulary()">
+                        <span class="icon">📖</span>
+                        <span>溫習生字<br>+讀音</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Mode Selection -->
+        <div id="quiz-mode-section" class="section">
+            <div class="card">
+                <h2 class="card-title">🎯 選擇題目類型</h2>
+                <p style="margin-bottom: 20px; color: #718096;">揀你想練習嘅模式：</p>
+                
+                <div class="quiz-mode-grid">
+                    <button class="mode-btn" onclick="selectQuizMode('choice')">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">🔘</div>
+                        <div>選擇題</div>
+                        <div style="font-size: 0.85rem; color: #718096; margin-top: 5px;">揀正確答案</div>
+                    </button>
+                    <button class="mode-btn" onclick="selectQuizMode('fill')">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">✍️</div>
+                        <div>填空題</div>
+                        <div style="font-size: 0.85rem; color: #718096; margin-top: 5px;">填入生字</div>
+                    </button>
+                </div>
+
+                <button class="btn btn-secondary" onclick="backToMenu()" style="width: 100%; margin-top: 20px;">返回選單</button>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quiz-section" class="section">
+            <div class="card">
+                <div class="quiz-header">
+                    <span class="quiz-progress">題目 <span id="current-q">1</span> / <span id="total-q">10</span></span>
+                    <span class="quiz-score">得分: <span id="score">0</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-bar" style="width: 10%"></div>
+                </div>
+
+                <div id="question-container">
+                    <!-- Question will be inserted here -->
+                </div>
+
+                <div class="action-btns">
+                    <button class="btn btn-secondary" onclick="backToMenu()">返回選單</button>
+                    <button class="btn btn-primary" id="check-btn" onclick="checkAnswer()">檢查答案</button>
+                    <button class="btn btn-success" id="next-btn" onclick="nextQuestion()" style="display:none">下一題</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="section">
+            <div class="card">
+                <div class="result-summary">
+                    <div class="result-score"><span id="final-score">0</span>%</div>
+                    <p class="result-message" id="result-message">做得好！</p>
+                    
+                    <div class="result-stats">
+                        <div class="stat-box">
+                            <div class="stat-number" id="correct-count">0</div>
+                            <div class="stat-label">答對</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" id="wrong-count">0</div>
+                            <div class="stat-label">答錯</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" id="total-count">0</div>
+                            <div class="stat-label">總題數</div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="backToMenu()" style="width: 100%;">返回主選單</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vocabulary Section -->
+        <div id="vocab-section" class="section">
+            <div class="card">
+                <h2 class="card-title">📖 溫習生字 + 讀音</h2>
+                <div class="menu-grid" style="margin-bottom: 20px;">
+                    <button class="menu-btn" onclick="showUnitVocab('unit2')">Unit 2 - 家居</button>
+                    <button class="menu-btn" onclick="showUnitVocab('unit3')">Unit 3 - 運動比賽</button>
+                    <button class="menu-btn" onclick="showUnitVocab('unit4')">Unit 4 - 外出用餐</button>
+                </div>
+                
+                <div class="hint-box">
+                    <div class="hint-title">💡 學習小貼士</div>
+                    <div class="hint-text">撳「🔊 讀音」按鈕可以聽到生字嘅發音，幫助你學習正確讀法！</div>
+                </div>
+
+                <div id="vocab-list-container" class="vocab-list">
+                    <!-- Vocabulary list will be inserted here -->
+                </div>
+                <button class="btn btn-secondary" onclick="backToMenu()" style="width: 100%; margin-top: 20px;">返回主選單</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz State
+        let quizData = null;
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let selectedOption = null;
+        let answered = false;
+        let selectedUnit = null;
+        let selectedMode = null;
+
+        // Load quiz data
+        async function loadQuizData() {
+            try {
+                const response = await fetch('data/quiz-data.json');
+                quizData = await response.json();
+            } catch (error) {
+                console.error('Failed to load quiz data:', error);
+                quizData = getFallbackData();
+            }
+        }
+
+        function getFallbackData() {
+            return {
+                units: [
+                    {
+                        id: 'unit2',
+                        name: 'Unit 2 - 家居',
+                        vocabulary: [
+                            {word: 'apartment', ipa: '/əˈpɑːrtmənt/', type: 'n.', meaning: '公寓'},
+                            {word: 'furniture', ipa: '/ˈfɜːrnɪtʃər/', type: 'n.', meaning: '傢俬'},
+                            {word: 'spacious', ipa: '/ˈspeɪʃəs/', type: 'adj.', meaning: '寬敞的'}
+                        ]
+                    }
+                ],
+                fill_in_blanks: [],
+                grammar: { tenses: [], articles: [], relative_pronouns: [] }
+            };
+        }
+
+        // Show quiz mode selection
+        function showQuizModeSelection(unitId) {
+            selectedUnit = unitId;
+            document.getElementById('menu-section').classList.remove('active');
+            document.getElementById('quiz-mode-section').classList.add('active');
+            
+            // Reset mode buttons
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+        }
+
+        // Select quiz mode
+        function selectQuizMode(mode) {
+            selectedMode = mode;
+            
+            // Update UI
+            document.querySelectorAll('.mode-btn').forEach((btn, index) => {
+                btn.classList.remove('active');
+                if ((mode === 'choice' && index === 0) || (mode === 'fill' && index === 1)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Start quiz after short delay
+            setTimeout(() => {
+                if (mode === 'choice') {
+                    startVocabQuiz(selectedUnit);
+                } else {
+                    startUnitFillInBlank(selectedUnit);
+                }
+            }, 300);
+        }
+
+        // Generate vocabulary questions (choice mode)
+        function generateVocabQuestions(unitId, count = 10) {
+            const unit = quizData.units.find(u => u.id === unitId);
+            if (!unit) return [];
+
+            const questions = [];
+            const vocab = [...unit.vocabulary];
+            
+            for (let i = vocab.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [vocab[i], vocab[j]] = [vocab[j], vocab[i]];
+            }
+
+            for (let i = 0; i < Math.min(count, vocab.length); i++) {
+                const word = vocab[i];
+                const questionType = Math.random() > 0.5 ? 'meaning_to_word' : 'word_to_meaning';
+                
+                if (questionType === 'meaning_to_word') {
+                    const options = [word.word];
+                    const otherWords = vocab.filter(w => w.word !== word.word);
+                    
+                    while (options.length < 4 && otherWords.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * otherWords.length);
+                        const randomWord = otherWords[randomIndex].word;
+                        if (!options.includes(randomWord)) {
+                            options.push(randomWord);
+                        }
+                        otherWords.splice(randomIndex, 1);
+                    }
+                    
+                    for (let j = options.length - 1; j > 0; j--) {
+                        const k = Math.floor(Math.random() * (j + 1));
+                        [options[j], options[k]] = [options[k], options[j]];
+                    }
+
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: `"${word.meaning}" 的英文是什麼？`,
+                        word: word.word,
+                        ipa: word.ipa,
+                        options: options,
+                        answer: options.indexOf(word.word),
+                        explanation: `${word.word} ${word.ipa} (${word.type}) = ${word.meaning}`
+                    });
+                } else {
+                    const options = [word.meaning];
+                    const otherWords = vocab.filter(w => w.word !== word.word);
+                    
+                    while (options.length < 4 && otherWords.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * otherWords.length);
+                        const randomMeaning = otherWords[randomIndex].meaning;
+                        if (!options.includes(randomMeaning)) {
+                            options.push(randomMeaning);
+                        }
+                        otherWords.splice(randomIndex, 1);
+                    }
+                    
+                    for (let j = options.length - 1; j > 0; j--) {
+                        const k = Math.floor(Math.random() * (j + 1));
+                        [options[j], options[k]] = [options[k], options[j]];
+                    }
+
+                    questions.push({
+                        type: 'multiple_choice',
+                        question: `"${word.word}" ${word.ipa} 是什麼意思？`,
+                        word: word.word,
+                        ipa: word.ipa,
+                        options: options,
+                        answer: options.indexOf(word.meaning),
+                        explanation: `${word.word} ${word.ipa} (${word.type}) = ${word.meaning}`
+                    });
+                }
+            }
+
+            return questions;
+        }
+
+        // Generate fill in blank questions for unit
+        function generateUnitFillInBlank(unitId, count = 10) {
+            const unit = quizData.units.find(u => u.id === unitId);
+            if (!unit) return [];
+
+            const questions = [];
+            const vocab = [...unit.vocabulary].filter(w => w.word.indexOf(' ') === -1); // Only single words
+            
+            for (let i = vocab.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [vocab[i], vocab[j]] = [vocab[j], vocab[i]];
+            }
+
+            const sentenceTemplates = [
+                { template: "The _____ is very important for our home.", context: "這個_____對我們的家很重要。" },
+                { template: "Please help me _____ the room.", context: "請幫我_____房間。" },
+                { template: "I like this _____ very much.", context: "我很喜歡這個_____。" },
+                { template: "We need to buy a new _____.", context: "我們需要買一個新的_____。" },
+                { template: "The _____ looks very nice.", context: "這個_____看起來很好。" },
+                { template: "Can you see the _____ over there?", context: "你能看到那邊的_____嗎？" },
+                { template: "My mother likes to _____ every day.", context: "我媽媽喜歡每天_____。" },
+                { template: "This _____ is very useful.", context: "這個_____很有用。" },
+                { template: "We should keep the _____ clean.", context: "我們應該保持_____乾淨。" },
+                { template: "The _____ makes me feel happy.", context: "這個_____令我感到開心。" }
+            ];
+
+            for (let i = 0; i < Math.min(count, vocab.length); i++) {
+                const word = vocab[i];
+                const template = sentenceTemplates[i % sentenceTemplates.length];
+                
+                questions.push({
+                    type: 'fill_blank',
+                    question: template.template.replace('_____', '______'),
+                    answer: word.word,
+                    ipa: word.ipa,
+                    chinese: template.context.replace('_____', word.meaning),
+                    hint: word.meaning,
+                    explanation: `${word.word} ${word.ipa} = ${word.meaning}`
+                });
+            }
+
+            return questions;
+        }
+
+        // Start fill in blank quiz for unit
+        function startUnitFillInBlank(unitId) {
+            currentQuestions = generateUnitFillInBlank(unitId, 10);
+            startQuiz();
+        }
+
+        // Start general fill in blank quiz
+        function startFillInBlankQuiz() {
+            if (quizData.fill_in_blanks && quizData.fill_in_blanks.length > 0) {
+                const blanks = [...quizData.fill_in_blanks];
+                for (let i = blanks.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [blanks[i], blanks[j]] = [blanks[j], blanks[i]];
+                }
+                
+                currentQuestions = blanks.slice(0, 10).map(q => ({
+                    type: 'fill_blank',
+                    question: q.sentence,
+                    answer: q.answer,
+                    chinese: q.chinese,
+                    hint: q.answer,
+                    explanation: `${q.answer} = ${q.chinese}`
+                }));
+            } else {
+                // Fallback: use unit fill in blank
+                currentQuestions = generateUnitFillInBlank('unit4', 10);
+            }
+            startQuiz();
+        }
+
+        // Start vocabulary quiz
+        function startVocabQuiz(unitId) {
+            currentQuestions = generateVocabQuestions(unitId, 10);
+            startQuiz();
+        }
+
+        // Start grammar quiz
+        function startGrammarQuiz() {
+            const grammarQuestions = [];
+            
+            if (quizData.grammar.tenses) {
+                grammarQuestions.push(...quizData.grammar.tenses);
+            }
+            if (quizData.grammar.articles) {
+                grammarQuestions.push(...quizData.grammar.articles);
+            }
+            if (quizData.grammar.relative_pronouns) {
+                grammarQuestions.push(...quizData.grammar.relative_pronouns);
+            }
+
+            for (let i = grammarQuestions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [grammarQuestions[i], grammarQuestions[j]] = [grammarQuestions[j], grammarQuestions[i]];
+            }
+
+            currentQuestions = grammarQuestions.slice(0, 10);
+            startQuiz();
+        }
+
+        // Start mixed quiz
+        function startMixedQuiz() {
+            const allQuestions = [];
+            
+            quizData.units.forEach(unit => {
+                allQuestions.push(...generateVocabQuestions(unit.id, 2));
+            });
+
+            if (quizData.grammar.tenses) {
+                allQuestions.push(...quizData.grammar.tenses.slice(0, 3));
+            }
+
+            for (let i = allQuestions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
+            }
+
+            currentQuestions = allQuestions.slice(0, 10);
+            startQuiz();
+        }
+
+        // Start quiz
+        function startQuiz() {
+            if (currentQuestions.length === 0) {
+                alert('暫時沒有題目，請先檢查資料！');
+                return;
+            }
+
+            currentQuestionIndex = 0;
+            score = 0;
+            correctAnswers = 0;
+            answered = false;
+            selectedOption = null;
+
+            document.getElementById('menu-section').classList.remove('active');
+            document.getElementById('quiz-mode-section').classList.remove('active');
+            document.getElementById('quiz-section').classList.add('active');
+            document.getElementById('results-section').classList.remove('active');
+
+            updateProgress();
+            showQuestion();
+        }
+
+        // Show current question
+        function showQuestion() {
+            const question = currentQuestions[currentQuestionIndex];
+            const container = document.getElementById('question-container');
+            
+            answered = false;
+            selectedOption = null;
+
+            let html = `
+                <div class="question-card">
+                    <div class="question-type">第 ${currentQuestionIndex + 1} 題${question.ipa ? ' • 讀音: ' + question.ipa : ''}</div>
+                    <div class="question-text">${question.question}</div>
+                </div>
+            `;
+
+            if (question.type === 'multiple_choice') {
+                html += '<div class="options-grid">';
+                question.options.forEach((option, index) => {
+                    const letter = ['A', 'B', 'C', 'D'][index];
+                    html += `
+                        <button class="option-btn" onclick="selectOption(${index})" data-index="${index}">
+                            <span class="option-letter">${letter}</span>
+                            <span>${option}</span>
+                        </button>
+                    `;
+                });
+                html += '</div>';
+            } else if (question.type === 'fill_blank') {
+                html += `
+                    <input type="text" class="fill-input" id="fill-answer" placeholder="請輸入答案 (小寫即可)..." autocomplete="off">
+                `;
+            }
+
+            html += '<div id="feedback" class="feedback"></div>';
+
+            container.innerHTML = html;
+
+            document.getElementById('check-btn').style.display = 'block';
+            document.getElementById('check-btn').disabled = false;
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        // Select option
+        function selectOption(index) {
+            if (answered) return;
+
+            selectedOption = index;
+            
+            document.querySelectorAll('.option-btn').forEach((btn, i) => {
+                btn.classList.remove('selected');
+                if (i === index) {
+                    btn.classList.add('selected');
+                }
+            });
+        }
+
+        // Text to speech with multiple fallback options
+        let currentVoice = null;
+        let availableVoices = [];
+        
+        // Initialize voices
+        function initVoices() {
+            if ('speechSynthesis' in window) {
+                availableVoices = speechSynthesis.getVoices();
+                
+                // 揀個最靚嘅聲音
+                const preferredVoices = [
+                    'Google US English',
+                    'Samantha',  // macOS 靚聲
+                    'Daniel',    // macOS 英國腔
+                    'Google UK English Female',
+                    'Microsoft Zira - English (United States)',
+                    'Microsoft David - English (United States)',
+                    'Google UK English Male',
+                    'Karen',     // macOS 澳洲腔
+                    'Victoria',  // macOS
+                    'Alex'       // macOS
+                ];
+                
+                for (const voiceName of preferredVoices) {
+                    const voice = availableVoices.find(v => v.name.includes(voiceName));
+                    if (voice) {
+                        currentVoice = voice;
+                        console.log('Selected voice:', voice.name);
+                        break;
+                    }
+                }
+                
+                // 如果揀唔到，用第一個英文聲
+                if (!currentVoice) {
+                    currentVoice = availableVoices.find(v => v.lang.startsWith('en'));
+                }
+            }
+        }
+        
+        // Preload voices
+        if ('speechSynthesis' in window) {
+            initVoices();
+            speechSynthesis.onvoiceschanged = initVoices;
+        }
+        
+        // Speak word with better voice
+        async function speakWord(word) {
+            // 先試 ResponsiveVoice（如果 load 咗）
+            if (typeof responsiveVoice !== 'undefined' && responsiveVoice.isPlaying() === false) {
+                responsiveVoice.speak(word, "UK English Female", {
+                    rate: 0.9,
+                    pitch: 1,
+                    volume: 1
+                });
+                return;
+            }
+            
+            // Fallback to Web Speech API
+            fallbackSpeak(word);
+        }
+
+        // Fallback speech using Web Speech API
+        function fallbackSpeak(word) {
+            if (!('speechSynthesis' in window)) {
+                alert('你的瀏覽器不支持語音功能');
+                return;
+            }
+            
+            // 停咗舊嘅
+            speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-GB';  // 英國腔通常靚啲
+            utterance.rate = 0.75;     // 慢啲清楚啲
+            utterance.pitch = 1;       // 正常音調
+            
+            if (currentVoice) {
+                utterance.voice = currentVoice;
+            }
+            
+            speechSynthesis.speak(utterance);
+        }
+        
+        // Get voice quality info
+        function getVoiceInfo() {
+            if (currentVoice) {
+                return `🎙️ 現用聲音: ${currentVoice.name}`;
+            }
+            return '🎙️ 使用預設聲音';
+        }
+
+        // Check answer
+        function checkAnswer() {
+            if (answered) return;
+
+            const question = currentQuestions[currentQuestionIndex];
+            const feedbackEl = document.getElementById('feedback');
+            
+            let isCorrect = false;
+
+            if (question.type === 'multiple_choice') {
+                if (selectedOption === null) {
+                    alert('請選擇一個答案！');
+                    return;
+                }
+                isCorrect = selectedOption === question.answer;
+            } else if (question.type === 'fill_blank') {
+                const inputEl = document.getElementById('fill-answer');
+                if (!inputEl) return;
+                
+                const answer = inputEl.value.trim().toLowerCase();
+                if (!answer) {
+                    alert('請輸入答案！');
+                    return;
+                }
+                
+                // Check if answer matches (support multiple forms)
+                const correctAnswers = question.answer.toLowerCase().split('/').map(a => a.trim());
+                isCorrect = correctAnswers.includes(answer);
+                
+                // Also check without spaces for phrases
+                if (!isCorrect && answer.replace(/\s/g, '') === question.answer.toLowerCase().replace(/\s/g, '')) {
+                    isCorrect = true;
+                }
+            }
+
+            answered = true;
+
+            if (question.type === 'multiple_choice') {
+                document.querySelectorAll('.option-btn').forEach((btn, i) => {
+                    if (i === question.answer) {
+                        btn.classList.add('correct');
+                    } else if (i === selectedOption && !isCorrect) {
+                        btn.classList.add('wrong');
+                    }
+                });
+            }
+
+            if (isCorrect) {
+                score += 10;
+                correctAnswers++;
+                feedbackEl.className = 'feedback correct';
+                feedbackEl.innerHTML = `✅ 正確！${question.ipa ? '<br>讀音: ' + question.ipa : ''}<div class="explanation">${question.explanation || ''}</div>`;
+                
+                // Auto pronounce correct word
+                if (question.word || question.answer) {
+                    const wordToSpeak = question.word || question.answer.split('/')[0].trim();
+                    setTimeout(() => speakWord(wordToSpeak), 500);
+                }
+            } else {
+                feedbackEl.className = 'feedback wrong';
+                const correctAnswer = question.type === 'multiple_choice' 
+                    ? question.options[question.answer] 
+                    : question.answer;
+                let wrongFeedback = `❌ 錯誤！正確答案是: <strong>${correctAnswer}</strong>${question.ipa ? ' ' + question.ipa : ''}`;
+                
+                // 填空題答錯時顯示提示同解釋
+                if (question.type === 'fill_blank') {
+                    if (question.hint || question.answer) {
+                        wrongFeedback += `<div class="hint-box" style="margin-top: 10px; background: #fff3cd;"><div class="hint-title">💡 提示</div><div class="hint-text">${question.hint || question.answer}</div></div>`;
+                    }
+                    if (question.chinese) {
+                        wrongFeedback += `<div class="sentence-context">📝 中文意思：${question.chinese}</div>`;
+                    }
+                }
+                
+                wrongFeedback += `<div class="explanation">${question.explanation || ''}</div>`;
+                feedbackEl.innerHTML = wrongFeedback;
+            }
+
+            document.getElementById('score').textContent = score;
+
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'block';
+
+            if (currentQuestionIndex === currentQuestions.length - 1) {
+                document.getElementById('next-btn').textContent = '查看成績';
+            }
+        }
+
+        // Next question
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                updateProgress();
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // Update progress
+        function updateProgress() {
+            document.getElementById('current-q').textContent = currentQuestionIndex + 1;
+            document.getElementById('total-q').textContent = currentQuestions.length;
+            
+            const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('next-btn').textContent = '下一題';
+        }
+
+        // Show results
+        function showResults() {
+            document.getElementById('quiz-section').classList.remove('active');
+            document.getElementById('results-section').classList.add('active');
+
+            const percentage = Math.round((correctAnswers / currentQuestions.length) * 100);
+            document.getElementById('final-score').textContent = percentage;
+            document.getElementById('correct-count').textContent = correctAnswers;
+            document.getElementById('wrong-count').textContent = currentQuestions.length - correctAnswers;
+            document.getElementById('total-count').textContent = currentQuestions.length;
+
+            let message = '';
+            if (percentage >= 90) {
+                message = '🎉 太棒了！你係英文高手！';
+            } else if (percentage >= 70) {
+                message = '👍 做得好！繼續努力！';
+            } else if (percentage >= 50) {
+                message = '💪 有進步空間，再溫習一下！';
+            } else {
+                message = '📚 再多練習，你一定得嘅！';
+            }
+            document.getElementById('result-message').textContent = message;
+        }
+
+        // Show vocabulary list
+        function showVocabulary() {
+            document.getElementById('menu-section').classList.remove('active');
+            document.getElementById('vocab-section').classList.add('active');
+            showUnitVocab('unit2');
+        }
+
+        // Show specific unit vocabulary
+        function showUnitVocab(unitId) {
+            const unit = quizData.units.find(u => u.id === unitId);
+            if (!unit) return;
+
+            const container = document.getElementById('vocab-list-container');
+            let html = `<h3 style="margin-bottom: 15px; color: #5a67d8;">${unit.name}</h3>`;
+            
+            unit.vocabulary.forEach(item => {
+                html += `
+                    <div class="vocab-item">
+                        <div class="vocab-left">
+                            <div>
+                                <span class="vocab-word">${item.word}</span>
+                                <span class="vocab-type">${item.type}</span>
+                            </div>
+                            <div class="vocab-ipa">${item.ipa || ''}</div>
+                            <div class="vocab-actions">
+                                <button class="vocab-btn pronounce" onclick="speakWord('${item.word}')">🔊 讀音</button>
+                            </div>
+                        </div>
+                        <div class="vocab-meaning">${item.meaning}</div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Back to menu
+        function backToMenu() {
+            selectedUnit = null;
+            selectedMode = null;
+            document.getElementById('menu-section').classList.add('active');
+            document.getElementById('quiz-mode-section').classList.remove('active');
+            document.getElementById('quiz-section').classList.remove('active');
+            document.getElementById('results-section').classList.remove('active');
+            document.getElementById('vocab-section').classList.remove('active');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadQuizData);
+    </script>
+</body>
+</html>

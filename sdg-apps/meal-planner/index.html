@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>永續飲食規劃師 | Sustainable Meal Planner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang HK', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f8f6f3 0%, #f0ece5 100%);
+            color: #3d3d3d;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .header-icon {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #e07a5f 0%, #f4a261 50%, #2a9d8f 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 36px;
+            box-shadow: 0 8px 24px rgba(224, 122, 95, 0.25);
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #7d8597;
+        }
+
+        /* Impact Dashboard */
+        .impact-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .impact-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .impact-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .impact-badge {
+            background: linear-gradient(135deg, #2a9d8f, #264653);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .impact-stat {
+            text-align: center;
+            padding: 16px 8px;
+            background: #f8f6f3;
+            border-radius: 12px;
+            transition: transform 0.2s;
+        }
+
+        .impact-stat:hover {
+            transform: translateY(-2px);
+        }
+
+        .impact-stat-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .impact-stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .impact-stat-label {
+            font-size: 11px;
+            color: #7d8597;
+        }
+
+        .sustainability-score {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f6f3, #f0ece5);
+            border-radius: 16px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#2a9d8f 0deg, #2a9d8f calc(var(--score) * 3.6deg), #e8e4df calc(var(--score) * 3.6deg));
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: '';
+            width: 96px;
+            height: 96px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .score-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #2a9d8f;
+            position: relative;
+            z-index: 1;
+        }
+
+        .score-label {
+            font-size: 13px;
+            color: #7d8597;
+        }
+
+        /* Weekly Calendar */
+        .calendar-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .week-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f8f6f3;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #e8e4df;
+        }
+
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f8f6f3;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .day-cell:hover {
+            background: #f0ece5;
+        }
+
+        .day-cell.active {
+            background: linear-gradient(135deg, #2a9d8f, #264653);
+            color: white;
+            border-color: #2a9d8f;
+        }
+
+        .day-cell.planned {
+            border-color: #2a9d8f;
+        }
+
+        .day-name {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .day-number {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .day-indicator {
+            width: 4px;
+            height: 4px;
+            background: #2a9d8f;
+            border-radius: 50%;
+            margin-top: 4px;
+        }
+
+        .day-cell.active .day-indicator {
+            background: rgba(255,255,255,0.8);
+        }
+
+        /* Meal Sections */
+        .meals-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .meal-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .meal-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+
+        .meal-card.planned {
+            border-left: 4px solid #2a9d8f;
+        }
+
+        .meal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .meal-type {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .meal-type.breakfast {
+            background: linear-gradient(135deg, #f4a261, #e9c46a);
+        }
+
+        .meal-type.lunch {
+            background: linear-gradient(135deg, #2a9d8f, #264653);
+        }
+
+        .meal-type.dinner {
+            background: linear-gradient(135deg, #e07a5f, #f4a261);
+        }
+
+        .meal-type.snack {
+            background: linear-gradient(135deg, #9b5de5, #f15bb5);
+        }
+
+        .meal-info {
+            flex: 1;
+        }
+
+        .meal-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 2px;
+        }
+
+        .meal-time {
+            font-size: 12px;
+            color: #7d8597;
+        }
+
+        .meal-calories {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e07a5f;
+        }
+
+        .meal-details {
+            padding-top: 12px;
+            border-top: 1px solid #f0ece5;
+            margin-top: 12px;
+        }
+
+        .meal-description {
+            font-size: 13px;
+            color: #5d6d7e;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .meal-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .meal-tag {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .meal-tag.local {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .meal-tag.seasonal {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .meal-tag.veggie {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .meal-tag.low-carbon {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .add-meal {
+            text-align: center;
+            padding: 16px;
+            border: 2px dashed #d5d8dc;
+            border-radius: 12px;
+            color: #7d8597;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-meal:hover {
+            border-color: #2a9d8f;
+            color: #2a9d8f;
+            background: #f8f6f3;
+        }
+
+        /* Nutrition Summary */
+        .nutrition-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .nutrition-item {
+            padding: 16px;
+            background: #f8f6f3;
+            border-radius: 12px;
+        }
+
+        .nutrition-label {
+            font-size: 12px;
+            color: #7d8597;
+            margin-bottom: 8px;
+        }
+
+        .nutrition-bar {
+            height: 8px;
+            background: #e8e4df;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .nutrition-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .nutrition-fill.carbs {
+            background: linear-gradient(90deg, #f4a261, #e9c46a);
+        }
+
+        .nutrition-fill.protein {
+            background: linear-gradient(90deg, #2a9d8f, #264653);
+        }
+
+        .nutrition-fill.fat {
+            background: linear-gradient(90deg, #e07a5f, #f4a261);
+        }
+
+        .nutrition-fill.fiber {
+            background: linear-gradient(90deg, #9b5de5, #f15bb5);
+        }
+
+        .nutrition-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Tips Section */
+        .tips-card {
+            background: linear-gradient(135deg, #264653, #2a9d8f);
+            border-radius: 20px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .tips-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .tips-icon {
+            font-size: 24px;
+        }
+
+        .tips-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .tips-content {
+            font-size: 14px;
+            line-height: 1.7;
+            opacity: 0.95;
+        }
+
+        /* Action Buttons */
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2a9d8f, #264653);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(42, 157, 143, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #2c3e50;
+            border: 2px solid #e8e4df;
+        }
+
+        .btn-secondary:hover {
+            border-color: #2a9d8f;
+            color: #2a9d8f;
+        }
+
+        /* Shopping List */
+        .shopping-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .shopping-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0ece5;
+        }
+
+        .shopping-item:last-child {
+            border-bottom: none;
+        }
+
+        .shopping-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #d5d8dc;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .shopping-checkbox:hover {
+            border-color: #2a9d8f;
+        }
+
+        .shopping-checkbox.checked {
+            background: #2a9d8f;
+            border-color: #2a9d8f;
+        }
+
+        .shopping-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 14px;
+        }
+
+        .shopping-text {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .shopping-text.checked {
+            text-decoration: line-through;
+            color: #a0aec0;
+        }
+
+        .shopping-local {
+            font-size: 11px;
+            color: #2a9d8f;
+            background: #d4edda;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #a0aec0;
+            font-size: 12px;
+        }
+
+        .footer-sdgs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .sdg-badge {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .sdg-2 { background: #dda63a; }
+        .sdg-3 { background: #4c9f38; }
+        .sdg-12 { background: #bf8b2e; }
+        .sdg-13 { background: #3f7e44; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-icon">🥗</div>
+            <h1>永續飲食規劃師</h1>
+            <p>Sustainable Meal Planner</p>
+        </div>
+
+        <!-- Impact Dashboard -->
+        <div class="impact-card">
+            <div class="impact-header">
+                <div class="impact-title">本週永續影響力</div>
+                <div class="impact-badge">環保先鋒</div>
+            </div>
+            <div class="impact-grid">
+                <div class="impact-stat">
+                    <div class="impact-stat-icon">🌱</div>
+                    <div class="impact-stat-value">12.5</div>
+                    <div class="impact-stat-label">kg 減碳</div>
+                </div>
+                <div class="impact-stat">
+                    <div class="impact-stat-icon">💧</div>
+                    <div class="impact-stat-value">2,340</div>
+                    <div class="impact-stat-label">L 節水</div>
+                </div>
+                <div class="impact-stat">
+                    <div class="impact-stat-icon">🍽️</div>
+                    <div class="impact-stat-value">0</div>
+                    <div class="impact-stat-label">份剩食</div>
+                </div>
+            </div>
+            <div class="sustainability-score">
+                <div class="score-circle" style="--score: 87;">
+                    <div class="score-value">87</div>
+                </div>
+                <div class="score-label">飲食永續評分</div>
+            </div>
+        </div>
+
+        <!-- Weekly Calendar -->
+        <div class="calendar-card">
+            <div class="card-header">
+                <div class="card-title">本週餐單規劃</div>
+                <div class="week-nav">
+                    <button class="nav-btn">◀</button>
+                    <button class="nav-btn">▶</button>
+                </div>
+            </div>
+            <div class="week-grid">
+                <div class="day-cell">
+                    <div class="day-name">一</div>
+                    <div class="day-number">24</div>
+                    <div class="day-indicator"></div>
+                </div>
+                <div class="day-cell">
+                    <div class="day-name">二</div>
+                    <div class="day-number">25</div>
+                    <div class="day-indicator"></div>
+                </div>
+                <div class="day-cell">
+                    <div class="day-name">三</div>
+                    <div class="day-number">26</div>
+                </div>
+                <div class="day-cell active planned">
+                    <div class="day-name">四</div>
+                    <div class="day-number">27</div>
+                    <div class="day-indicator"></div>
+                </div>
+                <div class="day-cell planned">
+                    <div class="day-name">五</div>
+                    <div class="day-number">28</div>
+                    <div class="day-indicator"></div>
+                </div>
+                <div class="day-cell">
+                    <div class="day-name">六</div>
+                    <div class="day-number">1</div>
+                </div>
+                <div class="day-cell">
+                    <div class="day-name">日</div>
+                    <div class="day-number">2</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Meal Sections -->
+        <div class="meals-container">
+            <div class="meal-card planned">
+                <div class="meal-header">
+                    <div class="meal-type breakfast">🌅</div>
+                    <div class="meal-info">
+                        <div class="meal-name">燕麥奇亞籽布丁配本地藍莓</div>
+                        <div class="meal-time">07:00 - 早餐</div>
+                    </div>
+                    <div class="meal-calories">320 kcal</div>
+                </div>
+                <div class="meal-details">
+                    <div class="meal-description">
+                        用植物奶浸泡過夜，配上本地有機藍莓和核桃。高纖維、低GI，提供持久能量。
+                    </div>
+                    <div class="meal-tags">
+                        <span class="meal-tag veggie">素食</span>
+                        <span class="meal-tag local">本地食材</span>
+                        <span class="meal-tag low-carbon">低碳</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="meal-card planned">
+                <div class="meal-header">
+                    <div class="meal-type lunch">☀️</div>
+                    <div class="meal-info">
+                        <div class="meal-name">藜麥烤蔬菜碗配鷹嘴豆泥</div>
+                        <div class="meal-time">12:30 - 午餐</div>
+                    </div>
+                    <div class="meal-calories">485 kcal</div>
+                </div>
+                <div class="meal-details">
+                    <div class="meal-description">
+                        季節烤蔬菜（南瓜、紅椒、茄子）配藜麥底，淋上自製鷹嘴豆泥和檸檬汁。
+                    </div>
+                    <div class="meal-tags">
+                        <span class="meal-tag veggie">素食</span>
+                        <span class="meal-tag seasonal">當季</span>
+                        <span class="meal-tag low-carbon">低碳</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="meal-card">
+                <div class="meal-header">
+                    <div class="meal-type dinner">🌙</div>
+                    <div class="meal-info">
+                        <div class="meal-name">晚餐</div>
+                        <div class="meal-time">19:00</div>
+                    </div>
+                    <div class="meal-calories">—</div>
+                </div>
+                <div class="add-meal">+ 規劃晚餐</div>
+            </div>
+        </div>
+
+        <!-- Nutrition Summary -->
+        <div class="nutrition-card">
+            <div class="card-header">
+                <div class="card-title">今日營養摘要</div>
+            </div>
+            <div class="nutrition-grid">
+                <div class="nutrition-item">
+                    <div class="nutrition-label">碳水化合物</div>
+                    <div class="nutrition-bar">
+                        <div class="nutrition-fill carbs" style="width: 65%;"></div>
+                    </div>
+                    <div class="nutrition-value">195g / 300g</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="nutrition-label">蛋白質</div>
+                    <div class="nutrition-bar">
+                        <div class="nutrition-fill protein" style="width: 48%;"></div>
+                    </div>
+                    <div class="nutrition-value">36g / 75g</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="nutrition-label">健康脂肪</div>
+                    <div class="nutrition-bar">
+                        <div class="nutrition-fill fat" style="width: 42%;"></div>
+                    </div>
+                    <div class="nutrition-value">28g / 67g</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="nutrition-label">膳食纖維</div>
+                    <div class="nutrition-bar">
+                        <div class="nutrition-fill fiber" style="width: 78%;"></div>
+                    </div>
+                    <div class="nutrition-value">23g / 30g</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shopping List -->
+        <div class="shopping-card">
+            <div class="card-header">
+                <div class="card-title">本週採買清單</div>
+            </div>
+            <div class="shopping-item">
+                <div class="shopping-checkbox checked"></div>
+                <div class="shopping-text checked">有機藜麥 500g</div>
+                <span class="shopping-local">本地</span>
+            </div>
+            <div class="shopping-item">
+                <div class="shopping-checkbox"></div>
+                <div class="shopping-text">鷹嘴豆罐頭 x2</div>
+            </div>
+            <div class="shopping-item">
+                <div class="shopping-checkbox"></div>
+                <div class="shopping-text">本地時令南瓜 1個</div>
+                <span class="shopping-local">本地</span>
+            </div>
+            <div class="shopping-item">
+                <div class="shopping-checkbox"></div>
+                <div class="shopping-text">有機燕麥片 1kg</div>
+            </div>
+            <div class="shopping-item">
+                <div class="shopping-checkbox"></div>
+                <div class="shopping-text">奇亞籽 200g</div>
+            </div>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="tips-card">
+            <div class="tips-header">
+                <div class="tips-icon">💡</div>
+                <div class="tips-title">每日永續飲食錦囊</div>
+            </div>
+            <div class="tips-content">
+                選擇當季本地食材可減少高達 50% 的碳足跡。春季是吃綠葉蔬菜、豆類和根莖類蔬菜的最佳時節。不僅更新鮮美味，價格也更實惠！
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-bar">
+            <button class="btn btn-primary">📝 記錄今日飲食</button>
+            <button class="btn btn-secondary">📊 查看報告</button>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-sdgs">
+                <div class="sdg-badge sdg-2">2</div>
+                <div class="sdg-badge sdg-3">3</div>
+                <div class="sdg-badge sdg-12">12</div>
+                <div class="sdg-badge sdg-13">13</div>
+            </div>
+            <p>支持聯合國可持續發展目標</p>
+        </div>
+    </div>
+
+    <script>
+        // Interactive features
+        document.querySelectorAll('.shopping-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('click', function() {
+                this.classList.toggle('checked');
+                this.nextElementSibling.classList.toggle('checked');
+            });
+        });
+
+        document.querySelectorAll('.day-cell').forEach(day => {
+            day.addEventListener('click', function() {
+                document.querySelectorAll('.day-cell').forEach(d => d.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Update score animation
+        setTimeout(() => {
+            const scoreCircle = document.querySelector('.score-circle');
+            scoreCircle.style.setProperty('--score', '87');
+        }, 500);
+    </script>
+</body>
+</html>

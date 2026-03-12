@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillBridge - 技能橋樑</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B35;
+            --primary-light: #FF8C61;
+            --secondary: #004E89;
+            --accent: #1A936F;
+            --gold: #F9A825;
+            --bg: #F8F9FA;
+            --card: #FFFFFF;
+            --text: #2D3748;
+            --text-light: #718096;
+            --border: #E2E8F0;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 2rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .settings-btn {
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(30deg);
+        }
+
+        /* Bridge Visual */
+        .bridge-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .bridge-side {
+            text-align: center;
+            color: white;
+        }
+
+        .bridge-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .bridge-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .bridge-path {
+            flex: 1;
+            max-width: 200px;
+            position: relative;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+        }
+
+        .bridge-progress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+            transition: width 1s ease;
+        }
+
+        .bridge-walker {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: left 1s ease;
+        }
+
+        .header-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            color: white;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        .main {
+            padding: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Section Title */
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .section-title h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title h2 i {
+            color: var(--primary);
+        }
+
+        .view-all {
+            font-size: 0.875rem;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Skill Cards */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-light);
+        }
+
+        .skill-card.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(255,107,53,0.05) 0%, rgba(255,140,97,0.05) 100%);
+        }
+
+        .skill-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .skill-card:nth-child(1) .skill-icon { background: #E3F2FD; color: #1976D2; }
+        .skill-card:nth-child(2) .skill-icon { background: #E8F5E9; color: #388E3C; }
+        .skill-card:nth-child(3) .skill-icon { background: #FFF3E0; color: #F57C00; }
+        .skill-card:nth-child(4) .skill-icon { background: #F3E5F5; color: #7B1FA2; }
+
+        .skill-name {
+            font-weight: 600;
+            font-size: 0.9375rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .skill-level {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .skill-progress {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            margin-top: 0.75rem;
+            overflow: hidden;
+        }
+
+        .skill-progress-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .skill-card:nth-child(1) .skill-progress-bar { background: #1976D2; }
+        .skill-card:nth-child(2) .skill-progress-bar { background: #388E3C; }
+        .skill-card:nth-child(3) .skill-progress-bar { background: #F57C00; }
+        .skill-card:nth-child(4) .skill-progress-bar { background: #7B1FA2; }
+
+        /* Learning Path */
+        .path-container {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .path-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .path-title {
+            font-weight: 600;
+        }
+
+        .path-badge {
+            background: linear-gradient(135deg, var(--gold) 0%, #FBC02D 100%);
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .path-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .path-timeline::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -2rem;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--card);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.625rem;
+            color: var(--text-light);
+        }
+
+        .timeline-item.completed .timeline-dot {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .timeline-item.current .timeline-dot {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,53,0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(255,107,53,0); }
+        }
+
+        .timeline-content {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .timeline-item.completed .timeline-content {
+            background: #E8F5E9;
+        }
+
+        .timeline-item.current .timeline-content {
+            background: linear-gradient(135deg, rgba(255,107,53,0.08) 0%, rgba(255,140,97,0.08) 100%);
+            border: 1px solid var(--primary-light);
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            font-size: 0.9375rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-desc {
+            font-size: 0.8125rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .timeline-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Opportunity Cards */
+        .opportunities-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .opportunity-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .opportunity-card:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .opp-logo {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .opp-content {
+            flex: 1;
+        }
+
+        .opp-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .opp-title {
+            font-weight: 600;
+            font-size: 0.9375rem;
+        }
+
+        .opp-type {
+            font-size: 0.6875rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .opp-type.internship { background: #E3F2FD; color: #1976D2; }
+        .opp-type.volunteer { background: #E8F5E9; color: #388E3C; }
+        .opp-type.parttime { background: #FFF3E0; color: #F57C00; }
+
+        .opp-company {
+            font-size: 0.8125rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .opp-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .opp-tag {
+            font-size: 0.6875rem;
+            padding: 0.25rem 0.5rem;
+            background: var(--bg);
+            border-radius: 4px;
+            color: var(--text-light);
+        }
+
+        /* Daily Tip */
+        .tip-card {
+            background: linear-gradient(135deg, var(--secondary) 0%, #006BA8 100%);
+            border-radius: 20px;
+            padding: 1.5rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .tip-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tip-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .tip-title {
+            font-weight: 600;
+        }
+
+        .tip-text {
+            font-size: 0.9375rem;
+            line-height: 1.7;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tip-nav {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tip-nav button {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tip-nav button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Impact Stats */
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .impact-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .impact-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin: 0 auto 0.75rem;
+        }
+
+        .impact-card:nth-child(1) .impact-icon { background: #E8F5E9; color: var(--accent); }
+        .impact-card:nth-child(2) .impact-icon { background: #E3F2FD; color: var(--secondary); }
+        .impact-card:nth-child(3) .impact-icon { background: #FFF3E0; color: var(--gold); }
+        .impact-card:nth-child(4) .impact-icon { background: #F3E5F5; color: #7B1FA2; }
+
+        .impact-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .impact-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            color: var(--text-light);
+            font-size: 0.8125rem;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .impact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-stats {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-top">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-bridge"></i>
+                    </div>
+                    <span class="logo-text">SkillBridge</span>
+                </div>
+                <button class="settings-btn">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+            
+            <div class="bridge-visual">
+                <div class="bridge-side">
+                    <div class="bridge-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="bridge-label">學習</div>
+                </div>
+                <div class="bridge-path">
+                    <div class="bridge-progress" style="width: 68%;"></div>
+                    <div class="bridge-walker" style="left: 68%;">
+                        <i class="fas fa-walking"></i>
+                    </div>
+                </div>
+                <div class="bridge-side">
+                    <div class="bridge-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="bridge-label">就業</div>
+                </div>
+            </div>
+            
+            <div class="header-stats">
+                <div class="stat-item">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">已獲技能</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">68%</div>
+                    <div class="stat-label">技能橋樑進度</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">就業機會</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- My Skills -->
+        <div class="section-title">
+            <h2><i class="fas fa-star"></i> 我的技能</h2>
+            <a href="#" class="view-all">查看全部 <i class="fas fa-chevron-right"></i></a>
+        </div>
+        
+        <div class="skills-grid">
+            <div class="skill-card active">
+                <div class="skill-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="skill-name">網頁開發</div>
+                <div class="skill-level">中級 · 75%</div>
+                <div class="skill-progress">
+                    <div class="skill-progress-bar" style="width: 75%;"></div>
+                </div>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <i class="fas fa-paint-brush"></i>
+                </div>
+                <div class="skill-name">UI/UX 設計</div>
+                <div class="skill-level">初級 · 45%</div>
+                <div class="skill-progress">
+                    <div class="skill-progress-bar" style="width: 45%;"></div>
+                </div>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="skill-name">數據分析</div>
+                <div class="skill-level">中級 · 60%</div>
+                <div class="skill-progress">
+                    <div class="skill-progress-bar" style="width: 60%;"></div>
+                </div>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div class="skill-name">溝通協作</div>
+                <div class="skill-level">高級 · 85%</div>
+                <div class="skill-progress">
+                    <div class="skill-progress-bar" style="width: 85%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Path -->
+        <div class="section-title">
+            <h2><i class="fas fa-route"></i> 學習路徑</h2>
+        </div>
+        
+        <div class="path-container">
+            <div class="path-header">
+                <span class="path-title">全端開發工程師認證</span>
+                <span class="path-badge">熱門</span>
+            </div>
+            <div class="path-timeline">
+                <div class="timeline-item completed">
+                    <div class="timeline-dot"><i class="fas fa-check"></i></div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">HTML/CSS 基礎</div>
+                        <div class="timeline-desc">掌握網頁結構與樣式設計基礎</div>
+                        <div class="timeline-meta">
+                            <span><i class="fas fa-clock"></i> 已完成</span>
+                            <span><i class="fas fa-certificate"></i> 已認證</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item completed">
+                    <div class="timeline-dot"><i class="fas fa-check"></i></div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">JavaScript 核心</div>
+                        <div class="timeline-desc">深入理解 JS 語言特性與應用</div>
+                        <div class="timeline-meta">
+                            <span><i class="fas fa-clock"></i> 已完成</span>
+                            <span><i class="fas fa-certificate"></i> 已認證</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item current">
+                    <div class="timeline-dot"><i class="fas fa-play"></i></div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">React 框架開發</div>
+                        <div class="timeline-desc">學習現代前端框架與組件化開發</div>
+                        <div class="timeline-meta">
+                            <span><i class="fas fa-clock"></i> 進行中 65%</span>
+                            <span><i class="fas fa-hourglass-half"></i> 剩餘 3 週</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot">4</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">Node.js 後端開發</div>
+                        <div class="timeline-desc">構建伺服器端應用與 API 設計</div>
+                        <div class="timeline-meta">
+                            <span><i class="fas fa-lock"></i> 待解鎖</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Opportunities -->
+        <div class="section-title">
+            <h2><i class="fas fa-door-open"></i> 就業機會</h2>
+            <a href="#" class="view-all">查看全部 <i class="fas fa-chevron-right"></i></a>
+        </div>
+        
+        <div class="opportunities-list">
+            <div class="opportunity-card">
+                <div class="opp-logo" style="background: #E3F2FD;">
+                    <i class="fas fa-laptop-code" style="color: #1976D2;"></i>
+                </div>
+                <div class="opp-content">
+                    <div class="opp-header">
+                        <div class="opp-title">前端開發實習生</div>
+                        <span class="opp-type internship">實習</span>
+                    </div>
+                    <div class="opp-company">TechForGood 科技有限公司</div>
+                    <div class="opp-tags">
+                        <span class="opp-tag">React</span>
+                        <span class="opp-tag">遠端工作</span>
+                        <span class="opp-tag">無經驗可</span>
+                    </div>
+                </div>
+            </div>
+            <div class="opportunity-card">
+                <div class="opp-logo" style="background: #E8F5E9;">
+                    <i class="fas fa-hands-helping" style="color: #388E3C;"></i>
+                </div>
+                <div class="opp-content">
+                    <div class="opp-header">
+                        <div class="opp-title">數位技能導師</div>
+                        <span class="opp-type volunteer">志願</span>
+                    </div>
+                    <div class="opp-company">社區數位共融計劃</div>
+                    <div class="opp-tags">
+                        <span class="opp-tag">教學</span>
+                        <span class="opp-tag">彈性時間</span>
+                        <span class="opp-tag">培訓提供</span>
+                    </div>
+                </div>
+            </div>
+            <div class="opportunity-card">
+                <div class="opp-logo" style="background: #FFF3E0;">
+                    <i class="fas fa-mobile-alt" style="color: #F57C00;"></i>
+                </div>
+                <div class="opp-content">
+                    <div class="opp-header">
+                        <div class="opp-title">App 開發兼職</div>
+                        <span class="opp-type parttime">兼職</span>
+                    </div>
+                    <div class="opp-company">綠色創業工作室</div>
+                    <div class="opp-tags">
+                        <span class="opp-tag">Flutter</span>
+                        <span class="opp-tag">時薪制</span>
+                        <span class="opp-tag">學生友善</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Tip -->
+        <div class="tip-card">
+            <div class="tip-header">
+                <div class="tip-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <span class="tip-title">今日技能錦囊</span>
+            </div>
+            <p class="tip-text">
+                「技能組合比單一技能更有價值。將技術技能（如編程）與軟技能（如溝通、解決問題）結合，能讓你在職場中脫穎而出。本週試著在學習技術的同時，也練習向他人解釋你所學的內容。」
+            </p>
+            <div class="tip-nav">
+                <button><i class="fas fa-chevron-left"></i></button>
+                <button><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <!-- Impact -->
+        <div class="section-title">
+            <h2><i class="fas fa-globe-asia"></i> 你的影響力</h2>
+        </div>
+        
+        <div class="impact-grid">
+            <div class="impact-card">
+                <div class="impact-icon">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <div class="impact-value">156</div>
+                <div class="impact-label">學習時數</div>
+            </div>
+            <div class="impact-card">
+                <div class="impact-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="impact-value">23</div>
+                <div class="impact-label">技能社群成員</div>
+            </div>
+            <div class="impact-card">
+                <div class="impact-icon">
+                    <i class="fas fa-award"></i>
+                </div>
+                <div class="impact-value">5</div>
+                <div class="impact-label">獲得認證</div>
+            </div>
+            <div class="impact-card">
+                <div class="impact-icon">
+                    <i class="fas fa-hand-holding-heart"></i>
+                </div>
+                <div class="impact-value">8</div>
+                <div class="impact-label">幫助學習者</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>支持 <a href="#">SDG 4</a> · <a href="#">SDG 8</a> · <a href="#">SDG 10</a></p>
+        <p style="margin-top: 0.5rem;">SkillBridge · 搭建通往更好未來的橋樑</p>
+    </footer>
+
+    <script>
+        // Skill card interaction
+        document.querySelectorAll('.skill-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.skill-card').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Opportunity card interaction
+        document.querySelectorAll('.opportunity-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Tip rotation
+        const tips = [
+            "「技能組合比單一技能更有價值。將技術技能與軟技能結合，能讓你在職場中脫穎而出。」",
+            "「每週投入 5 小時學習新技能，一年後你將領先 95% 的同儕。」",
+            "「教學是最好的學習方式。嘗試向他人解釋你所學，能加深自己的理解。」",
+            "「不要害怕從初級職位開始。重要的是進入你想要發展的領域。」"
+        ];
+        let currentTip = 0;
+
+        document.querySelectorAll('.tip-nav button').forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                if (index === 0) {
+                    currentTip = (currentTip - 1 + tips.length) % tips.length;
+                } else {
+                    currentTip = (currentTip + 1) % tips.length;
+                }
+                document.querySelector('.tip-text').textContent = tips[currentTip];
+            });
+        });
+
+        // Animate progress bars on load
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.skill-progress-bar').forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>

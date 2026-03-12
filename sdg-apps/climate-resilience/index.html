@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>氣候韌性工具箱 | Climate Resilience Toolkit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .pulse-ring {
+            position: relative;
+        }
+        
+        .pulse-ring::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid #ef4444;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+        
+        .weather-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 51, 234, 0.2));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .risk-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        .risk-low { background: linear-gradient(90deg, #10b981, #059669); }
+        .risk-medium { background: linear-gradient(90deg, #f59e0b, #d97706); }
+        .risk-high { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        
+        .prep-card {
+            transition: all 0.3s ease;
+        }
+        
+        .prep-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .action-checkbox {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+        
+        .action-checkbox:checked {
+            background: #10b981;
+            border-color: #10b981;
+        }
+        
+        .action-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .emergency-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            animation: emergency-glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes emergency-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.8); }
+        }
+        
+        .resource-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        
+        .resource-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.5s ease;
+        }
+        
+        .tip-card {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
+            border-left: 3px solid #fbbf24;
+        }
+        
+        .gauge-container {
+            position: relative;
+            width: 180px;
+            height: 90px;
+        }
+        
+        .gauge-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 20;
+        }
+        
+        .gauge-fill {
+            fill: none;
+            stroke: url(#gaugeGradient);
+            stroke-width: 20;
+            stroke-linecap: round;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            transition: stroke-dashoffset 1s ease;
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+    </style>
+</head>
+<body class="text-white grid-bg">
+    <div class="max-w-md mx-auto min-h-screen pb-24">
+        <!-- Header -->
+        <header class="p-6 pt-8">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <p class="text-xs text-gray-400 tracking-widest uppercase">第二季第 7 集</p>
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        氣候韌性工具箱
+                    </h1>
+                </div>
+                <div class="w-12 h-12 rounded-full glass-panel flex items-center justify-center">
+                    <i class="fas fa-shield-alt text-xl text-blue-400"></i>
+                </div>
+            </div>
+            
+            <!-- 設計參考標籤 -->
+            <div class="flex flex-wrap gap-2 mb-4">
+                <span class="px-3 py-1 text-xs rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                    Bjarke Ingels
+                </span>
+                <span class="px-3 py-1 text-xs rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                    Nothing Phone
+                </span>
+            </div>
+            
+            <!-- SDG 標籤 -->
+            <div class="flex flex-wrap gap-2">
+                <span class="px-2 py-1 text-xs rounded bg-red-500/30 text-red-200">SDG 11</span>
+                <span class="px-2 py-1 text-xs rounded bg-green-500/30 text-green-200">SDG 13</span>
+                <span class="px-2 py-1 text-xs rounded bg-orange-500/30 text-orange-200">SDG 9</span>
+            </div>
+        </header>
+
+        <!-- 城市韌性指數儀表板 -->
+        <section class="px-6 mb-6">
+            <div class="glass-panel rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-chart-line text-blue-400"></i>
+                    城市韌性指數
+                </h2>
+                
+                <div class="flex items-center justify-center mb-4">
+                    <div class="gauge-container">
+                        <svg viewBox="0 0 200 100" class="w-full h-full">
+                            <defs>
+                                <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#ef4444"/>
+                                    <stop offset="50%" style="stop-color:#f59e0b"/>
+                                    <stop offset="100%" style="stop-color:#10b981"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M 20 100 A 80 80 0 0 1 180 100" class="gauge-bg"/>
+                            <path id="gaugePath" d="M 20 100 A 80 80 0 0 1 180 100" class="gauge-fill"/>
+                        </svg>
+                        <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-center">
+                            <div id="resilienceScore" class="text-4xl font-bold text-white">72</div>
+                            <div class="text-xs text-gray-400">韌性評分</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="text-center p-3 rounded-xl bg-white/5">
+                        <div class="text-2xl font-bold text-green-400" id="prepItems">8/12</div>
+                        <div class="text-xs text-gray-400">應急物品</div>
+                    </div>
+                    <div class="text-center p-3 rounded-xl bg-white/5">
+                        <div class="text-2xl font-bold text-blue-400" id="actionCount">15</div>
+                        <div class="text-xs text-gray-400">本月行動</div>
+                    </div>
+                    <div class="text-center p-3 rounded-xl bg-white/5">
+                        <div class="text-2xl font-bold text-purple-400" id="trainingHours">6.5</div>
+                        <div class="text-xs text-gray-400">培訓時數</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 實時氣候風險 -->
+        <section class="px-6 mb-6">
+            <div class="glass-panel rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                    實時氣候風險監測
+                </h2>
+                
+                <!-- 風險警告 -->
+                <div id="riskAlert" class="mb-4 p-4 rounded-xl risk-medium">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center pulse-ring">
+                            <i class="fas fa-cloud-showers-heavy text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-semibold">中等風險</div>
+                            <div class="text-sm opacity-80">暴雨警告生效中 - 未來6小時</div>
+                        </div>
+                        <span class="px-2 py-1 text-xs rounded bg-white/20">黃色</span>
+                    </div>
+                </div>
+                
+                <!-- 天氣概況 -->
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="weather-card p-4 rounded-xl">
+                        <div class="text-gray-400 text-xs mb-1">溫度</div>
+                        <div class="flex items-end gap-2">
+                            <span class="text-2xl font-bold">28°C</span>
+                            <span class="text-sm text-gray-400">體感 31°</span>
+                        </div>
+                        <div class="mt-2 flex items-center gap-1 text-xs text-blue-300">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>較昨日 +2°</span>
+                        </div>
+                    </div>
+                    <div class="weather-card p-4 rounded-xl">
+                        <div class="text-gray-400 text-xs mb-1">空氣質素</div>
+                        <div class="flex items-end gap-2">
+                            <span class="text-2xl font-bold">AQI 45</span>
+                        </div>
+                        <div class="mt-2 flex items-center gap-1 text-xs text-green-300">
+                            <i class="fas fa-check-circle"></i>
+                            <span>良好</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 風險指標 -->
+                <div class="space-y-3">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-400">洪水風險</span>
+                            <span class="text-yellow-400">中等</span>
+                        </div>
+                        <div class="resource-bar h-2">
+                            <div class="resource-fill bg-yellow-500" style="width: 60%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-400">極端高溫</span>
+                            <span class="text-green-400">低</span>
+                        </div>
+                        <div class="resource-bar h-2">
+                            <div class="resource-fill bg-green-500" style="width: 25%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-400">空氣污染</span>
+                            <span class="text-green-400">低</span>
+                        </div>
+                        <div class="resource-bar h-2">
+                            <div class="resource-fill bg-green-500" style="width: 20%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 應急準備清單 -->
+        <section class="px-6 mb-6">
+            <div class="glass-panel rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-first-aid text-red-400"></i>
+                    72小時應急準備
+                </h2>
+                
+                <div class="space-y-3" id="prepList">
+                    <div class="prep-card flex items-center gap-3 p-3 rounded-xl bg-white/5">
+                        <input type="checkbox" class="action-checkbox" checked onchange="updateProgress()">
+                        <div class="flex-1">
+                            <div class="font-medium">飲用水</div>
+                            <div class="text-xs text-gray-400">每人每日4公升，至少3日份量</div>
+                        </div>
+                        <i class="fas fa-tint text-blue-400"></i>
+                    </div>
+                    
+                    <div class="prep-card flex items-center gap-3 p-3 rounded-xl bg-white/5">
+                        <input type="checkbox" class="action-checkbox" checked onchange="updateProgress()">
+                        <div class="flex-1">
+                            <div class="font-medium">即食食物</div>
+                            <div class="text-xs text-gray-400">罐頭、餅乾、能量棒等</div>
+                        </div>
+                        <i class="fas fa-utensils text-orange-400"></i>
+                    </div>
+                    
+                    <div class="prep-card flex items-center gap-3 p-3 rounded-xl bg-white/5">
+                        <input type="checkbox" class="action-checkbox" checked onchange="updateProgress()">
+                        <div class="flex-1">
+                            <div class="font-medium">急救包</div>
+                            <div class="text-xs text-gray-400">基本醫療用品及常用藥物</div>
+                        </div>
+                        <i class="fas fa-medkit text-red-400"></i>
+                    </div>
+                    
+                    <div class="prep-card flex items-center gap-3 p-3 rounded-xl bg-white/5">
+                        <input type="checkbox" class="action-checkbox" onchange="updateProgress()">
+                        <div class="flex-1">
+                            <div class="font-medium">手電筒</div>
+                            <div class="text-xs text-gray-400">手動充電式，備用電池</div>
+                        </div>
+                        <i class="fas fa-flashlight text-yellow-400"></i>
+                    </div>
+                    
+                    <div class="prep-card flex items-center gap-3 p-3 rounded-xl bg-white/5">
+                        <input type="checkbox" class="action-checkbox" checked onchange="updateProgress()">
+                        <div class="flex-1">
+                            <div class="font-medium">充電寶</div>
+                            <div class="text-xs text-gray-400">大容量，已充滿電</div>
+                        </div>
+                        <i class="fas fa-battery-full text-green-400"></i>
+                    </div>
+                    
+                    <div class="prep-card flex items-center gap-3 p-3 rounded-xl bg-white/5">
+                        <input type="checkbox" class="action-checkbox" checked onchange="updateProgress()">
+                        <div class="flex-1">
+                            <div class="font-medium">重要文件</div>
+                            <div class="text-xs text-gray-400">身份證、保險、銀行資料副本</div>
+                        </div>
+                        <i class="fas fa-file-alt text-purple-400"></i>
+                    </div>
+                    
+                    <div class="prep-card flex items-center gap-3 p-3 rounded-xl bg-white/5">
+                        <input type="checkbox" class="action-checkbox" onchange="updateProgress()">
+                        <div class="flex-1">
+                            <div class="font-medium">禦寒衣物</div>
+                            <div class="text-xs text-gray-400">防水外套、保暖衣物、替換內衣</div>
+                        </div>
+                        <i class="fas fa-tshirt text-indigo-400"></i>
+                    </div>
+                    
+                    <div class="prep-card flex items-center gap-3 p-3 rounded-xl bg-white/5">
+                        <input type="checkbox" class="action-checkbox" onchange="updateProgress()">
+                        <div class="flex-1">
+                            <div class="font-medium">現金儲備</div>
+                            <div class="text-xs text-gray-400">小額紙幣，應急使用</div>
+                        </div>
+                        <i class="fas fa-money-bill-wave text-green-400"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 氣候適應行動 -->
+        <section class="px-6 mb-6">
+            <div class="glass-panel rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-tasks text-purple-400"></i>
+                    今日氣候適應行動
+                </h2>
+                
+                <div class="space-y-3" id="actionList">
+                    <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5">
+                        <input type="checkbox" class="action-checkbox" onchange="updateActionProgress(this)">
+                        <div class="flex-1">
+                            <div class="font-medium">檢查排水系統</div>
+                            <div class="text-xs text-gray-400">清理雨水渠、檢查去水位</div>
+                        </div>
+                        <span class="px-2 py-1 text-xs rounded bg-blue-500/30 text-blue-300">防洪</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5">
+                        <input type="checkbox" class="action-checkbox" checked onchange="updateActionProgress(this)">
+                        <div class="flex-1">
+                            <div class="font-medium">更新應急聯絡人</div>
+                            <div class="text-xs text-gray-400">確認家人及鄰居聯絡方式</div>
+                        </div>
+                        <span class="px-2 py-1 text-xs rounded bg-green-500/30 text-green-300">通訊</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5">
+                        <input type="checkbox" class="action-checkbox" onchange="updateActionProgress(this)">
+                        <div class="flex-1">
+                            <div class="font-medium">檢查窗戶密封</div>
+                            <div class="text-xs text-gray-400">確保暴雨時不滲水</div>
+                        </div>
+                        <span class="px-2 py-1 text-xs rounded bg-blue-500/30 text-blue-300">防洪</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5">
+                        <input type="checkbox" class="action-checkbox" onchange="updateActionProgress(this)">
+                        <div class="flex-1">
+                            <div class="font-medium">測試應急設備</div>
+                            <div class="text-xs text-gray-400">手電筒、收音機、充電寶</div>
+                        </div>
+                        <span class="px-2 py-1 text-xs rounded bg-orange-500/30 text-orange-300">裝備</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 緊急按鈕 -->
+        <section class="px-6 mb-6">
+            <button onclick="showEmergencyInfo()" class="emergency-btn w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3">
+                <i class="fas fa-phone-alt"></i>
+                緊急聯絡資訊
+            </button>
+        </section>
+
+        <!-- 每日韌性錦囊 -->
+        <section class="px-6 mb-6">
+            <div class="tip-card p-4 rounded-xl">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-lightbulb text-yellow-400 text-xl mt-1"></i>
+                    <div>
+                        <div class="font-semibold mb-1">每日韌性錦囊</div>
+                        <p class="text-sm text-gray-300 leading-relaxed" id="dailyTip">
+                            建立「家庭應急計劃」：與家人約定兩個集合點（一個在家中，一個在社區外），並指定一位外地聯絡人，以便在本地通訊中斷時傳遞消息。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 韌性趨勢圖 -->
+        <section class="px-6 mb-6">
+            <div class="glass-panel rounded-2xl p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-chart-area text-cyan-400"></i>
+                    韌性提升趨勢
+                </h2>
+                <canvas id="resilienceChart" height="150"></canvas>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center py-6 text-xs text-gray-500">
+            <p>氣候韌性工具箱 | 第二季第 7 集</p>
+            <p class="mt-1">整合 SDG 11 · SDG 13 · SDG 9</p>
+        </footer>
+    </div>
+
+    <!-- 緊急資訊彈窗 -->
+    <div id="emergencyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-6">
+        <div class="glass-panel rounded-2xl p-6 max-w-sm w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-red-400">緊急聯絡</h3>
+                <button onclick="hideEmergencyInfo()" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-3">
+                <a href="tel:999" class="flex items-center gap-3 p-4 rounded-xl bg-red-500/20 border border-red-500/30">
+                    <div class="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center">
+                        <i class="fas fa-phone text-white"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold">999</div>
+                        <div class="text-xs text-gray-400">緊急服務</div>
+                    </div>
+                </a>
+                
+                <a href="tel:1823" class="flex items-center gap-3 p-4 rounded-xl bg-blue-500/20 border border-blue-500/30">
+                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
+                        <i class="fas fa-building text-white"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold">1823</div>
+                        <div class="text-xs text-gray-400">政府熱線</div>
+                    </div>
+                </a>
+                
+                <div class="p-4 rounded-xl bg-white/5">
+                    <div class="text-sm font-medium mb-2">附近避難中心</div>
+                    <div class="text-xs text-gray-400 space-y-1">
+                        <div>• 社區會堂（距離 0.8km）</div>
+                        <div>• 體育館（距離 1.2km）</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 韌性錦囊輪播
+        const tips = [
+            "建立「家庭應急計劃」：與家人約定兩個集合點（一個在家中，一個在社區外），並指定一位外地聯絡人。",
+            "每季檢查一次應急包，更換過期物品，確保所有設備正常運作。",
+            "認識你的鄰居！緊急情況下，互相幫助的社區比獨自面對更有韌性。",
+            "將重要文件掃描並儲存在雲端，同時保留防水袋中的紙本副本。",
+            "學習基本急救技能 - 在專業救援到達前，你的行動可能挽救生命。",
+            "了解你家附近的洪水平原位置，規劃多條疏散路線。"
+        ];
+        
+        let currentTip = 0;
+        setInterval(() => {
+            currentTip = (currentTip + 1) % tips.length;
+            document.getElementById('dailyTip').textContent = tips[currentTip];
+        }, 10000);
+
+        // 更新準備進度
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('#prepList .action-checkbox');
+            const checked = document.querySelectorAll('#prepList .action-checkbox:checked');
+            document.getElementById('prepItems').textContent = `${checked.length}/${checkboxes.length}`;
+            updateResilienceScore();
+        }
+
+        // 更新行動進度
+        function updateActionProgress(checkbox) {
+            updateResilienceScore();
+        }
+
+        // 更新韌性評分
+        function updateResilienceScore() {
+            const prepCheckboxes = document.querySelectorAll('#prepList .action-checkbox');
+            const prepChecked = document.querySelectorAll('#prepList .action-checkbox:checked');
+            const actionCheckboxes = document.querySelectorAll('#actionList .action-checkbox');
+            const actionChecked = document.querySelectorAll('#actionList .action-checkbox:checked');
+            
+            const prepScore = (prepChecked.length / prepCheckboxes.length) * 40;
+            const actionScore = (actionChecked.length / actionCheckboxes.length) * 30;
+            const baseScore = 32;
+            
+            const totalScore = Math.round(baseScore + prepScore + actionScore);
+            document.getElementById('resilienceScore').textContent = Math.min(totalScore, 100);
+            
+            // 更新儀表板
+            const maxOffset = 283;
+            const offset = maxOffset - (totalScore / 100) * maxOffset;
+            document.getElementById('gaugePath').style.strokeDashoffset = offset;
+        }
+
+        // 緊急資訊彈窗
+        function showEmergencyInfo() {
+            document.getElementById('emergencyModal').classList.remove('hidden');
+            document.getElementById('emergencyModal').classList.add('flex');
+        }
+
+        function hideEmergencyInfo() {
+            document.getElementById('emergencyModal').classList.add('hidden');
+            document.getElementById('emergencyModal').classList.remove('flex');
+        }
+
+        // 韌性趨勢圖表
+        const ctx = document.getElementById('resilienceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['2/24', '2/25', '2/26', '2/27', '2/28', '3/1', '3/2'],
+                datasets: [{
+                    label: '韌性評分',
+                    data: [58, 60, 62, 65, 68, 70, 72],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: '#9ca3af' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#9ca3af' }
+                    }
+                }
+            }
+        });
+
+        // 初始化
+        updateResilienceScore();
+    </script>
+</body>
+</html>
