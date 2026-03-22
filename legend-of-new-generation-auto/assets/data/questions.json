@@ -1,0 +1,1640 @@
+{
+  "subjects": {
+    "math": {
+      "name": "數學",
+      "nameEn": "Mathematics",
+      "icon": "🔢",
+      "color": "#3498db",
+      "description": "以邏輯計算為基礎的攻擊",
+      "questions": [
+        {
+          "id": "m001",
+          "question": "3 × 7 = ?",
+          "options": ["18", "21", "24", "27"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "乘法"
+        },
+        {
+          "id": "m002",
+          "question": "100 - 37 = ?",
+          "options": ["53", "63", "73", "43"],
+          "correct": 0,
+          "difficulty": 1,
+          "topic": "減法"
+        },
+        {
+          "id": "m003",
+          "question": "如果 2x + 4 = 12，那麼 x = ?",
+          "options": ["3", "4", "5", "6"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "代數"
+        },
+        {
+          "id": "m004",
+          "question": "一個三角形有幾個角？",
+          "options": ["2個", "3個", "4個", "5個"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "幾何圖形"
+        },
+        {
+          "id": "m005",
+          "question": "0.5 等於幾分之幾？",
+          "options": ["1/2", "1/3", "1/4", "2/3"],
+          "correct": 0,
+          "difficulty": 1,
+          "topic": "分數小數"
+        },
+        {
+          "id": "m006",
+          "question": "8 + 9 = ?",
+          "options": ["15", "16", "17", "18"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "加法"
+        },
+        {
+          "id": "m007",
+          "question": "56 ÷ 7 = ?",
+          "options": ["6", "7", "8", "9"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "除法"
+        },
+        {
+          "id": "m008",
+          "question": "45 + 67 = ?",
+          "options": ["102", "112", "122", "132"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "加法"
+        },
+        {
+          "id": "m009",
+          "question": "99 - 45 = ?",
+          "options": ["44", "54", "64", "74"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "減法"
+        },
+        {
+          "id": "m010",
+          "question": "12 × 5 = ?",
+          "options": ["50", "55", "60", "65"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "乘法"
+        },
+        {
+          "id": "m011",
+          "question": "81 ÷ 9 = ?",
+          "options": ["7", "8", "9", "10"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "除法"
+        },
+        {
+          "id": "m012",
+          "question": "256 + 144 = ?",
+          "options": ["380", "390", "400", "410"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "加法"
+        },
+        {
+          "id": "m013",
+          "question": "500 - 287 = ?",
+          "options": ["203", "213", "223", "233"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "減法"
+        },
+        {
+          "id": "m014",
+          "question": "15 × 12 = ?",
+          "options": ["170", "180", "190", "200"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "乘法"
+        },
+        {
+          "id": "m015",
+          "question": "144 ÷ 12 = ?",
+          "options": ["10", "11", "12", "13"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "除法"
+        },
+        {
+          "id": "m016",
+          "question": "7 + 8 + 9 = ?",
+          "options": ["22", "23", "24", "25"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "加法"
+        },
+        {
+          "id": "m017",
+          "question": "1000 - 456 = ?",
+          "options": ["544", "554", "564", "574"],
+          "correct": 0,
+          "difficulty": 2,
+          "topic": "減法"
+        },
+        {
+          "id": "m018",
+          "question": "25 × 4 = ?",
+          "options": ["90", "100", "110", "120"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "乘法"
+        },
+        {
+          "id": "m019",
+          "question": "720 ÷ 8 = ?",
+          "options": ["80", "90", "100", "110"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "除法"
+        },
+        {
+          "id": "m020",
+          "question": "36 + 48 + 24 = ?",
+          "options": ["98", "108", "118", "128"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "加法"
+        },
+        {
+          "id": "m021",
+          "question": "3/4 + 1/4 = ?",
+          "options": ["1/2", "3/4", "1", "1 1/4"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "分數小數"
+        },
+        {
+          "id": "m022",
+          "question": "0.25 等於幾分之幾？",
+          "options": ["1/2", "1/3", "1/4", "1/5"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "分數小數"
+        },
+        {
+          "id": "m023",
+          "question": "2/5 + 1/5 = ?",
+          "options": ["1/5", "2/5", "3/5", "4/5"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "分數小數"
+        },
+        {
+          "id": "m024",
+          "question": "0.75 = ?",
+          "options": ["1/4", "1/2", "3/4", "1"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "分數小數"
+        },
+        {
+          "id": "m025",
+          "question": "1/2 + 1/4 = ?",
+          "options": ["1/4", "1/2", "3/4", "1"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "分數小數"
+        },
+        {
+          "id": "m026",
+          "question": "5/8 - 2/8 = ?",
+          "options": ["1/8", "2/8", "3/8", "4/8"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "分數小數"
+        },
+        {
+          "id": "m027",
+          "question": "0.1 + 0.2 = ?",
+          "options": ["0.2", "0.3", "0.4", "0.5"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "分數小數"
+        },
+        {
+          "id": "m028",
+          "question": "3/10 = ?",
+          "options": ["0.1", "0.2", "0.3", "0.4"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "分數小數"
+        },
+        {
+          "id": "m029",
+          "question": "1 - 3/5 = ?",
+          "options": ["1/5", "2/5", "3/5", "4/5"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "分數小數"
+        },
+        {
+          "id": "m030",
+          "question": "0.6 寫成分數是？",
+          "options": ["1/5", "2/5", "3/5", "4/5"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "分數小數"
+        },
+        {
+          "id": "m031",
+          "question": "一個長方形有幾條邊？",
+          "options": ["2條", "3條", "4條", "5條"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "幾何圖形"
+        },
+        {
+          "id": "m032",
+          "question": "正方形有幾個直角？",
+          "options": ["2個", "3個", "4個", "5個"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "幾何圖形"
+        },
+        {
+          "id": "m033",
+          "question": "圓形有幾條直徑？",
+          "options": ["1條", "2條", "無限條", "沒有"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "幾何圖形"
+        },
+        {
+          "id": "m034",
+          "question": "三角形內角和是多少度？",
+          "options": ["90度", "180度", "270度", "360度"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "幾何圖形"
+        },
+        {
+          "id": "m035",
+          "question": "長方體有幾個面？",
+          "options": ["4個", "5個", "6個", "8個"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "幾何圖形"
+        },
+        {
+          "id": "m036",
+          "question": "一個圓的周長是直徑的幾倍？",
+          "options": ["2倍", "3倍", "π倍", "4倍"],
+          "correct": 2,
+          "difficulty": 3,
+          "topic": "幾何圖形"
+        },
+        {
+          "id": "m037",
+          "question": "平行四邊形的對邊有什麼特性？",
+          "options": ["長度相等", "長度不同", "互相垂直", "沒有關係"],
+          "correct": 0,
+          "difficulty": 2,
+          "topic": "幾何圖形"
+        },
+        {
+          "id": "m038",
+          "question": "等邊三角形每個角是多少度？",
+          "options": ["45度", "60度", "90度", "120度"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "幾何圖形"
+        },
+        {
+          "id": "m039",
+          "question": "正方體有幾條邊？",
+          "options": ["8條", "10條", "12條", "16條"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "幾何圖形"
+        },
+        {
+          "id": "m040",
+          "question": "直角三角形最長的邊叫什麼？",
+          "options": ["直角邊", "斜邊", "底邊", "對邊"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "幾何圖形"
+        },
+        {
+          "id": "m041",
+          "question": "小明有 45 元，買了一本書用去 28 元，還剩多少元？",
+          "options": ["15元", "16元", "17元", "18元"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "應用題"
+        },
+        {
+          "id": "m042",
+          "question": "一箱蘋果有 24 個，3 箱共有多少個蘋果？",
+          "options": ["64個", "68個", "72個", "76個"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "應用題"
+        },
+        {
+          "id": "m043",
+          "question": "一條繩子長 36 米，平均分成 4 段，每段長多少米？",
+          "options": ["7米", "8米", "9米", "10米"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "應用題"
+        },
+        {
+          "id": "m044",
+          "question": "小美每天做 15 道數學題，5 天共做多少道題？",
+          "options": ["70道", "75道", "80道", "85道"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "應用題"
+        },
+        {
+          "id": "m045",
+          "question": "一個籃球 68 元，小華買了 2 個，付 200 元，應找回多少元？",
+          "options": ["54元", "64元", "74元", "84元"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "應用題"
+        },
+        {
+          "id": "m046",
+          "question": "哥哥有 120 元，比弟弟多 35 元，弟弟有多少元？",
+          "options": ["75元", "85元", "95元", "105元"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "應用題"
+        },
+        {
+          "id": "m047",
+          "question": "一輛巴士可載 45 人，8 輛巴士可載多少人？",
+          "options": ["320人", "340人", "360人", "380人"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "應用題"
+        },
+        {
+          "id": "m048",
+          "question": "小明從家裡走到學校需 15 分鐘，走 4 次來回共需多少分鐘？",
+          "options": ["60分鐘", "100分鐘", "120分鐘", "140分鐘"],
+          "correct": 2,
+          "difficulty": 3,
+          "topic": "應用題"
+        },
+        {
+          "id": "m049",
+          "question": "一個長方形長 12 厘米，寬 8 厘米，周長是多少？",
+          "options": ["36厘米", "40厘米", "44厘米", "48厘米"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "應用題"
+        },
+        {
+          "id": "m050",
+          "question": "水果店有 96 個橙，每 8 個裝一袋，可以裝多少袋？",
+          "options": ["10袋", "12袋", "14袋", "16袋"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "應用題"
+        }
+      ]
+    },
+    "science": {
+      "name": "科學",
+      "nameEn": "Science",
+      "icon": "⚗️",
+      "color": "#2ecc71",
+      "description": "掌控元素之力的魔法",
+      "questions": [
+        {
+          "id": "s001",
+          "question": "水的化學式是什麼？",
+          "options": ["CO₂", "H₂O", "O₂", "NaCl"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "化學/自然"
+        },
+        {
+          "id": "s002",
+          "question": "太陽系中最大的行星是？",
+          "options": ["地球", "火星", "木星", "土星"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s003",
+          "question": "植物進行光合作用需要什麼？",
+          "options": ["陽光", "水", "二氧化碳", "以上皆是"],
+          "correct": 3,
+          "difficulty": 1,
+          "topic": "生物/人體"
+        },
+        {
+          "id": "s004",
+          "question": "人體有多少塊骨頭？",
+          "options": ["106塊", "206塊", "306塊", "406塊"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "生物/人體"
+        },
+        {
+          "id": "s005",
+          "question": "閃電和雷聲哪個先出現？",
+          "options": ["閃電", "雷聲", "同時", "不一定"],
+          "correct": 0,
+          "difficulty": 1,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s006",
+          "question": "人體最大的器官是什麼？",
+          "options": ["心臟", "肝臟", "皮膚", "肺"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "生物/人體"
+        },
+        {
+          "id": "s007",
+          "question": "血液在身體中由什麼器官推動流動？",
+          "options": ["肺", "心臟", "肝臟", "腎臟"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "生物/人體"
+        },
+        {
+          "id": "s008",
+          "question": "人類有多少顆牙齒（成年人）？",
+          "options": ["28顆", "30顆", "32顆", "36顆"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "生物/人體"
+        },
+        {
+          "id": "s009",
+          "question": "消化食物的主要器官是？",
+          "options": ["胃", "小腸", "大腸", "食道"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "生物/人體"
+        },
+        {
+          "id": "s010",
+          "question": "人體的呼吸系統主要負責什麼？",
+          "options": ["消化食物", "運送血液", "交換氣體", "排出廢物"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "生物/人體"
+        },
+        {
+          "id": "s011",
+          "question": "我們用什麼器官來聽聲音？",
+          "options": ["鼻子", "耳朵", "眼睛", "舌頭"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "生物/人體"
+        },
+        {
+          "id": "s012",
+          "question": "人體有多少對染色體？",
+          "options": ["22對", "23對", "24對", "25對"],
+          "correct": 1,
+          "difficulty": 3,
+          "topic": "生物/人體"
+        },
+        {
+          "id": "s013",
+          "question": "植物通過什麼部位吸收水分？",
+          "options": ["葉子", "莖", "根", "花"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "生物/人體"
+        },
+        {
+          "id": "s014",
+          "question": "人體的骨骼系統有什麼功能？",
+          "options": ["支撐身體", "保護器官", "幫助活動", "以上皆是"],
+          "correct": 3,
+          "difficulty": 2,
+          "topic": "生物/人體"
+        },
+        {
+          "id": "s015",
+          "question": "哪個器官負責過濾血液中的廢物？",
+          "options": ["心臟", "肝臟", "腎臟", "肺"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "生物/人體"
+        },
+        {
+          "id": "s016",
+          "question": "太陽系中離太陽最近的行星是？",
+          "options": ["金星", "地球", "水星", "火星"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s017",
+          "question": "月亮本身會發光嗎？",
+          "options": ["會", "不會，反射太陽光", "會發出微光", "只在滿月時發光"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s018",
+          "question": "地球繞太陽一圈需要多長時間？",
+          "options": ["一天", "一個月", "一年", "十年"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s019",
+          "question": "聲音在什麼介質中傳播最快？",
+          "options": ["空氣", "水", "固體", "真空"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s020",
+          "question": "彩虹有幾種顏色？",
+          "options": ["5種", "6種", "7種", "8種"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s021",
+          "question": "冰融化成水是什麼變化？",
+          "options": ["物理變化", "化學變化", "生物變化", "核變化"],
+          "correct": 0,
+          "difficulty": 2,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s022",
+          "question": "地球的衛星是什麼？",
+          "options": ["火星", "金星", "月球", "太陽"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s023",
+          "question": "電流的單位是什麼？",
+          "options": ["伏特", "安培", "歐姆", "瓦特"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s024",
+          "question": "光在真空中的速度約為每秒多少公里？",
+          "options": ["3萬公里", "30萬公里", "300萬公里", "3000萬公里"],
+          "correct": 1,
+          "difficulty": 3,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s025",
+          "question": "哪種鏡子可以將光線平行反射？",
+          "options": ["凸面鏡", "凹面鏡", "平面鏡", "以上皆可"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s026",
+          "question": "行星由什麼物質組成？",
+          "options": ["純粹的氣體", "岩石和/或氣體", "液體", "等離子體"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s027",
+          "question": "磁力線從磁鐵的哪一極出發？",
+          "options": ["北極", "南極", "兩極同時", "中間"],
+          "correct": 0,
+          "difficulty": 2,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s028",
+          "question": "聲音是如何產生的？",
+          "options": ["物體震動", "空氣流動", "光線折射", "溫度變化"],
+          "correct": 0,
+          "difficulty": 1,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s029",
+          "question": "黑洞是什麼？",
+          "options": ["一個黑色的洞", "重力極強的天體", "宇宙的空洞", "暗物質"],
+          "correct": 1,
+          "difficulty": 3,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s030",
+          "question": "水的沸點是多少攝氏度（標準氣壓下）？",
+          "options": ["90°C", "100°C", "110°C", "120°C"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "物理/天文"
+        },
+        {
+          "id": "s031",
+          "question": "氧氣的化學符號是什麼？",
+          "options": ["O", "O₂", "H", "C"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "化學/自然"
+        },
+        {
+          "id": "s032",
+          "question": "食鹽的化學式是什麼？",
+          "options": ["H₂O", "CO₂", "NaCl", "CaCO₃"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "化學/自然"
+        },
+        {
+          "id": "s033",
+          "question": "什麼氣體佔空氣比例最高？",
+          "options": ["氧氣", "氮氣", "二氧化碳", "氫氣"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "化學/自然"
+        },
+        {
+          "id": "s034",
+          "question": "pH值為7代表什麼？",
+          "options": ["酸性", "鹼性", "中性", "強酸"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "化學/自然"
+        },
+        {
+          "id": "s035",
+          "question": "燃燒需要哪三個條件？",
+          "options": ["燃料、氧氣、熱能", "水、空氣、光", "金屬、酸、熱", "電、磁場、燃料"],
+          "correct": 0,
+          "difficulty": 2,
+          "topic": "化學/自然"
+        },
+        {
+          "id": "s036",
+          "question": "鑽石是由什麼元素組成的？",
+          "options": ["金", "銀", "碳", "矽"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "化學/自然"
+        },
+        {
+          "id": "s037",
+          "question": "鐵生鏽是什麼類型的反應？",
+          "options": ["物理反應", "化學反應", "核反應", "生物反應"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "化學/自然"
+        },
+        {
+          "id": "s038",
+          "question": "醋是酸性還是鹼性？",
+          "options": ["酸性", "鹼性", "中性", "視情況而定"],
+          "correct": 0,
+          "difficulty": 1,
+          "topic": "化學/自然"
+        },
+        {
+          "id": "s039",
+          "question": "金屬導電是因為含有什麼？",
+          "options": ["質子", "中子", "自由電子", "原子核"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "化學/自然"
+        },
+        {
+          "id": "s040",
+          "question": "乾冰是什麼物質的固態形式？",
+          "options": ["水", "二氧化碳", "氮氣", "氧氣"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "化學/自然"
+        },
+        {
+          "id": "s041",
+          "question": "什麼是溫室效應的主要原因？",
+          "options": ["太陽光減弱", "溫室氣體增加", "地球轉速變快", "海洋面積減少"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "環保/地球科學"
+        },
+        {
+          "id": "s042",
+          "question": "下列哪種是可再生能源？",
+          "options": ["石油", "煤炭", "太陽能", "天然氣"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "環保/地球科學"
+        },
+        {
+          "id": "s043",
+          "question": "地球的表層由什麼組成？",
+          "options": ["地核", "地幔", "地殼", "地心"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "環保/地球科學"
+        },
+        {
+          "id": "s044",
+          "question": "保護臭氧層為什麼重要？",
+          "options": ["阻擋紫外線", "保持溫度", "產生氧氣", "減少雨水"],
+          "correct": 0,
+          "difficulty": 2,
+          "topic": "環保/地球科學"
+        },
+        {
+          "id": "s045",
+          "question": "地震是由什麼引起的？",
+          "options": ["風", "地殼運動", "降雨", "太陽活動"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "環保/地球科學"
+        },
+        {
+          "id": "s046",
+          "question": "回收標誌上的三角形代表什麼？",
+          "options": ["有毒", "可回收", "易燃", "易碎"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "環保/地球科學"
+        },
+        {
+          "id": "s047",
+          "question": "地球表面約有多少比例被水覆蓋？",
+          "options": ["50%", "60%", "70%", "80%"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "環保/地球科學"
+        },
+        {
+          "id": "s048",
+          "question": "火山爆發時噴出的熔岩來自哪裡？",
+          "options": ["地核", "地幔", "地殼", "海洋"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "環保/地球科學"
+        },
+        {
+          "id": "s049",
+          "question": "下列哪種做法有助於減少空氣污染？",
+          "options": ["多開私家車", "多燒煤炭", "多乘公共交通工具", "多使用塑膠袋"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "環保/地球科學"
+        },
+        {
+          "id": "s050",
+          "question": "颱風主要在哪個季節影響香港？",
+          "options": ["春季", "夏季", "秋季", "冬季"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "環保/地球科學"
+        }
+      ]
+    },
+    "english": {
+      "name": "英文",
+      "nameEn": "English",
+      "icon": "📖",
+      "color": "#f39c12",
+      "description": "以語言之力治療與輔助",
+      "questions": [
+        {
+          "id": "e001",
+          "question": "'Apple' 的中文意思是？",
+          "options": ["香蕉", "橙子", "蘋果", "葡萄"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e002",
+          "question": "'Good morning' 是什麼時候用的？",
+          "options": ["早上", "下午", "晚上", "睡覺前"],
+          "correct": 0,
+          "difficulty": 1,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e003",
+          "question": "'I am a student.' 中的 'student' 意思是？",
+          "options": ["老師", "學生", "醫生", "工人"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e004",
+          "question": "'How are you?' 應該怎樣回答？",
+          "options": ["Goodbye!", "I'm fine, thank you.", "See you!", "Nice to meet you."],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e005",
+          "question": "'Book' 的複數形式是？",
+          "options": ["Bookes", "Books", "Booking", "Book"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "語法"
+        },
+        {
+          "id": "e006",
+          "question": "'Cat' 的中文意思是？",
+          "options": ["狗", "貓", "鳥", "魚"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e007",
+          "question": "'Happy' 的意思是？",
+          "options": ["傷心", "生氣", "快樂", "害怕"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e008",
+          "question": "'Red' 是什麼顏色？",
+          "options": ["藍色", "綠色", "紅色", "黃色"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e009",
+          "question": "'School' 是什麼地方？",
+          "options": ["醫院", "學校", "圖書館", "公園"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e010",
+          "question": "'Monday' 是一星期中的哪一天？",
+          "options": ["星期日", "星期一", "星期二", "星期五"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e011",
+          "question": "'Elephant' 是什麼動物？",
+          "options": ["獅子", "老虎", "大象", "長頸鹿"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e012",
+          "question": "'Family' 的意思是？",
+          "options": ["朋友", "家人", "老師", "同學"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e013",
+          "question": "'Summer' 是哪個季節？",
+          "options": ["春天", "夏天", "秋天", "冬天"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e014",
+          "question": "'Doctor' 是什麼職業？",
+          "options": ["老師", "醫生", "護士", "警察"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e015",
+          "question": "'Breakfast' 是哪一餐？",
+          "options": ["早餐", "午餐", "晚餐", "下午茶"],
+          "correct": 0,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e016",
+          "question": "'Beautiful' 的意思是？",
+          "options": ["醜陋", "普通", "美麗", "奇怪"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e017",
+          "question": "'Bicycle' 是什麼交通工具？",
+          "options": ["汽車", "巴士", "自行車/單車", "火車"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e018",
+          "question": "'Water' 的中文意思是？",
+          "options": ["果汁", "牛奶", "水", "茶"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e019",
+          "question": "'Pen' 是什麼文具？",
+          "options": ["鉛筆", "原子筆/鋼筆", "橡皮擦", "尺"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e020",
+          "question": "'Ocean' 是什麼？",
+          "options": ["河流", "湖泊", "海洋", "池塘"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "詞彙"
+        },
+        {
+          "id": "e021",
+          "question": "'She ___ a teacher.' 應填入？",
+          "options": ["am", "is", "are", "be"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "語法"
+        },
+        {
+          "id": "e022",
+          "question": "'They ___ playing football.' 應填入？",
+          "options": ["is", "am", "are", "be"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "語法"
+        },
+        {
+          "id": "e023",
+          "question": "'I ___ a student.' 應填入？",
+          "options": ["am", "is", "are", "be"],
+          "correct": 0,
+          "difficulty": 1,
+          "topic": "語法"
+        },
+        {
+          "id": "e024",
+          "question": "動詞 'go' 的過去式是？",
+          "options": ["goed", "went", "gone", "going"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "語法"
+        },
+        {
+          "id": "e025",
+          "question": "'He ___ to school every day.' 應填入？",
+          "options": ["go", "goes", "going", "gone"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "語法"
+        },
+        {
+          "id": "e026",
+          "question": "'This is ___ apple.' 應填入？",
+          "options": ["a", "an", "the", "不填"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "語法"
+        },
+        {
+          "id": "e027",
+          "question": "'There ___ a book on the table.' 應填入？",
+          "options": ["is", "are", "am", "be"],
+          "correct": 0,
+          "difficulty": 2,
+          "topic": "語法"
+        },
+        {
+          "id": "e028",
+          "question": "'Children' 是什麼詞的複數？",
+          "options": ["Child", "Kid", "Baby", "Boy"],
+          "correct": 0,
+          "difficulty": 2,
+          "topic": "語法"
+        },
+        {
+          "id": "e029",
+          "question": "'I have ___ apple and ___ orange.' 應填入？",
+          "options": ["a, a", "an, an", "a, an", "an, a"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "語法"
+        },
+        {
+          "id": "e030",
+          "question": "動詞 'eat' 的過去式是？",
+          "options": ["eated", "ate", "eaten", "eating"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "語法"
+        },
+        {
+          "id": "e031",
+          "question": "'We ___ happy yesterday.' 應填入？",
+          "options": ["is", "are", "was", "were"],
+          "correct": 3,
+          "difficulty": 2,
+          "topic": "語法"
+        },
+        {
+          "id": "e032",
+          "question": "'___ you like apples?' 應填入？",
+          "options": ["Do", "Does", "Are", "Is"],
+          "correct": 0,
+          "difficulty": 2,
+          "topic": "語法"
+        },
+        {
+          "id": "e033",
+          "question": "'She ___ like bananas.'（否定）應填入？",
+          "options": ["don't", "doesn't", "isn't", "aren't"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "語法"
+        },
+        {
+          "id": "e034",
+          "question": "'Mouse' 的複數是？",
+          "options": ["Mouses", "Mice", "Mousees", "Mousen"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "語法"
+        },
+        {
+          "id": "e035",
+          "question": "'___ is that girl?' 'She is my sister.' 應填入？",
+          "options": ["What", "Who", "Where", "When"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "語法"
+        },
+        {
+          "id": "e036",
+          "question": "早上見到老師應該說什麼？",
+          "options": ["Good night!", "Good morning!", "Goodbye!", "See you!"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e037",
+          "question": "有人說 'Thank you!' 你應該回答什麼？",
+          "options": ["Sorry.", "You're welcome.", "Excuse me.", "Hello."],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e038",
+          "question": "你想問別人的名字，應該說什麼？",
+          "options": ["How are you?", "What's your name?", "Where are you?", "How old are you?"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e039",
+          "question": "在餐廳想點餐，應該說什麼？",
+          "options": ["I want this.", "May I have this, please?", "Give me this.", "I need this."],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e040",
+          "question": "放學時對同學說什麼？",
+          "options": ["Good morning!", "Good night!", "See you tomorrow!", "Hello!"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e041",
+          "question": "你想知道現在幾點，應該問什麼？",
+          "options": ["What day is it?", "What's the time?", "What's the date?", "What year is it?"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e042",
+          "question": "別人說 'I'm sorry.' 你應該回答什麼？",
+          "options": ["Thank you.", "That's OK. / It's alright.", "You're welcome.", "Goodbye."],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e043",
+          "question": "在商店想問價格，應該說什麼？",
+          "options": ["How many?", "How much is this?", "What is this?", "Where is this?"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e044",
+          "question": "朋友生病了，你應該說什麼？",
+          "options": ["Congratulations!", "Get well soon!", "Happy birthday!", "Good luck!"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e045",
+          "question": "想請別人幫忙，應該怎樣說？",
+          "options": ["Help me!", "Can you help me, please?", "You help me.", "I need help."],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e046",
+          "question": "在別人家裡，想上廁所應該說什麼？",
+          "options": ["Where is toilet?", "May I use the bathroom?", "I want toilet.", "Toilet where?"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e047",
+          "question": "向陌生人介紹自己應該說什麼？",
+          "options": ["My name...", "I am name...", "My name is... / I'm...", "Name is me..."],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e048",
+          "question": "考試前對朋友說什麼表示祝福？",
+          "options": ["Good night!", "Good luck!", "Goodbye!", "Good morning!"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e049",
+          "question": "你聽不清楚別人說話，應該說什麼？",
+          "options": ["What?", "Pardon? / Sorry, I didn't catch that.", "Repeat!", "Say again!"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "對話/情境"
+        },
+        {
+          "id": "e050",
+          "question": "告別時除了 'Goodbye' 還可以說什麼？",
+          "options": ["Hello!", "Hi!", "See you! / Bye!", "Welcome!"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "對話/情境"
+        }
+      ]
+    },
+    "general": {
+      "name": "常識",
+      "nameEn": "General Knowledge",
+      "icon": "🌍",
+      "color": "#9b59b6",
+      "description": "以知識護盾保護隊友",
+      "questions": [
+        {
+          "id": "g001",
+          "question": "中國的首都是哪裡？",
+          "options": ["上海", "北京", "廣州", "深圳"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g002",
+          "question": "一年有幾個季節？",
+          "options": ["2個", "3個", "4個", "5個"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "日常生活"
+        },
+        {
+          "id": "g003",
+          "question": "香港特別行政區的區花是什麼？",
+          "options": ["牡丹花", "紫荊花", "玫瑰花", "蓮花"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "香港本地知識"
+        },
+        {
+          "id": "g004",
+          "question": "下列哪個不是交通工具？",
+          "options": ["汽車", "飛機", "書包", "輪船"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "日常生活"
+        },
+        {
+          "id": "g005",
+          "question": "農曆新年通常在哪個月份？",
+          "options": ["1月或2月", "3月或4月", "5月或6月", "7月或8月"],
+          "correct": 0,
+          "difficulty": 1,
+          "topic": "歷史文化"
+        },
+        {
+          "id": "g006",
+          "question": "香港的地鐵系統叫什麼名字？",
+          "options": ["港鐵", "捷運", "地鐵", "輕鐵"],
+          "correct": 0,
+          "difficulty": 1,
+          "topic": "香港本地知識"
+        },
+        {
+          "id": "g007",
+          "question": "香港有多少個離島？",
+          "options": ["超過100個", "超過200個", "超過300個", "超過400個"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "香港本地知識"
+        },
+        {
+          "id": "g008",
+          "question": "香港的貨幣單位是什麼？",
+          "options": ["人民幣", "港幣/港元", "美元", "英鎊"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "香港本地知識"
+        },
+        {
+          "id": "g009",
+          "question": "香港國際機場位於哪個島嶼？",
+          "options": ["香港島", "大嶼山", "青衣", "赤鱲角"],
+          "correct": 3,
+          "difficulty": 2,
+          "topic": "香港本地知識"
+        },
+        {
+          "id": "g010",
+          "question": "太平山頂的標誌性建築物是什麼？",
+          "options": ["凌霄閣", "天壇大佛", "金紫荊廣場", "維多利亞港"],
+          "correct": 0,
+          "difficulty": 2,
+          "topic": "香港本地知識"
+        },
+        {
+          "id": "g011",
+          "question": "香港迪士尼樂園位於哪個區域？",
+          "options": ["荃灣", "大嶼山", "沙田", "西貢"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "香港本地知識"
+        },
+        {
+          "id": "g012",
+          "question": "維多利亞港分隔了哪兩個地區？",
+          "options": ["新界和九龍", "香港島和九龍", "大嶼山和香港島", "新界和大嶼山"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "香港本地知識"
+        },
+        {
+          "id": "g013",
+          "question": "香港於哪一年回歸中國？",
+          "options": ["1996年", "1997年", "1998年", "1999年"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "香港本地知識"
+        },
+        {
+          "id": "g014",
+          "question": "香港著名的小食是什麼？",
+          "options": ["壽司", "魚蛋/雞蛋仔", "漢堡包", "披薩"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "香港本地知識"
+        },
+        {
+          "id": "g015",
+          "question": "天壇大佛位於香港的哪個地方？",
+          "options": ["黃大仙", "大嶼山東涌", "大嶼山昂坪", "沙田"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "香港本地知識"
+        },
+        {
+          "id": "g016",
+          "question": "世界上最高的山峰是什麼？",
+          "options": ["富士山", "珠穆朗瑪峰", "喜馬拉雅山", "阿爾卑斯山"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g017",
+          "question": "長江是世界第幾長河？",
+          "options": ["第一", "第二", "第三", "第四"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g018",
+          "question": "中國最長的城牆是什麼？",
+          "options": ["紫禁城", "萬里長城", "西安城牆", "南京城牆"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g019",
+          "question": "世界上人口最多的國家是？",
+          "options": ["印度", "中國", "美國", "印尼"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g020",
+          "question": "亞洲最大的國家是？",
+          "options": ["中國", "印度", "俄羅斯", "哈薩克斯坦"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g021",
+          "question": "亞馬遜雨林主要位於哪個國家？",
+          "options": ["阿根廷", "巴西", "智利", "秘魯"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g022",
+          "question": "埃及著名的古代建築是什麼？",
+          "options": ["金字塔", "帕特農神廟", "萬里長城", "泰姬陵"],
+          "correct": 0,
+          "difficulty": 1,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g023",
+          "question": "日本的首都是哪裡？",
+          "options": ["大阪", "京都", "東京", "名古屋"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g024",
+          "question": "世界上最大的海洋是？",
+          "options": ["大西洋", "印度洋", "太平洋", "北冰洋"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g025",
+          "question": "北極位於地球的哪一端？",
+          "options": ["最北端", "最南端", "中間", "赤道"],
+          "correct": 0,
+          "difficulty": 1,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g026",
+          "question": "澳大利亞的象徵動物是什麼？",
+          "options": ["獅子", "袋鼠", "熊貓", "企鵝"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g027",
+          "question": "中國的國寶動物是什麼？",
+          "options": ["金絲猴", "東北虎", "大熊貓", "白鰭豚"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g028",
+          "question": "世界上最大的沙漠是？",
+          "options": ["撒哈拉沙漠", "戈壁沙漠", "阿拉伯沙漠", "南極沙漠"],
+          "correct": 0,
+          "difficulty": 2,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g029",
+          "question": "意大利著名的比薩斜塔位於哪個城市？",
+          "options": ["羅馬", "米蘭", "比薩", "威尼斯"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g030",
+          "question": "法國的首都是哪裡？",
+          "options": ["倫敦", "柏林", "巴黎", "馬德里"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "中國/世界地理"
+        },
+        {
+          "id": "g031",
+          "question": "中國四大發明不包括以下哪項？",
+          "options": ["造紙術", "印刷術", "指南針", "電燈"],
+          "correct": 3,
+          "difficulty": 2,
+          "topic": "歷史文化"
+        },
+        {
+          "id": "g032",
+          "question": "端午節是為了紀念哪位詩人？",
+          "options": ["李白", "杜甫", "屈原", "蘇軾"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "歷史文化"
+        },
+        {
+          "id": "g033",
+          "question": "中秋節的傳統食品是什麼？",
+          "options": ["粽子", "月餅", "湯圓", "餃子"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "歷史文化"
+        },
+        {
+          "id": "g034",
+          "question": "清明節的主要習俗是什麼？",
+          "options": ["賞月", "掃墓祭祖", "賽龍舟", "吃團年飯"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "歷史文化"
+        },
+        {
+          "id": "g035",
+          "question": "秦始皇統一中國是在哪個朝代？",
+          "options": ["周朝", "秦朝", "漢朝", "唐朝"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "歷史文化"
+        },
+        {
+          "id": "g036",
+          "question": "《三字經》是中國傳統的什麼讀物？",
+          "options": ["醫書", "啟蒙讀物", "兵法", "詩集"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "歷史文化"
+        },
+        {
+          "id": "g037",
+          "question": "中國的第一個皇帝是誰？",
+          "options": ["漢武帝", "唐太宗", "秦始皇", "宋太祖"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "歷史文化"
+        },
+        {
+          "id": "g038",
+          "question": "春節時人們會做什麼來驅邪避凶？",
+          "options": ["放鞭炮", "游泳", "爬山", "種樹"],
+          "correct": 0,
+          "difficulty": 1,
+          "topic": "歷史文化"
+        },
+        {
+          "id": "g039",
+          "question": "重陽節的傳統活動是什麼？",
+          "options": ["賞月", "登高", "賽龍舟", "賞花燈"],
+          "correct": 1,
+          "difficulty": 2,
+          "topic": "歷史文化"
+        },
+        {
+          "id": "g040",
+          "question": "中國的十二生肖中，老鼠排在第幾位？",
+          "options": ["第一位", "第二位", "第十位", "第十二位"],
+          "correct": 0,
+          "difficulty": 1,
+          "topic": "歷史文化"
+        },
+        {
+          "id": "g041",
+          "question": "一天有幾個小時？",
+          "options": ["12小時", "24小時", "36小時", "48小時"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "日常生活"
+        },
+        {
+          "id": "g042",
+          "question": "一星期有幾天？",
+          "options": ["5天", "6天", "7天", "8天"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "日常生活"
+        },
+        {
+          "id": "g043",
+          "question": "紅綠燈中，紅燈代表什麼？",
+          "options": ["通行", "停止", "注意", "減速"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "日常生活"
+        },
+        {
+          "id": "g044",
+          "question": "急救電話號碼是多少（香港）？",
+          "options": ["110", "119", "999", "911"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "日常生活"
+        },
+        {
+          "id": "g045",
+          "question": "下列哪個是正確的坐姿？",
+          "options": ["蹺二郎腿", "挺直背部", "彎腰駝背", "趴著坐"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "日常生活"
+        },
+        {
+          "id": "g046",
+          "question": "刷牙應該刷多久時間？",
+          "options": ["10秒", "30秒", "至少2分鐘", "5分鐘"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "日常生活"
+        },
+        {
+          "id": "g047",
+          "question": "一天應該喝多少水才健康？",
+          "options": ["不用喝水", "1杯", "約8杯/2公升", "越多越好"],
+          "correct": 2,
+          "difficulty": 2,
+          "topic": "日常生活"
+        },
+        {
+          "id": "g048",
+          "question": "過馬路時應該注意什麼？",
+          "options": ["看手機", "左右看車", "奔跑", "閉著眼睛"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "日常生活"
+        },
+        {
+          "id": "g049",
+          "question": "下列哪種食物屬於健康飲食？",
+          "options": ["薯片", "新鮮水果", "汽水", "糖果"],
+          "correct": 1,
+          "difficulty": 1,
+          "topic": "日常生活"
+        },
+        {
+          "id": "g050",
+          "question": "放學回家後首先要做什麼？",
+          "options": ["看電視", "玩遊戲", "洗手", "吃零食"],
+          "correct": 2,
+          "difficulty": 1,
+          "topic": "日常生活"
+        }
+      ]
+    }
+  }
+}

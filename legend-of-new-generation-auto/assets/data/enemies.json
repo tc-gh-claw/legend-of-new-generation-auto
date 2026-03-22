@@ -1,0 +1,294 @@
+{
+  "enemies": {
+    "normal": [
+      {
+        "id": "slime",
+        "name": "史萊姆",
+        "nameEn": "Slime",
+        "type": "normal",
+        "level": 1,
+        "stats": {
+          "hp": 40,
+          "attack": 8,
+          "defense": 2,
+          "exp": 15,
+          "gold": 10
+        },
+        "sprite": "enemy-slime",
+        "weakness": ["fire"],
+        "resistance": ["water"],
+        "description": "最基礎的魔物，果凍狀的身體可以吸收少量傷害"
+      },
+      {
+        "id": "goblin",
+        "name": "哥布林",
+        "nameEn": "Goblin",
+        "type": "normal",
+        "level": 2,
+        "stats": {
+          "hp": 55,
+          "attack": 12,
+          "defense": 3,
+          "exp": 22,
+          "gold": 15
+        },
+        "sprite": "enemy-goblin",
+        "weakness": ["light"],
+        "resistance": [],
+        "description": "狡猾的小怪物，喜歡群體行動"
+      },
+      {
+        "id": "mage",
+        "name": "黑暗法師",
+        "nameEn": "Dark Mage",
+        "type": "normal",
+        "level": 3,
+        "stats": {
+          "hp": 45,
+          "attack": 18,
+          "defense": 1,
+          "exp": 30,
+          "gold": 25
+        },
+        "sprite": "enemy-mage",
+        "weakness": ["physical"],
+        "resistance": ["magic"],
+        "description": "沉迷於黑暗魔法的研究者，攻擊力高但身體脆弱"
+      },
+      {
+        "id": "wolf",
+        "name": "森林狼",
+        "nameEn": "Forest Wolf",
+        "type": "normal",
+        "level": 4,
+        "stats": {
+          "hp": 70,
+          "attack": 15,
+          "defense": 5,
+          "exp": 35,
+          "gold": 20
+        },
+        "sprite": "enemy-wolf",
+        "weakness": ["fire"],
+        "resistance": [],
+        "description": "棲息在森林中的野獸，以敏捷著稱"
+      },
+      {
+        "id": "orc",
+        "name": "獸人戰士",
+        "nameEn": "Orc Warrior",
+        "type": "normal",
+        "level": 5,
+        "stats": {
+          "hp": 100,
+          "attack": 18,
+          "defense": 8,
+          "exp": 50,
+          "gold": 35
+        },
+        "sprite": "enemy-orc",
+        "weakness": ["magic"],
+        "resistance": ["physical"],
+        "description": "擁有強大體魄的戰士，近戰能力強大"
+      },
+      {
+        "id": "spider",
+        "name": "巨型蜘蛛",
+        "nameEn": "Giant Spider",
+        "type": "normal",
+        "level": 6,
+        "stats": {
+          "hp": 85,
+          "attack": 22,
+          "defense": 4,
+          "exp": 55,
+          "gold": 30
+        },
+        "sprite": "enemy-spider",
+        "weakness": ["fire"],
+        "resistance": ["poison"],
+        "description": "潛伏在陰暗處的獵手，攻擊帶有毒性"
+      },
+      {
+        "id": "golem",
+        "name": "石魔像",
+        "nameEn": "Stone Golem",
+        "type": "normal",
+        "level": 7,
+        "stats": {
+          "hp": 150,
+          "attack": 20,
+          "defense": 15,
+          "exp": 75,
+          "gold": 50
+        },
+        "sprite": "enemy-golem",
+        "weakness": ["magic"],
+        "resistance": ["physical", "poison"],
+        "description": "由岩石構成的魔像，防禦力極高但行動緩慢"
+      },
+      {
+        "id": "wraith",
+        "name": "幽靈",
+        "nameEn": "Wraith",
+        "type": "normal",
+        "level": 8,
+        "stats": {
+          "hp": 90,
+          "attack": 28,
+          "defense": 2,
+          "exp": 80,
+          "gold": 45
+        },
+        "sprite": "enemy-wraith",
+        "weakness": ["light"],
+        "resistance": ["physical"],
+        "description": "徘徊在世間的亡靈，可以穿透物理防禦"
+      }
+    ],
+    "elite": [
+      {
+        "id": "orc_chief",
+        "name": "獸人酋長",
+        "nameEn": "Orc Chieftain",
+        "type": "elite",
+        "level": 8,
+        "stats": {
+          "hp": 180,
+          "attack": 30,
+          "defense": 12,
+          "exp": 120,
+          "gold": 80
+        },
+        "sprite": "enemy-orc-chief",
+        "weakness": ["magic"],
+        "resistance": ["physical"],
+        "abilities": ["rage", "cleave"],
+        "description": "獸人部落的領袖，戰鬥力是普通獸人的數倍"
+      },
+      {
+        "id": "lich",
+        "name": "巫妖",
+        "nameEn": "Lich",
+        "type": "elite",
+        "level": 10,
+        "stats": {
+          "hp": 120,
+          "attack": 40,
+          "defense": 8,
+          "exp": 150,
+          "gold": 100
+        },
+        "sprite": "enemy-lich",
+        "weakness": ["light"],
+        "resistance": ["magic", "poison"],
+        "abilities": ["drain_life", "summon"],
+        "description": "不死族的高階法師，掌握著禁忌的死亡魔法"
+      }
+    ],
+    "boss": [
+      {
+        "id": "forest_guardian",
+        "name": "森林守護者",
+        "nameEn": "Forest Guardian",
+        "type": "boss",
+        "level": 10,
+        "phase": 2,
+        "stats": {
+          "hp": 300,
+          "attack": 25,
+          "defense": 15,
+          "exp": 300,
+          "gold": 200
+        },
+        "sprite": "boss-forest",
+        "weakness": ["fire"],
+        "resistance": ["water", "earth"],
+        "abilities": [
+          {
+            "name": "nature_wrath",
+            "displayName": "自然之怒",
+            "damage": 35,
+            "cooldown": 3
+          },
+          {
+            "name": "heal",
+            "displayName": "生命恢復",
+            "heal": 50,
+            "cooldown": 4
+          },
+          {
+            "name": "summon",
+            "displayName": "召喚狼群",
+            "summon": "wolf",
+            "cooldown": 5
+          }
+        ],
+        "drops": [
+          {
+            "itemId": "staff_nature",
+            "chance": 0.3
+          },
+          {
+            "itemId": "potion_large",
+            "chance": 0.8,
+            "quantity": 3
+          }
+        ],
+        "description": "守護森林的古老樹精，因黑暗力量侵蝕而發狂"
+      },
+      {
+        "id": "dark_dragon",
+        "name": "暗影巨龍",
+        "nameEn": "Shadow Dragon",
+        "type": "boss",
+        "level": 15,
+        "phase": 3,
+        "stats": {
+          "hp": 500,
+          "attack": 40,
+          "defense": 20,
+          "exp": 500,
+          "gold": 500
+        },
+        "sprite": "boss-dragon",
+        "weakness": ["light"],
+        "resistance": ["dark", "fire", "poison"],
+        "abilities": [
+          {
+            "name": "shadow_breath",
+            "displayName": "暗影吐息",
+            "damage": 50,
+            "cooldown": 3
+          },
+          {
+            "name": "dark_barrier",
+            "displayName": "黑暗屏障",
+            "defense": 10,
+            "duration": 2,
+            "cooldown": 5
+          },
+          {
+            "name": "soul_drain",
+            "displayName": "靈魂吸取",
+            "damage": 25,
+            "heal": 25,
+            "cooldown": 4
+          }
+        ],
+        "drops": [
+          {
+            "itemId": "sword_dragon",
+            "chance": 0.2
+          },
+          {
+            "itemId": "elixir",
+            "chance": 0.5,
+            "quantity": 2
+          }
+        ],
+        "description": "傳說中的暗影巨龍，是新世代大陸最大的威脅"
+      }
+    ]
+  }
+}

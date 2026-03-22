@@ -1,0 +1,286 @@
+{
+  "quests": {
+    "main": [
+      {
+        "id": "main_001",
+        "type": "main",
+        "title": "冒險的開始",
+        "description": "村長希望你能去森林調查最近的怪物騷動。前往森林並擊敗5隻史萊姆。",
+        "objectives": [
+          {
+            "type": "kill",
+            "target": "slime",
+            "count": 5,
+            "current": 0
+          }
+        ],
+        "rewards": {
+          "exp": 100,
+          "gold": 200,
+          "items": [
+            {
+              "id": "potion_small",
+              "quantity": 3
+            }
+          ]
+        },
+        "nextQuest": "main_002",
+        "levelRequired": 1,
+        "npcGiver": "village_chief"
+      },
+      {
+        "id": "main_002",
+        "type": "main",
+        "title": "黑暗的力量",
+        "description": "森林深處出現了不尋常的黑暗能量。擊敗5隻哥布林和3隻黑暗法師，調查源頭。",
+        "objectives": [
+          {
+            "type": "kill",
+            "target": "goblin",
+            "count": 5,
+            "current": 0
+          },
+          {
+            "type": "kill",
+            "target": "mage",
+            "count": 3,
+            "current": 0
+          }
+        ],
+        "rewards": {
+          "exp": 200,
+          "gold": 350,
+          "items": [
+            {
+              "id": "sword_iron",
+              "quantity": 1
+            }
+          ]
+        },
+        "nextQuest": "main_003",
+        "levelRequired": 3,
+        "npcGiver": "village_chief"
+      },
+      {
+        "id": "main_003",
+        "type": "main",
+        "title": "森林守護者",
+        "description": "調查發現，森林守護者被黑暗力量控制了！你必須擊敗它才能拯救森林。",
+        "objectives": [
+          {
+            "type": "kill_boss",
+            "target": "forest_guardian",
+            "count": 1,
+            "current": 0
+          }
+        ],
+        "rewards": {
+          "exp": 500,
+          "gold": 1000,
+          "items": [
+            {
+              "id": "staff_nature",
+              "quantity": 1
+            }
+          ]
+        },
+        "nextQuest": "main_004",
+        "levelRequired": 8,
+        "npcGiver": "village_chief"
+      },
+      {
+        "id": "main_004",
+        "type": "main",
+        "title": "最終對決",
+        "description": "暗影巨龍從沉睡中甦醒了！整個大陸的命運掌握在你的手中。",
+        "objectives": [
+          {
+            "type": "kill_boss",
+            "target": "dark_dragon",
+            "count": 1,
+            "current": 0
+          }
+        ],
+        "rewards": {
+          "exp": 1000,
+          "gold": 5000,
+          "items": [
+            {
+              "id": "sword_dragon",
+              "quantity": 1
+            }
+          ]
+        },
+        "levelRequired": 12,
+        "npcGiver": "village_chief"
+      }
+    ],
+    "side": [
+      {
+        "id": "side_001",
+        "type": "side",
+        "title": "藥水收集",
+        "description": "藥師需要一些材料來製作藥水。收集5個史萊姆果凍。",
+        "objectives": [
+          {
+            "type": "collect",
+            "target": "slime_jelly",
+            "count": 5,
+            "current": 0
+          }
+        ],
+        "rewards": {
+          "exp": 50,
+          "gold": 100,
+          "items": [
+            {
+              "id": "potion_medium",
+              "quantity": 2
+            }
+          ]
+        },
+        "levelRequired": 1,
+        "npcGiver": "apothecary",
+        "repeatable": false
+      },
+      {
+        "id": "side_002",
+        "type": "side",
+        "title": "獵人的試煉",
+        "description": "證明你的狩獵技巧。擊敗5隻森林狼。",
+        "objectives": [
+          {
+            "type": "kill",
+            "target": "wolf",
+            "count": 5,
+            "current": 0
+          }
+        ],
+        "rewards": {
+          "exp": 80,
+          "gold": 150,
+          "items": [
+            {
+              "id": "armor_leather",
+              "quantity": 1
+            }
+          ]
+        },
+        "levelRequired": 3,
+        "npcGiver": "hunter",
+        "repeatable": false
+      },
+      {
+        "id": "side_003",
+        "type": "side",
+        "title": "知識就是力量",
+        "description": "圖書館管理員想要測試你的知識。完成10次戰鬥中的答題。",
+        "objectives": [
+          {
+            "type": "complete_quiz",
+            "target": "any",
+            "count": 10,
+            "current": 0
+          }
+        ],
+        "rewards": {
+          "exp": 100,
+          "gold": 200,
+          "items": [
+            {
+              "id": "ring_power",
+              "quantity": 1
+            }
+          ]
+        },
+        "levelRequired": 2,
+        "npcGiver": "librarian",
+        "repeatable": false
+      },
+      {
+        "id": "side_004",
+        "type": "side",
+        "title": "鐵匠的請求",
+        "description": "鐵匠需要一些鐵礦來鍛造裝備。收集10個鐵礦石。",
+        "objectives": [
+          {
+            "type": "collect",
+            "target": "iron_ore",
+            "count": 10,
+            "current": 0
+          }
+        ],
+        "rewards": {
+          "exp": 60,
+          "gold": 180,
+          "items": [
+            {
+              "id": "shield_wooden",
+              "quantity": 1
+            }
+          ]
+        },
+        "levelRequired": 2,
+        "npcGiver": "blacksmith",
+        "repeatable": false
+      },
+      {
+        "id": "side_005",
+        "type": "side",
+        "title": "每日訓練",
+        "description": "進行日常訓練，擊敗任意8隻怪物。",
+        "objectives": [
+          {
+            "type": "kill_any",
+            "target": "any",
+            "count": 8,
+            "current": 0
+          }
+        ],
+        "rewards": {
+          "exp": 100,
+          "gold": 150,
+          "items": []
+        },
+        "levelRequired": 1,
+        "npcGiver": "trainer",
+        "repeatable": true,
+        "resetTime": "daily"
+      }
+    ],
+    "hidden": [
+      {
+        "id": "hidden_001",
+        "type": "hidden",
+        "title": "神秘的遺跡",
+        "description": "你在森林深處發現了一個古老的遺跡。解開其中的謎題...",
+        "objectives": [
+          {
+            "type": "explore",
+            "target": "ancient_ruin",
+            "count": 1,
+            "current": 0
+          },
+          {
+            "type": "solve_puzzle",
+            "target": "rune_puzzle",
+            "count": 1,
+            "current": 0
+          }
+        ],
+        "rewards": {
+          "exp": 300,
+          "gold": 500,
+          "items": [
+            {
+              "id": "amulet_wisdom",
+              "quantity": 1
+            }
+          ]
+        },
+        "levelRequired": 5,
+        "trigger": "explore_forest_deep"
+      }
+    ]
+  }
+}

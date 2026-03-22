@@ -1,0 +1,276 @@
+{
+  "items": {
+    "consumables": [
+      {
+        "id": "potion_small",
+        "name": "小治療藥水",
+        "nameEn": "Small Potion",
+        "description": "恢復30點HP",
+        "type": "consumable",
+        "effect": {
+          "type": "heal",
+          "value": 30
+        },
+        "icon": "🧪",
+        "price": 50,
+        "sellPrice": 25
+      },
+      {
+        "id": "potion_medium",
+        "name": "中治療藥水",
+        "nameEn": "Medium Potion",
+        "description": "恢復60點HP",
+        "type": "consumable",
+        "effect": {
+          "type": "heal",
+          "value": 60
+        },
+        "icon": "🧪",
+        "price": 100,
+        "sellPrice": 50
+      },
+      {
+        "id": "potion_large",
+        "name": "大治療藥水",
+        "nameEn": "Large Potion",
+        "description": "恢復120點HP",
+        "type": "consumable",
+        "effect": {
+          "type": "heal",
+          "value": 120
+        },
+        "icon": "🧪",
+        "price": 200,
+        "sellPrice": 100
+      },
+      {
+        "id": "mana_small",
+        "name": "小魔力藥水",
+        "nameEn": "Small Mana Potion",
+        "description": "恢復20點MP",
+        "type": "consumable",
+        "effect": {
+          "type": "mana",
+          "value": 20
+        },
+        "icon": "💧",
+        "price": 40,
+        "sellPrice": 20
+      },
+      {
+        "id": "elixir",
+        "name": "萬靈藥",
+        "nameEn": "Elixir",
+        "description": "完全恢復HP和MP",
+        "type": "consumable",
+        "effect": {
+          "type": "full_restore"
+        },
+        "icon": "✨",
+        "price": 500,
+        "sellPrice": 250
+      },
+      {
+        "id": "exp_boost",
+        "name": "雙倍經驗藥水",
+        "nameEn": "Double EXP Potion",
+        "description": "下場戰鬥獲得2倍經驗值",
+        "type": "consumable",
+        "effect": {
+          "type": "exp_boost",
+          "multiplier": 2,
+          "duration": 1
+        },
+        "icon": "🧪",
+        "price": 300,
+        "sellPrice": 150
+      }
+    ],
+    "equipment": [
+      {
+        "id": "sword_wooden",
+        "name": "木劍",
+        "nameEn": "Wooden Sword",
+        "description": "基礎攻擊力+5",
+        "type": "weapon",
+        "slot": "weapon",
+        "stats": {
+          "attack": 5
+        },
+        "icon": "🗡️",
+        "price": 200,
+        "sellPrice": 100,
+        "levelRequired": 1
+      },
+      {
+        "id": "sword_iron",
+        "name": "鐵劍",
+        "nameEn": "Iron Sword",
+        "description": "攻擊力+10",
+        "type": "weapon",
+        "slot": "weapon",
+        "stats": {
+          "attack": 10
+        },
+        "icon": "⚔️",
+        "price": 500,
+        "sellPrice": 250,
+        "levelRequired": 3
+      },
+      {
+        "id": "sword_steel",
+        "name": "鋼劍",
+        "nameEn": "Steel Sword",
+        "description": "攻擊力+18",
+        "type": "weapon",
+        "slot": "weapon",
+        "stats": {
+          "attack": 18
+        },
+        "icon": "🗡️",
+        "price": 1200,
+        "sellPrice": 600,
+        "levelRequired": 6
+      },
+      {
+        "id": "staff_wisdom",
+        "name": "智慧法杖",
+        "nameEn": "Staff of Wisdom",
+        "description": "攻擊力+8，答題時間+3秒",
+        "type": "weapon",
+        "slot": "weapon",
+        "stats": {
+          "attack": 8,
+          "timeBonus": 3
+        },
+        "icon": "🔮",
+        "price": 800,
+        "sellPrice": 400,
+        "levelRequired": 4
+      },
+      {
+        "id": "armor_leather",
+        "name": "皮甲",
+        "nameEn": "Leather Armor",
+        "description": "防禦力+5，最大HP+20",
+        "type": "armor",
+        "slot": "body",
+        "stats": {
+          "defense": 5,
+          "maxHP": 20
+        },
+        "icon": "👕",
+        "price": 300,
+        "sellPrice": 150,
+        "levelRequired": 2
+      },
+      {
+        "id": "armor_chain",
+        "name": "鎖子甲",
+        "nameEn": "Chain Mail",
+        "description": "防禦力+12，最大HP+40",
+        "type": "armor",
+        "slot": "body",
+        "stats": {
+          "defense": 12,
+          "maxHP": 40
+        },
+        "icon": "🛡️",
+        "price": 800,
+        "sellPrice": 400,
+        "levelRequired": 5
+      },
+      {
+        "id": "armor_plate",
+        "name": "板甲",
+        "nameEn": "Plate Armor",
+        "description": "防禦力+20，最大HP+80",
+        "type": "armor",
+        "slot": "body",
+        "stats": {
+          "defense": 20,
+          "maxHP": 80
+        },
+        "icon": "🛡️",
+        "price": 1500,
+        "sellPrice": 750,
+        "levelRequired": 8
+      },
+      {
+        "id": "shield_wooden",
+        "name": "木盾",
+        "nameEn": "Wooden Shield",
+        "description": "防禦力+3，受到傷害-10%",
+        "type": "accessory",
+        "slot": "offhand",
+        "stats": {
+          "defense": 3,
+          "damageReduction": 0.1
+        },
+        "icon": "🛡️",
+        "price": 150,
+        "sellPrice": 75,
+        "levelRequired": 1
+      },
+      {
+        "id": "ring_power",
+        "name": "力量戒指",
+        "nameEn": "Ring of Power",
+        "description": "攻擊力+5，經驗值獲得+10%",
+        "type": "accessory",
+        "slot": "ring",
+        "stats": {
+          "attack": 5,
+          "expBonus": 0.1
+        },
+        "icon": "💍",
+        "price": 1000,
+        "sellPrice": 500,
+        "levelRequired": 5
+      },
+      {
+        "id": "amulet_wisdom",
+        "name": "智慧護符",
+        "nameEn": "Amulet of Wisdom",
+        "description": "最大MP+30，答對傷害+20%",
+        "type": "accessory",
+        "slot": "neck",
+        "stats": {
+          "maxMP": 30,
+          "damageBonus": 0.2
+        },
+        "icon": "📿",
+        "price": 1200,
+        "sellPrice": 600,
+        "levelRequired": 6
+      }
+    ],
+    "special": [
+      {
+        "id": "scroll_return",
+        "name": "回城卷軸",
+        "nameEn": "Town Portal Scroll",
+        "description": "立即返回村莊",
+        "type": "special",
+        "effect": {
+          "type": "teleport",
+          "target": "village"
+        },
+        "icon": "📜",
+        "price": 100,
+        "sellPrice": 50
+      },
+      {
+        "id": "key_dungeon",
+        "name": "地牢鑰匙",
+        "nameEn": "Dungeon Key",
+        "description": "可以開啟地牢的門",
+        "type": "key",
+        "icon": "🗝️",
+        "price": 0,
+        "sellPrice": 0,
+        "questItem": true
+      }
+    ]
+  }
+}
