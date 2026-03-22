@@ -1,7 +1,7 @@
 /**
  * BattleScene - 戰鬥場景
  * 回合制戰鬥系統，結合問答機制
- * v1.9.0 - 新增冰霜元素敵人支援
+ * v1.12.0 - 新增連擊獎勵系統
  */
 
 class BattleScene extends Phaser.Scene {
@@ -21,6 +21,18 @@ class BattleScene extends Phaser.Scene {
         this.comboCount = 0;
         this.maxCombo = 0;
         this.comboMultiplier = 0.1; // 每連擊增加10%傷害
+        
+        // 🎯 連擊獎勵系統（新增 v1.12.0）
+        this.comboRewards = {
+            5: { type: 'critBoost', value: 0.15, message: '🎯 連擊x5！暴擊率+15%' },
+            10: { type: 'heal', value: 20, message: '💚 連擊x10！回復20HP' },
+            15: { type: 'damageBoost', value: 0.25, message: '⚔️ 連擊x15！傷害+25%' },
+            20: { type: 'fullHeal', value: 50, message: '✨ 連擊x20！回復50HP' },
+            25: { type: 'ultimate', value: 0.5, message: '🔥 連擊x25！究極傷害+50%' }
+        };
+        this.claimedRewards = new Set();
+        this.critChanceBoost = 0; // 連擊獎勵提供的暴擊率加成
+        this.damageBoost = 0; // 連擊獎勵提供的額外傷害加成
         
         // ⏱️ 時間凍結技能初始化
         this.timeFreezeSkill = new TimeFreezeSkill(this);
@@ -44,6 +56,21 @@ class BattleScene extends Phaser.Scene {
             active: false,
             duration: 0,
             skipTurnChance: 0
+        };
+
+        // ⚡ 雷電元素麻痺狀態
+        this.paralyzeEffect = {
+            active: false,
+            duration: 0,
+            confused: false
+        };
+
+        // 🕷️ 毒液蜘蛛中毒狀態
+        this.poisonEffect = {
+            active: false,
+            duration: 0,
+            damagePerTurn: 0,
+            stackCount: 0 // 中毒層數
         };
     }
 
@@ -79,12 +106,22 @@ class BattleScene extends Phaser.Scene {
             this.createFreezeIndicator();
         }
         
+        // ⚡ 創建麻痺狀態顯示（如果是雷電元素）
+        if (this.enemyData.isLightningElemental) {
+            this.createParalyzeIndicator();
+        }
+
+        // 🕷️ 創建中毒狀態顯示（如果是毒液蜘蛛或玩家中毒）
+        if (this.enemyData.isVenomSpider) {
+            this.createPoisonIndicator();
+        }
+        
         // 🧪 顯示雙倍經驗狀態
         if (this.expBoostActive) {
             this.showExpBoostIndicator();
         }
         
-        // ⏱️ 創建時間凍結技能按鈕
+        // ⏱️ 創建時間凍結技能按鈗
         this.createTimeFreezeButton();
         
         // 開始戰鬥
@@ -145,6 +182,69 @@ class BattleScene extends Phaser.Scene {
         });
     }
 
+    // ⚡ 創建麻痺狀態指示器
+    createParalyzeIndicator() {
+        this.paralyzeIndicator = this.add.container(200, 210);
+        
+        const paralyzeBg = this.add.circle(0, 0, 25, 0x9400d3, 0.8);
+        this.paralyzeIndicator.add(paralyzeBg);
+        
+        const paralyzeIcon = this.add.text(0, 0, '⚡', {
+            fontSize: '24px'
+        }).setOrigin(0.5);
+        this.paralyzeIndicator.add(paralyzeIcon);
+        
+        // 預設隱藏
+        this.paralyzeIndicator.setVisible(false);
+        this.paralyzeIndicator.setScale(0);
+        
+        // 快速閃爍動畫
+        this.tweens.add({
+            targets: paralyzeBg,
+            scale: { from: 1, to: 1.3 },
+            alpha: { from: 0.8, to: 0.3 },
+            duration: 300,
+            yoyo: true,
+            repeat: -1
+        });
+    }
+
+    // 🕷️ 創建中毒狀態指示器
+    createPoisonIndicator() {
+        this.poisonIndicator = this.add.container(200, 250);
+        
+        const poisonBg = this.add.circle(0, 0, 25, 0x2ecc71, 0.8);
+        this.poisonIndicator.add(poisonBg);
+        
+        const poisonIcon = this.add.text(0, 0, '☠️', {
+            fontSize: '24px'
+        }).setOrigin(0.5);
+        this.poisonIndicator.add(poisonIcon);
+        
+        // 層數顯示
+        this.poisonStackText = this.add.text(0, 0, '', {
+            fontSize: '12px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#ffffff',
+            fontStyle: 'bold'
+        }).setOrigin(0.5);
+        this.poisonIndicator.add(this.poisonStackText);
+        
+        // 預設隱藏
+        this.poisonIndicator.setVisible(false);
+        this.poisonIndicator.setScale(0);
+        
+        // 毒液脈動動畫
+        this.tweens.add({
+            targets: poisonBg,
+            scale: { from: 1, to: 1.2 },
+            alpha: { from: 0.8, to: 0.4 },
+            duration: 600,
+            yoyo: true,
+            repeat: -1
+        });
+    }
+
     // 🔥 顯示燃燒狀態
     showBurnIndicator() {
         if (!this.burnIndicator) return;
@@ -200,7 +300,78 @@ class BattleScene extends Phaser.Scene {
             }
         });
     }
-    
+
+    // ⚡ 顯示麻痺狀態
+    showParalyzeIndicator() {
+        if (!this.paralyzeIndicator) return;
+        
+        this.paralyzeIndicator.setVisible(true);
+        this.tweens.add({
+            targets: this.paralyzeIndicator,
+            scale: { from: 0, to: 1 },
+            duration: 300,
+            ease: 'Back.out'
+        });
+    }
+
+    // ⚡ 隱藏麻痺狀態
+    hideParalyzeIndicator() {
+        if (!this.paralyzeIndicator) return;
+        
+        this.tweens.add({
+            targets: this.paralyzeIndicator,
+            scale: 0,
+            duration: 200,
+            ease: 'Back.in',
+            onComplete: () => {
+                this.paralyzeIndicator.setVisible(false);
+            }
+        });
+    }
+
+    // 🕷️ 顯示中毒狀態
+    showPoisonIndicator() {
+        if (!this.poisonIndicator) return;
+        
+        this.poisonIndicator.setVisible(true);
+        
+        // 更新層數顯示
+        if (this.poisonStackText) {
+            this.poisonStackText.setText(this.poisonEffect.stackCount > 1 ? 
+                `x${this.poisonEffect.stackCount}` : '');
+        }
+        
+        this.tweens.add({
+            targets: this.poisonIndicator,
+            scale: { from: 0, to: 1 },
+            duration: 300,
+            ease: 'Back.out'
+        });
+    }
+
+    // 🕷️ 隱藏中毒狀態
+    hidePoisonIndicator() {
+        if (!this.poisonIndicator) return;
+        
+        this.tweens.add({
+            targets: this.poisonIndicator,
+            scale: 0,
+            duration: 200,
+            ease: 'Back.in',
+            onComplete: () => {
+                this.poisonIndicator.setVisible(false);
+            }
+        });
+    }
+
+    // 🕷️ 更新中毒層數顯示
+    updatePoisonStackDisplay() {
+        if (this.poisonStackText && this.poisonEffect.active) {
+            this.poisonStackText.setText(this.poisonEffect.stackCount > 1 ? 
+                `x${this.poisonEffect.stackCount}` : '');
+        }
+    }
+
     // 🧪 顯示雙倍經驗指示器
     showExpBoostIndicator() {
         const boostText = this.add.text(400, 50, `📈 ${this.expBoostMultiplier}倍經驗加成中!`, {
@@ -254,6 +425,36 @@ class BattleScene extends Phaser.Scene {
             
             // 冰霜粒子效果
             this.createIceBackgroundEffect();
+        }
+        // ⚡ 雷電元素戰鬥背景（紫藍色調）
+        else if (this.enemyData.isLightningElemental) {
+            for (let y = 0; y < 600; y += 4) {
+                const color = Phaser.Display.Color.Interpolate.ColorWithColor(
+                    { r: 30, g: 10, b: 60 },
+                    { r: 50, g: 20, b: 90 },
+                    600, y
+                );
+                graphics.fillStyle(Phaser.Display.Color.GetColor(color.r, color.g, color.b));
+                graphics.fillRect(0, y, 800, 4);
+            }
+            
+            // 雷電粒子效果
+            this.createLightningBackgroundEffect();
+        }
+        // 🕷️ 毒液蜘蛛戰鬥背景（暗綠色調）
+        else if (this.enemyData.isVenomSpider) {
+            for (let y = 0; y < 600; y += 4) {
+                const color = Phaser.Display.Color.Interpolate.ColorWithColor(
+                    { r: 10, g: 40, b: 10 },
+                    { r: 20, g: 60, b: 20 },
+                    600, y
+                );
+                graphics.fillStyle(Phaser.Display.Color.GetColor(color.r, color.g, color.b));
+                graphics.fillRect(0, y, 800, 4);
+            }
+            
+            // 毒液粒子效果
+            this.createVenomBackgroundEffect();
         } else {
             // 漸層背景
             for (let y = 0; y < 600; y += 4) {
@@ -331,6 +532,108 @@ class BattleScene extends Phaser.Scene {
             repeat: -1
         });
     }
+
+    // ⚡ 創建雷電背景效果
+    createLightningBackgroundEffect() {
+        // 閃電粒子
+        for (let i = 0; i < 25; i++) {
+            const lightning = this.add.text(
+                Phaser.Math.Between(0, 800),
+                Phaser.Math.Between(0, 600),
+                ['⚡', '✦', '⋆'][Math.floor(Math.random() * 3)],
+                { fontSize: 16 + Math.random() * 20 + 'px' }
+            ).setAlpha(0.5);
+            
+            this.tweens.add({
+                targets: lightning,
+                x: lightning.x + Phaser.Math.Between(-50, 50),
+                y: lightning.y + Phaser.Math.Between(-50, 50),
+                alpha: { from: 0.5, to: 0 },
+                scale: { from: 1, to: 0.3 },
+                rotation: Math.random() * Math.PI * 2,
+                duration: 500 + Math.random() * 500,
+                repeat: -1,
+                delay: Math.random() * 1000
+            });
+        }
+        
+        // 閃電閃光效果
+        const flashOverlay = this.add.rectangle(400, 300, 800, 600, 0xffff00, 0);
+        
+        // 隨機閃光
+        const randomFlash = () => {
+            this.tweens.add({
+                targets: flashOverlay,
+                alpha: { from: 0, to: 0.15 },
+                duration: 50,
+                yoyo: true,
+                onComplete: () => {
+                    this.time.delayedCall(Phaser.Math.Between(2000, 4000), randomFlash);
+                }
+            });
+        };
+        
+        this.time.delayedCall(2000, randomFlash);
+    }
+
+    // 🕷️ 創建毒液背景效果
+    createVenomBackgroundEffect() {
+        // 毒液泡泡粒子
+        for (let i = 0; i < 20; i++) {
+            const venom = this.add.text(
+                Phaser.Math.Between(0, 800),
+                Phaser.Math.Between(400, 600),
+                ['☠️', '💀', '🧪'][Math.floor(Math.random() * 3)],
+                { fontSize: 14 + Math.random() * 16 + 'px' }
+            ).setAlpha(0.3);
+            
+            this.tweens.add({
+                targets: venom,
+                y: venom.y - Phaser.Math.Between(50, 150),
+                x: venom.x + Phaser.Math.Between(-30, 30),
+                alpha: { from: 0.3, to: 0 },
+                scale: { from: 1, to: 1.5 },
+                duration: 3000 + Math.random() * 2000,
+                repeat: -1,
+                delay: Math.random() * 3000
+            });
+        }
+        
+        // 毒液滴落效果
+        const createVenomDrop = () => {
+            const drop = this.add.circle(
+                Phaser.Math.Between(50, 750),
+                0,
+                Phaser.Math.Between(3, 8),
+                0x2ecc71,
+                0.6
+            );
+            
+            this.tweens.add({
+                targets: drop,
+                y: 600,
+                alpha: { from: 0.6, to: 0 },
+                duration: 2000 + Math.random() * 1000,
+                onComplete: () => drop.destroy()
+            });
+            
+            this.time.delayedCall(500 + Math.random() * 1000, createVenomDrop);
+        };
+        
+        this.time.delayedCall(500, createVenomDrop);
+        
+        // 毒霧覆蓋效果
+        const venomOverlay = this.add.rectangle(400, 300, 800, 600, 0x2ecc71, 0.03);
+        
+        // 脈動透明效果
+        this.tweens.add({
+            targets: venomOverlay,
+            alpha: { from: 0.03, to: 0.08 },
+            duration: 1500,
+            yoyo: true,
+            repeat: -1
+        });
+    }
     
     createCharacters() {
         const width = this.cameras.main.width;
@@ -383,6 +686,18 @@ class BattleScene extends Phaser.Scene {
             this.createIceElementalEffect();
         }
         
+        // ⚡ 雷電元素特殊外觀和效果
+        if (this.enemyData.isLightningElemental) {
+            this.enemySprite.setTint(0x9400d3); // 紫藍色調
+            this.createLightningElementalEffect();
+        }
+
+        // 🕷️ 毒液蜘蛛特殊外觀和效果
+        if (this.enemyData.isVenomSpider) {
+            this.enemySprite.setTint(0x2ecc71); // 綠色調
+            this.createVenomSpiderEffect();
+        }
+        
         // 敵人血條
         this.enemyHpBg = this.add.rectangle(600, 220, 120, 16, 0x000000);
         this.enemyHpBar = this.add.rectangle(540, 220, 120, 16, 0xe74c3c);
@@ -419,6 +734,24 @@ class BattleScene extends Phaser.Scene {
                 fontSize: '12px',
                 fontFamily: 'Microsoft JhengHei',
                 fill: '#00ffff'
+            }).setOrigin(0.5);
+        }
+        
+        // ⚡ 雷電元素標記
+        if (this.enemyData.isLightningElemental) {
+            this.add.text(600, 180, '⚡ 麻痺者', {
+                fontSize: '12px',
+                fontFamily: 'Microsoft JhengHei',
+                fill: '#9400d3'
+            }).setOrigin(0.5);
+        }
+
+        // 🕷️ 毒液蜘蛛標記
+        if (this.enemyData.isVenomSpider) {
+            this.add.text(600, 180, '☠️ 劇毒者', {
+                fontSize: '12px',
+                fontFamily: 'Microsoft JhengHei',
+                fill: '#2ecc71'
             }).setOrigin(0.5);
         }
         
@@ -542,6 +875,145 @@ class BattleScene extends Phaser.Scene {
             ease: 'Sine.easeInOut'
         });
     }
+
+    // ⚡ 創建雷電元素環繞效果
+    createLightningElementalEffect() {
+        // 周圍環繞的閃電
+        for (let i = 0; i < 8; i++) {
+            const angle = (i / 8) * Math.PI * 2;
+            const distance = 45;
+            
+            const lightningParticle = this.add.text(
+                600 + Math.cos(angle) * distance,
+                300 + Math.sin(angle) * distance,
+                ['⚡', '✦', '⋆'][i % 3],
+                { fontSize: '18px' }
+            ).setOrigin(0.5);
+            
+            // 環繞動畫（快速旋轉）
+            this.tweens.add({
+                targets: lightningParticle,
+                duration: 1500,
+                repeat: -1,
+                ease: 'Linear',
+                onUpdate: (tween, target) => {
+                    const progress = tween.progress;
+                    const currentAngle = angle + progress * Math.PI * 4;
+                    target.x = 600 + Math.cos(currentAngle) * distance;
+                    target.y = 300 + Math.sin(currentAngle) * distance;
+                }
+            });
+        }
+        
+        // 雷電快速閃爍效果
+        this.tweens.add({
+            targets: this.enemySprite,
+            alpha: { from: 0.6, to: 1 },
+            scale: { from: 2.4, to: 2.6 },
+            duration: 200,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+        
+        // 雷電光環（快速脈動）
+        const lightningAura = this.add.circle(600, 300, 55, 0x9400d3, 0.3);
+        this.tweens.add({
+            targets: lightningAura,
+            scale: { from: 0.8, to: 1.4 },
+            alpha: { from: 0.3, to: 0.05 },
+            duration: 600,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+    }
+
+    // 🕷️ 創建毒液蜘蛛環繞效果
+    createVenomSpiderEffect() {
+        // 周圍環繞的毒液泡泡
+        for (let i = 0; i < 6; i++) {
+            const angle = (i / 6) * Math.PI * 2;
+            const distance = 40;
+            
+            const venomParticle = this.add.text(
+                600 + Math.cos(angle) * distance,
+                300 + Math.sin(angle) * distance,
+                ['☠️', '💀', '🧪'][i % 3],
+                { fontSize: '14px' }
+            ).setOrigin(0.5);
+            
+            // 不規則環繞動畫
+            this.tweens.add({
+                targets: venomParticle,
+                x: {
+                    getEnd: () => 600 + Math.cos(angle + Math.PI * 2) * distance
+                },
+                y: {
+                    getEnd: () => 300 + Math.sin(angle + Math.PI * 2) * distance
+                },
+                duration: 2500 + Math.random() * 1000,
+                repeat: -1,
+                ease: 'Sine.easeInOut',
+                onUpdate: (tween, target) => {
+                    const progress = tween.progress;
+                    const wobble = Math.sin(progress * Math.PI * 4) * 5;
+                    const currentAngle = angle + progress * Math.PI * 2;
+                    target.x = 600 + Math.cos(currentAngle) * distance + wobble;
+                    target.y = 300 + Math.sin(currentAngle) * distance;
+                }
+            });
+        }
+        
+        // 毒液脈動效果
+        this.tweens.add({
+            targets: this.enemySprite,
+            alpha: { from: 0.85, to: 1 },
+            scale: { from: 2.5, to: 2.7 },
+            duration: 1000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+        
+        // 毒液光環（脈動）
+        const venomAura = this.add.circle(600, 300, 55, 0x2ecc71, 0.25);
+        this.tweens.add({
+            targets: venomAura,
+            scale: { from: 0.9, to: 1.3 },
+            alpha: { from: 0.25, to: 0.05 },
+            duration: 1200,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+
+        // 毒液滴落效果
+        const createVenomDrop = () => {
+            if (!this.enemySprite || !this.enemySprite.active) return;
+            
+            const drop = this.add.circle(
+                this.enemySprite.x + Phaser.Math.Between(-20, 20),
+                this.enemySprite.y + 20,
+                Phaser.Math.Between(4, 8),
+                0x2ecc71,
+                0.7
+            );
+            
+            this.tweens.add({
+                targets: drop,
+                y: this.enemySprite.y + 80,
+                alpha: { from: 0.7, to: 0 },
+                scale: { from: 1, to: 0.5 },
+                duration: 800,
+                onComplete: () => drop.destroy()
+            });
+            
+            this.time.delayedCall(600 + Math.random() * 800, createVenomDrop);
+        };
+        
+        this.time.delayedCall(500, createVenomDrop);
+    }
     
     createBattleUI() {
         const width = this.cameras.main.width;
@@ -552,31 +1024,31 @@ class BattleScene extends Phaser.Scene {
         const panelBg = this.add.rectangle(400, 75, 800, 150, 0x000000, 0.8);
         this.uiPanel.add(panelBg);
         
-        // 行動按鈕容器
+        // 行動按鈗容器
         this.actionButtons = this.add.container(0, 0);
         this.uiPanel.add(this.actionButtons);
         
-        // 攻擊按鈕（數學題目）- 注意：坐標相對於 uiPanel (y=450)
+        // 攻擊按鈗（數學題目）- 注意：坐標相對於 uiPanel (y=450)
         this.createActionButton(100, 30, '🔢 數學攻擊', 0x3498db, function() {
             this.startQuiz('math');
         });
         
-        // 技能按鈕（科學題目）
+        // 技能按鈗（科學題目）
         this.createActionButton(300, 30, '⚗️ 科學魔法', 0x2ecc71, function() {
             this.startQuiz('science');
         });
         
-        // 治療按鈕（英文題目）
+        // 治療按鈗（英文題目）
         this.createActionButton(500, 30, '📖 英文治療', 0xf39c12, function() {
             this.startQuiz('english');
         });
         
-        // 防禦按鈕（常識題目）
+        // 防禦按鈗（常識題目）
         this.createActionButton(700, 30, '🛡️ 常識防禦', 0x9b59b6, function() {
             this.startQuiz('general');
         });
         
-        // 逃跑按鈕（移到第二行中間）
+        // 逃跑按鈗（移到第二行中間）
         this.createActionButton(400, 100, '🏃 逃跑', 0xe74c3c, function() {
             this.tryEscape();
         });
@@ -590,7 +1062,7 @@ class BattleScene extends Phaser.Scene {
         }).setOrigin(0.5);
         this.uiPanel.add(this.battleMessage);
         
-        // 隱藏按鈕函數
+        // 隱藏按鈗函數
         this.hideActionButtons = () => {
             this.actionButtons.setVisible(false);
         };
@@ -600,9 +1072,9 @@ class BattleScene extends Phaser.Scene {
         };
     }
     
-    // ⏱️ 創建時間凍結技能按鈕
+    // ⏱️ 創建時間凍結技能按鈗
     createTimeFreezeButton() {
-        // 在右上角創建技能按鈕
+        // 在右上角創建技能按鈗
         this.timeFreezeBtn = this.add.container(720, 80);
         this.timeFreezeBtn.setDepth(50);
         
@@ -643,11 +1115,11 @@ class BattleScene extends Phaser.Scene {
             }
         });
         
-        // 初始更新按鈕狀態
+        // 初始更新按鈗狀態
         this.updateTimeFreezeButton();
     }
     
-    // ⏱️ 更新時間凍結按鈕狀態
+    // ⏱️ 更新時間凍結按鈗狀態
     updateTimeFreezeButton() {
         if (!this.timeFreezeBtnText || !this.timeFreezeBtnBg) return;
         
@@ -666,7 +1138,7 @@ class BattleScene extends Phaser.Scene {
             return;
         }
         
-        // 隱藏行動按鈕
+        // 隱藏行動按鈗
         this.hideActionButtons();
         
         // 使用技能
@@ -676,7 +1148,7 @@ class BattleScene extends Phaser.Scene {
             // 更新MP顯示
             this.updatePlayerMpBar();
             
-            // 更新按鈕狀態
+            // 更新按鈗狀態
             this.updateTimeFreezeButton();
             
             this.showMessage('⏱️ 時間凍結！敵人被凍結一回合！');
@@ -728,6 +1200,15 @@ class BattleScene extends Phaser.Scene {
             fill: '#ffff00'
         }).setOrigin(0.5);
         this.comboContainer.add(this.comboBonusText);
+        
+        // 🎯 連擊獎勵提示區域
+        this.comboRewardText = this.add.text(400, 150, '', {
+            fontSize: '16px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#f1c40f',
+            stroke: '#000000',
+            strokeThickness: 3
+        }).setOrigin(0.5);
         
         // 初始隱藏
         this.comboContainer.setVisible(false);
@@ -804,6 +1285,24 @@ class BattleScene extends Phaser.Scene {
         // ❄️ 檢查冰凍狀態 - 有機率跳過回合
         if (this.freezeEffect.active && this.freezeEffect.duration > 0) {
             if (this.applyFreezeEffect()) return; // 如果被凍結則跳過回合
+        }
+        
+        // ⚡ 檢查麻痺狀態
+        if (this.paralyzeEffect.active && this.paralyzeEffect.duration > 0) {
+            this.showMessage('⚡ 麻痺效果影響...你的思緒混亂！');
+            this.paralyzeEffect.duration--;
+            if (this.paralyzeEffect.duration <= 0) {
+                this.paralyzeEffect.active = false;
+                this.hideParalyzeIndicator();
+                this.time.delayedCall(1500, () => {
+                    this.showMessage('⚡ 麻痺效果消退了！');
+                });
+            }
+        }
+
+        // 🕷️ 檢查中毒狀態
+        if (this.poisonEffect.active && this.poisonEffect.duration > 0) {
+            if (this.applyPoisonDamage()) return; // 如果玩家死亡則返回
         }
         
         this.showMessage('🎯 你的回合！選擇行動...');
@@ -885,6 +1384,78 @@ class BattleScene extends Phaser.Scene {
         }
         
         return false;
+    }
+
+    // 🕷️ 應用中毒傷害
+    applyPoisonDamage() {
+        const poisonDamage = this.poisonEffect.damagePerTurn * this.poisonEffect.stackCount;
+        this.playerData.hp = Math.max(0, this.playerData.hp - poisonDamage);
+        this.updatePlayerHpBar();
+        
+        // 中毒特效
+        this.createPoisonDamageEffect();
+        
+        this.showMessage(`☠️ 中毒效果造成 ${poisonDamage} 點傷害！(層數: ${this.poisonEffect.stackCount})`);
+        
+        // 減少持續時間
+        this.poisonEffect.duration--;
+        
+        if (this.poisonEffect.duration <= 0) {
+            this.poisonEffect.active = false;
+            this.poisonEffect.stackCount = 0;
+            this.hidePoisonIndicator();
+            this.time.delayedCall(1500, () => {
+                this.showMessage('☠️ 中毒效果消退了！');
+            });
+        }
+        
+        // 檢查玩家死亡
+        if (this.playerData.hp <= 0) {
+            this.time.delayedCall(2000, () => {
+                this.endBattle(false);
+            });
+            return true; // 表示戰鬥結束
+        }
+        
+        return false;
+    }
+
+    // 🕷️ 創建中毒傷害特效
+    createPoisonDamageEffect() {
+        // 毒液圍繞玩家
+        for (let i = 0; i < 6; i++) {
+            const venom = this.add.text(
+                this.playerSprite.x + Phaser.Math.Between(-30, 30),
+                this.playerSprite.y + Phaser.Math.Between(-30, 30),
+                ['☠️', '💀', '🧪'][i % 3],
+                { fontSize: '20px' }
+            ).setOrigin(0.5);
+            
+            this.tweens.add({
+                targets: venom,
+                y: venom.y - 30,
+                alpha: 0,
+                scale: { from: 1, to: 0.5 },
+                duration: 800,
+                ease: 'Power2',
+                onComplete: () => venom.destroy()
+            });
+        }
+        
+        // 玩家閃綠
+        this.tweens.add({
+            targets: this.playerSprite,
+            tint: 0x2ecc71,
+            duration: 100,
+            yoyo: true,
+            repeat: 2,
+            onComplete: () => {
+                this.playerSprite.clearTint();
+                // 重新應用玩家顏色
+                const playerColor = this.game.globals.playerColor || 0xffffff;
+                this.playerSprite.setTint(playerColor);
+            }
+        });
     }
 
     // ❄️ 創建冰凍跳過回合特效
@@ -1075,6 +1646,9 @@ class BattleScene extends Phaser.Scene {
         }
         this.updateComboDisplay();
         
+        // 🎯 檢查並應用連擊獎勵（v1.12.0 新增）
+        this.checkComboReward();
+        
         // 連擊音效（高連擊時播放特殊音效）
         if (this.comboCount === 5 || this.comboCount === 10) {
             // 里程碑連擊特效
@@ -1082,10 +1656,136 @@ class BattleScene extends Phaser.Scene {
         }
     }
     
+    // 🎯 檢查連擊獎勵（v1.12.0 新增）
+    checkComboReward() {
+        const milestones = [5, 10, 15, 20, 25];
+        
+        for (const milestone of milestones) {
+            if (this.comboCount === milestone && !this.claimedRewards.has(milestone)) {
+                this.claimedRewards.add(milestone);
+                this.applyComboReward(milestone);
+                break;
+            }
+        }
+    }
+    
+    // 🎯 應用連擊獎勵（v1.12.0 新增）
+    applyComboReward(milestone) {
+        const reward = this.comboRewards[milestone];
+        if (!reward) return;
+        
+        switch (reward.type) {
+            case 'critBoost':
+                this.critChanceBoost = reward.value;
+                break;
+            case 'heal':
+                this.playerData.hp = Math.min(this.playerData.maxHp, this.playerData.hp + reward.value);
+                this.updatePlayerHpBar();
+                this.createHealEffect(this.playerSprite.x, this.playerSprite.y);
+                break;
+            case 'damageBoost':
+                this.damageBoost = reward.value;
+                break;
+            case 'fullHeal':
+                this.playerData.hp = Math.min(this.playerData.maxHp, this.playerData.hp + reward.value);
+                this.updatePlayerHpBar();
+                this.createHealEffect(this.playerSprite.x, this.playerSprite.y);
+                break;
+            case 'ultimate':
+                this.damageBoost = reward.value;
+                break;
+        }
+        
+        // 顯示獎勵提示
+        this.showComboRewardMessage(reward.message);
+        
+        // 創建獎勵特效
+        this.createComboRewardEffect(milestone);
+        
+        // 🏆 成就：達到連擊里程碑
+        AchievementSystem.checkAchievement(this.game, 'combo_milestone', { milestone: milestone });
+    }
+    
+    // 🎯 顯示連擊獎勵訊息（v1.12.0 新增）
+    showComboRewardMessage(message) {
+        this.comboRewardText.setText(message);
+        this.comboRewardText.setAlpha(1);
+        this.comboRewardText.setScale(0.8);
+        
+        this.tweens.add({
+            targets: this.comboRewardText,
+            scale: { from: 0.8, to: 1.1 },
+            duration: 300,
+            ease: 'Back.out'
+        });
+        
+        this.tweens.add({
+            targets: this.comboRewardText,
+            alpha: 0,
+            delay: 2000,
+            duration: 500,
+            onComplete: () => {
+                this.comboRewardText.setText('');
+            }
+        });
+    }
+    
+    // 🎯 創建連擊獎勵特效（v1.12.0 新增）
+    createComboRewardEffect(milestone) {
+        const colors = {
+            5: 0x3498db,
+            10: 0x2ecc71,
+            15: 0xe74c3c,
+            20: 0xf1c40f,
+            25: 0x9b59b6
+        };
+        
+        const color = colors[milestone] || 0xffffff;
+        
+        // 光環擴散效果
+        const ring = this.add.circle(400, 100, 50, color, 0.5);
+        this.tweens.add({
+            targets: ring,
+            radius: 200,
+            alpha: 0,
+            duration: 800,
+            ease: 'Power2',
+            onComplete: () => ring.destroy()
+        });
+        
+        // 粒子爆發
+        for (let i = 0; i < 12; i++) {
+            const angle = (i / 12) * Math.PI * 2;
+            const distance = 80 + Math.random() * 50;
+            
+            const particle = this.add.circle(
+                400 + Math.cos(angle) * 30,
+                100 + Math.sin(angle) * 10,
+                6,
+                color,
+                0.8
+            );
+            
+            this.tweens.add({
+                targets: particle,
+                x: 400 + Math.cos(angle) * distance,
+                y: 100 + Math.sin(angle) * distance * 0.5,
+                alpha: 0,
+                scale: { from: 1, to: 0 },
+                duration: 600 + Math.random() * 200,
+                ease: 'Power2',
+                onComplete: () => particle.destroy()
+            });
+        }
+    }
+    
     // 🔥 重置連擊
     resetCombo() {
         if (this.comboCount > 0) {
             this.comboCount = 0;
+            this.claimedRewards.clear();
+            this.critChanceBoost = 0;
+            this.damageBoost = 0;
             this.updateComboDisplay();
         }
     }
@@ -1181,6 +1881,11 @@ class BattleScene extends Phaser.Scene {
                 const comboBonus = 1 + (this.comboCount * this.comboMultiplier);
                 damage = Math.floor(damage * comboBonus);
                 
+                // 🎯 連擊獎勵傷害加成（v1.12.0）
+                if (this.damageBoost > 0) {
+                    damage = Math.floor(damage * (1 + this.damageBoost));
+                }
+                
                 // Boss戰額外加成
                 if (this.enemyData.isBoss || this.enemyData.type === 'boss') {
                     damage = Math.floor(damage * 1.2); // 對Boss有20%傷害加成
@@ -1207,8 +1912,16 @@ class BattleScene extends Phaser.Scene {
                     }
                 }
                 
-                // 暴擊機率 (等級越高暴擊率越高)
-                const critChance = Math.min(0.1 + (playerLevel * 0.02), 0.5); // 最高50%暴擊率
+                // ⚡ 檢查麻痺狀態（有機率打偏）
+                if (this.paralyzeEffect.active && Math.random() < 0.4) {
+                    // 打偏，造成一半傷害
+                    damage = Math.floor(damage * 0.5);
+                    this.showMessage(`⚡ 麻痺影響！攻擊打偏了！造成 ${damage} 點傷害！連擊x${this.comboCount}`);
+                }
+                
+                // 暴擊機率 (等級越高暴擊率越高 + 連擊獎勵加成)
+                const baseCritChance = Math.min(0.1 + (playerLevel * 0.02), 0.5);
+                const critChance = Math.min(baseCritChance + this.critChanceBoost, 0.8); // 最高80%暴擊率
                 let isCrit = Math.random() < critChance;
                 
                 if (isCrit) {
@@ -1331,16 +2044,202 @@ class BattleScene extends Phaser.Scene {
             fontSize: '24px',
             fontFamily: 'Microsoft JhengHei',
             fill: '#9b59b6',
-            stroke: '#ffffff',
+            stroke: '#000000',
             strokeThickness: 2
         }).setOrigin(0.5);
         
         this.tweens.add({
             targets: missText,
-            y: target.y - 80,
+            y: target.y - 100,
             alpha: 0,
             duration: 800,
+            ease: 'Power2',
             onComplete: () => missText.destroy()
+        });
+    }
+    
+    createHealEffect(x, y) {
+        // 創建治療特效
+        for (let i = 0; i < 8; i++) {
+            const particle = this.add.text(x, y, '✨', {
+                fontSize: '20px'
+            }).setOrigin(0.5);
+            
+            const angle = (i / 8) * Math.PI * 2;
+            const distance = 50;
+            
+            this.tweens.add({
+                targets: particle,
+                x: x + Math.cos(angle) * distance,
+                y: y + Math.sin(angle) * distance,
+                alpha: 0,
+                scale: { from: 1, to: 0 },
+                duration: 800,
+                ease: 'Power2',
+                onComplete: () => particle.destroy()
+            });
+        }
+    }
+    
+    createSkillEffect(subject, x, y) {
+        // 根據科目創建不同的特效
+        const effects = {
+            'math': { emoji: '🔢', color: 0x3498db },
+            'science': { emoji: '⚗️', color: 0x2ecc71 },
+            'general': { emoji: '🛡️', color: 0x9b59b6 }
+        };
+        
+        const effect = effects[subject] || effects['general'];
+        
+        // 創建特效粒子
+        for (let i = 0; i < 6; i++) {
+            const particle = this.add.text(x, y, effect.emoji, {
+                fontSize: '24px'
+            }).setOrigin(0.5);
+            
+            const angle = (i / 6) * Math.PI * 2;
+            const distance = 60;
+            
+            this.tweens.add({
+                targets: particle,
+                x: x + Math.cos(angle) * distance,
+                y: y + Math.sin(angle) * distance,
+                alpha: 0,
+                scale: { from: 1.5, to: 0 },
+                duration: 600,
+                ease: 'Power2',
+                onComplete: () => particle.destroy()
+            });
+        }
+    }
+    
+    createCritEffect(x, y) {
+        // 暴擊特效
+        const critText = this.add.text(x, y - 60, '暴擊！', {
+            fontSize: '32px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#ffff00',
+            stroke: '#ff0000',
+            strokeThickness: 4
+        }).setOrigin(0.5);
+        
+        this.tweens.add({
+            targets: critText,
+            y: y - 100,
+            alpha: 0,
+            scale: { from: 0.5, to: 1.5 },
+            duration: 800,
+            ease: 'Power2',
+            onComplete: () => critText.destroy()
+        });
+        
+        // 衝擊波效果
+        const shockwave = this.add.circle(x, y, 10, 0xffff00, 0.8);
+        this.tweens.add({
+            targets: shockwave,
+            radius: 100,
+            alpha: 0,
+            duration: 500,
+            ease: 'Power2',
+            onComplete: () => shockwave.destroy()
+        });
+    }
+    
+    dealDamageToEnemy(damage) {
+        this.enemyData.hp = Math.max(0, this.enemyData.hp - damage);
+        
+        // 更新敵人血條
+        const hpPercent = this.enemyData.hp / this.enemyData.maxHp;
+        this.enemyHpBar.setScale(hpPercent, 1);
+        
+        // 受傷閃紅
+        this.tweens.add({
+            targets: this.enemySprite,
+            tint: 0xff0000,
+            duration: 100,
+            yoyo: true,
+            repeat: 1,
+            onComplete: () => {
+                // 恢復原始顏色
+                if (this.enemyData.isAssassin) {
+                    this.enemySprite.setTint(0x4a0080);
+                } else if (this.enemyData.isFireElemental) {
+                    this.enemySprite.setTint(0xff4500);
+                } else if (this.enemyData.isIceElemental) {
+                    this.enemySprite.setTint(0x00ffff);
+                } else if (this.enemyData.isLightningElemental) {
+                    this.enemySprite.setTint(0x9400d3);
+                } else if (this.enemyData.isVenomSpider) {
+                    this.enemySprite.setTint(0x2ecc71);
+                } else {
+                    this.enemySprite.clearTint();
+                }
+            }
+        });
+        
+        // 顯示傷害數字
+        this.showDamageNumber(damage, this.enemySprite.x, this.enemySprite.y);
+    }
+    
+    showDamageNumber(damage, x, y) {
+        const damageText = this.add.text(x, y - 50, `-${damage}`, {
+            fontSize: '28px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#ffffff',
+            stroke: '#ff0000',
+            strokeThickness: 3
+        }).setOrigin(0.5);
+        
+        this.tweens.add({
+            targets: damageText,
+            y: y - 100,
+            alpha: 0,
+            duration: 800,
+            ease: 'Power2',
+            onComplete: () => damageText.destroy()
+        });
+    }
+    
+    animateAttack(attacker, target) {
+        const direction = attacker.x < target.x ? 1 : -1;
+        
+        // 攻擊者前移
+        this.tweens.add({
+            targets: attacker,
+            x: target.x - (50 * direction),
+            duration: 150,
+            ease: 'Power2',
+            onComplete: () => {
+                // 返回原位
+                this.tweens.add({
+                    targets: attacker,
+                    x: attacker.x,
+                    duration: 200,
+                    ease: 'Power2'
+                });
+            }
+        });
+        
+        // 目標後仰
+        this.tweens.add({
+            targets: target,
+            x: target.x + (20 * direction),
+            duration: 100,
+            yoyo: true,
+            ease: 'Power2'
+        });
+        
+        // 衝擊效果
+        const impact = this.add.text(target.x, target.y, '💥', {
+            fontSize: '40px'
+        }).setOrigin(0.5);
+        
+        this.tweens.add({
+            targets: impact,
+            scale: { from: 0.5, to: 1.5 },
+            alpha: 0,
+            duration: 400,
+            onComplete: () => impact.destroy()
         });
     }
     
@@ -1348,203 +2247,134 @@ class BattleScene extends Phaser.Scene {
         if (this.battleEnded) return;
         
         this.turn = 'enemy';
-        this.hideActionButtons();
+        this.showMessage(`👹 ${this.enemyData.name} 的回合！`);
         
-        // ⏱️ 檢查敵人是否被凍結
-        if (this.timeFreezeSkill && this.timeFreezeSkill.isFrozen) {
-            this.showMessage(`⏱️ ${this.enemyData.name} 被時間凍結，無法行動！`);
+        // 隨機選擇攻擊類型
+        const attackRoll = Math.random();
+        
+        this.time.delayedCall(1500, () => {
+            // 🔥 火焰元素特殊攻擊
+            if (this.enemyData.isFireElemental && attackRoll < (this.enemyData.fireBurstChance || 0)) {
+                this.fireBurstAttack();
+                return;
+            }
             
-            // 凍結視覺效果
-            this.createFrozenEffect();
+            // ❄️ 冰霜元素特殊攻擊
+            if (this.enemyData.isIceElemental && attackRoll < (this.enemyData.iceBurstChance || 0)) {
+                this.iceBurstAttack();
+                return;
+            }
             
-            // 解除凍結狀態
-            this.timeFreezeSkill.releaseFreeze();
+            // ⚡ 雷電元素特殊攻擊
+            if (this.enemyData.isLightningElemental && attackRoll < (this.enemyData.thunderStrikeChance || 0)) {
+                this.thunderStrikeAttack();
+                return;
+            }
+
+            // 🕷️ 毒液蜘蛛特殊攻擊
+            if (this.enemyData.isVenomSpider && attackRoll < (this.enemyData.venomBurstChance || 0)) {
+                this.venomBurstAttack();
+                return;
+            }
             
-            // 更新按鈕狀態
-            this.updateTimeFreezeButton();
-            
-            // 回到玩家回合
+            // 普通攻擊
+            this.enemyNormalAttack();
+        });
+    }
+    
+    enemyNormalAttack() {
+        // 播放攻擊音效
+        this.audio.playHit();
+        
+        // 敵人攻擊動畫
+        this.tweens.add({
+            targets: this.enemySprite,
+            x: this.playerSprite.x + 50,
+            duration: 200,
+            ease: 'Power2',
+            yoyo: true
+        });
+        
+        // 計算傷害
+        const baseDamage = this.enemyData.attack;
+        const variation = Phaser.Math.Between(-3, 3);
+        let damage = Math.max(1, baseDamage + variation);
+        
+        // 防禦減傷（可以根據玩家防禦力調整）
+        const playerDefense = this.game.globals.playerDefense || 0;
+        damage = Math.max(1, damage - playerDefense);
+        
+        this.playerData.hp = Math.max(0, this.playerData.hp - damage);
+        
+        // 更新玩家血條
+        this.updatePlayerHpBar();
+        
+        // 🔥 火焰元素：有機率附加燃燒
+        if (this.enemyData.isFireElemental && Math.random() < (this.enemyData.burnChance || 0.3)) {
+            this.applyBurnEffect();
+        }
+        
+        // ❄️ 冰霜元素：有機率附加冰凍
+        if (this.enemyData.isIceElemental && Math.random() < (this.enemyData.freezeChance || 0.3)) {
+            this.applyFreezeEffect();
+        }
+        
+        // ⚡ 雷電元素：有機率附加麻痺
+        if (this.enemyData.isLightningElemental && Math.random() < (this.enemyData.paralyzeChance || 0.4)) {
+            this.applyParalyzeEffect();
+        }
+
+        // 🕷️ 毒液蜘蛛：有機率附加中毒
+        if (this.enemyData.isVenomSpider && Math.random() < (this.enemyData.poisonChance || 0.5)) {
+            this.applyPoisonEffect();
+        }
+        
+        this.showMessage(`${this.enemyData.name} 造成 ${damage} 點傷害！`);
+        
+        // 檢查戰鬥結束
+        if (this.playerData.hp <= 0) {
+            this.time.delayedCall(1500, () => {
+                this.endBattle(false);
+            });
+        } else {
             this.time.delayedCall(2000, () => {
                 this.playerTurn();
             });
-            return;
+        }
+    }
+
+    // 🔥 火焰爆發攻擊
+    fireBurstAttack() {
+        // 火焰爆發特效
+        for (let i = 0; i < 12; i++) {
+            const flame = this.add.text(
+                this.playerSprite.x + Phaser.Math.Between(-50, 50),
+                this.playerSprite.y + Phaser.Math.Between(-50, 50),
+                '🔥',
+                { fontSize: '30px' }
+            ).setOrigin(0.5);
+            
+            this.tweens.add({
+                targets: flame,
+                scale: { from: 0, to: 2 },
+                alpha: 0,
+                duration: 800,
+                delay: i * 50,
+                onComplete: () => flame.destroy()
+            });
         }
         
-        this.showMessage(`👹 ${this.enemyData.name} 的回合！`);
-        
-        this.time.delayedCall(1000, () => {
-            // 🔥 火焰元素特殊技能：火焰爆發
-            if (this.enemyData.isFireElemental && Math.random() < 0.4) {
-                this.fireElementalSpecialAttack();
-                return;
-            }
-            
-            // 🔥 火焰元素普通攻擊有機率附加燃燒
-            if (this.enemyData.isFireElemental && Math.random() < 0.3) {
-                this.applyBurnEffect();
-                return;
-            }
-            
-            // ❄️ 冰霜元素特殊技能：極寒冰爆
-            if (this.enemyData.isIceElemental && Math.random() < 0.35) {
-                this.iceElementalSpecialAttack();
-                return;
-            }
-            
-            // ❄️ 冰霜元素普通攻擊有機率附加冰凍
-            if (this.enemyData.isIceElemental && Math.random() < 0.4) {
-                this.applyFreezeAttack();
-                return;
-            }
-            
-            // 🗡️ 暗影刺客有更高傷害
-            let damage;
-            if (this.enemyData.isAssassin) {
-                damage = Phaser.Math.Between(15, 25); // 刺客傷害更高
-            } else if (this.enemyData.isFireElemental) {
-                damage = Phaser.Math.Between(18, 28); // 火焰元素高傷害
-            } else if (this.enemyData.isIceElemental) {
-                damage = Phaser.Math.Between(12, 20); // 冰霜元素較低傷害
-            } else {
-                damage = Phaser.Math.Between(8, 15);
-            }
-            
-            this.playerData.hp = Math.max(0, this.playerData.hp - damage);
-            
-            // 更新血條
-            this.updatePlayerHpBar();
-            
-            // 播放攻擊和受擊音效
-            this.audio.playAttack();
-            this.time.delayedCall(200, () => {
-                this.audio.playHit();
-            });
-            
-            // 攻擊動畫
-            this.animateAttack(this.enemySprite, this.playerSprite);
-            
-            this.showMessage(`💥 受到了 ${damage} 點傷害！`);
-            
-            // 檢查玩家死亡
-            if (this.playerData.hp <= 0) {
-                this.time.delayedCall(1500, () => {
-                    this.endBattle(false);
-                });
-            } else {
-                this.time.delayedCall(2000, () => {
-                    this.playerTurn();
-                });
-            }
-        });
-    }
-
-    // 🔥 火焰元素特殊攻擊：火焰爆發
-    fireElementalSpecialAttack() {
-        this.showMessage(`🔥 ${this.enemyData.name} 施放火焰爆發！`);
-        
-        // 火焰爆發特效
-        this.createFireBurstEffect();
-        
-        this.time.delayedCall(800, () => {
-            // 高傷害
-            const damage = Phaser.Math.Between(25, 35);
-            this.playerData.hp = Math.max(0, this.playerData.hp - damage);
-            this.updatePlayerHpBar();
-            
-            // 必定附加燃燒（如果還沒有）
-            if (!this.burnEffect.active) {
-                this.burnEffect = {
-                    active: true,
-                    duration: 3,
-                    damagePerTurn: 8
-                };
-                this.showBurnIndicator();
-                this.showMessage(`🔥 你被點燃了！每回合受到 ${this.burnEffect.damagePerTurn} 點燃燒傷害！`);
-            }
-            
-            // 播放音效
-            this.audio.playHit();
-            
-            // 檢查玩家死亡
-            if (this.playerData.hp <= 0) {
-                this.time.delayedCall(1500, () => {
-                    this.endBattle(false);
-                });
-            } else {
-                this.time.delayedCall(2500, () => {
-                    this.playerTurn();
-                });
-            }
-        });
-    }
-
-    // ❄️ 冰霜元素特殊攻擊：極寒冰爆
-    iceElementalSpecialAttack() {
-        this.showMessage(`❄️ ${this.enemyData.name} 施放極寒冰爆！`);
-        
-        // 極寒冰爆特效
-        this.createIceBurstEffect();
-        
-        this.time.delayedCall(800, () => {
-            // 中等傷害
-            const damage = Phaser.Math.Between(18, 25);
-            this.playerData.hp = Math.max(0, this.playerData.hp - damage);
-            this.updatePlayerHpBar();
-            
-            // 必定附加冰凍（如果還沒有）
-            if (!this.freezeEffect.active) {
-                this.freezeEffect = {
-                    active: true,
-                    duration: 3,
-                    skipTurnChance: 0.5 // 50%機率跳過回合
-                };
-                this.showFreezeIndicator();
-                this.showMessage(`❄️ 你被冰凍了！每回合有 50% 機率無法行動！`);
-            }
-            
-            // 播放音效
-            this.audio.playHit();
-            
-            // 檢查玩家死亡
-            if (this.playerData.hp <= 0) {
-                this.time.delayedCall(1500, () => {
-                    this.endBattle(false);
-                });
-            } else {
-                this.time.delayedCall(2500, () => {
-                    this.playerTurn();
-                });
-            }
-        });
-    }
-
-    // ❄️ 冰霜元素普通冰凍攻擊
-    applyFreezeAttack() {
-        const damage = Phaser.Math.Between(10, 16);
+        // 高傷害 + 必定燃燒
+        const damage = Math.floor(this.enemyData.attack * 1.5);
         this.playerData.hp = Math.max(0, this.playerData.hp - damage);
         this.updatePlayerHpBar();
         
-        // 附加冰凍狀態
-        this.freezeEffect = {
-            active: true,
-            duration: 3,
-            skipTurnChance: 0.35 // 35%機率跳過回合
-        };
+        // 必定附加燃燒
+        this.applyBurnEffect();
         
-        this.showFreezeIndicator();
+        this.showMessage(`🔥 火焰爆發！造成 ${damage} 點傷害並附加燃燒！`);
         
-        // 冰凍特效
-        this.createFreezeEffect();
-        
-        this.showMessage(`❄️ 受到了 ${damage} 點傷害並被冰凍！每回合有 35% 機率無法行動！`);
-        
-        // 播放音效
-        this.audio.playHit();
-        
-        // 攻擊動畫
-        this.animateAttack(this.enemySprite, this.playerSprite);
-        
-        // 檢查玩家死亡
+        // 檢查戰鬥結束
         if (this.playerData.hp <= 0) {
             this.time.delayedCall(1500, () => {
                 this.endBattle(false);
@@ -1556,805 +2386,463 @@ class BattleScene extends Phaser.Scene {
         }
     }
 
-    // ❄️ 創建極寒冰爆特效
-    createIceBurstEffect() {
-        // 中心冰爆
-        const burst = this.add.circle(400, 300, 50, 0x00ffff, 0.8);
-        
-        this.tweens.add({
-            targets: burst,
-            scale: { from: 0, to: 3 },
-            alpha: { from: 0.8, to: 0 },
-            duration: 800,
-            ease: 'Power2',
-            onComplete: () => burst.destroy()
-        });
-        
-        // 冰晶粒子四散
-        for (let i = 0; i < 20; i++) {
-            const angle = (i / 20) * Math.PI * 2;
-            const distance = 150 + Math.random() * 50;
-            
-            const ice = this.add.text(400, 300, ['❄️', '✦', '✧'][i % 3], {
-                fontSize: '24px'
-            }).setOrigin(0.5);
+    // ❄️ 冰霜爆發攻擊
+    iceBurstAttack() {
+        // 冰霜爆發特效
+        for (let i = 0; i < 15; i++) {
+            const ice = this.add.text(
+                this.playerSprite.x + Phaser.Math.Between(-60, 60),
+                this.playerSprite.y + Phaser.Math.Between(-60, 60),
+                ['❄️', '✦', '✧'][i % 3],
+                { fontSize: '28px' }
+            ).setOrigin(0.5);
             
             this.tweens.add({
                 targets: ice,
-                x: 400 + Math.cos(angle) * distance,
-                y: 300 + Math.sin(angle) * distance,
+                scale: { from: 0, to: 1.8 },
                 alpha: 0,
-                scale: { from: 1, to: 0.3 },
                 rotation: Math.random() * Math.PI * 2,
                 duration: 1000,
-                ease: 'Power2',
+                delay: i * 40,
                 onComplete: () => ice.destroy()
             });
         }
         
-        // 全屏藍色閃光
-        const flash = this.add.rectangle(400, 300, 800, 600, 0x00ffff, 0.3);
+        // 傷害 + 必定冰凍
+        const damage = Math.floor(this.enemyData.attack * 1.3);
+        this.playerData.hp = Math.max(0, this.playerData.hp - damage);
+        this.updatePlayerHpBar();
+        
+        // 必定附加冰凍
+        this.applyFreezeEffect();
+        
+        this.showMessage(`❄️ 冰霜爆發！造成 ${damage} 點傷害並附加冰凍！`);
+        
+        // 檢查戰鬥結束
+        if (this.playerData.hp <= 0) {
+            this.time.delayedCall(1500, () => {
+                this.endBattle(false);
+            });
+        } else {
+            this.time.delayedCall(2500, () => {
+                this.playerTurn();
+            });
+        }
+    }
+
+    // ⚡ 雷電打擊攻擊
+    thunderStrikeAttack() {
+        // 雷電特效
+        const lightning = this.add.text(this.playerSprite.x, this.playerSprite.y - 100, '⚡', {
+            fontSize: '80px'
+        }).setOrigin(0.5);
+        
+        // 閃光效果
+        const flash = this.add.rectangle(400, 300, 800, 600, 0xffff00, 0.5);
+        
         this.tweens.add({
             targets: flash,
             alpha: 0,
-            duration: 500,
+            duration: 200,
             onComplete: () => flash.destroy()
         });
         
-        // 玩家受擊閃爍（藍色）
         this.tweens.add({
-            targets: this.playerSprite,
-            tint: 0x00ffff,
-            duration: 100,
-            yoyo: true,
-            repeat: 3,
-            onComplete: () => {
-                this.playerSprite.clearTint();
-                const playerColor = this.game.globals.playerColor || 0xffffff;
-                this.playerSprite.setTint(playerColor);
-            }
+            targets: lightning,
+            y: this.playerSprite.y,
+            alpha: 0,
+            scale: { from: 1, to: 2 },
+            duration: 300,
+            onComplete: () => lightning.destroy()
         });
+        
+        // 高傷害 + 必定麻痺
+        const damage = Math.floor(this.enemyData.attack * 1.6);
+        this.playerData.hp = Math.max(0, this.playerData.hp - damage);
+        this.updatePlayerHpBar();
+        
+        // 必定附加麻痺
+        this.applyParalyzeEffect();
+        
+        this.showMessage(`⚡ 雷電打擊！造成 ${damage} 點傷害並附加麻痺！`);
+        
+        // 檢查戰鬥結束
+        if (this.playerData.hp <= 0) {
+            this.time.delayedCall(1500, () => {
+                this.endBattle(false);
+            });
+        } else {
+            this.time.delayedCall(2500, () => {
+                this.playerTurn();
+            });
+        }
     }
 
-    // ❄️ 創建冰凍特效
-    createFreezeEffect() {
-        const player = this.playerSprite;
-        
-        // 冰晶環繞
-        for (let i = 0; i < 10; i++) {
-            const angle = (i / 10) * Math.PI * 2;
-            const distance = 30;
-            
-            const ice = this.add.text(
-                player.x + Math.cos(angle) * distance,
-                player.y + Math.sin(angle) * distance,
-                ['❄️', '✦', '✧'][i % 3],
-                { fontSize: '16px' }
+    // 🕷️ 毒液爆發攻擊
+    venomBurstAttack() {
+        // 毒液爆發特效
+        for (let i = 0; i < 15; i++) {
+            const venom = this.add.text(
+                this.playerSprite.x + Phaser.Math.Between(-60, 60),
+                this.playerSprite.y + Phaser.Math.Between(-60, 60),
+                ['☠️', '💀', '🧪'][i % 3],
+                { fontSize: '28px' }
             ).setOrigin(0.5);
             
-            // 旋轉動畫
             this.tweens.add({
-                targets: ice,
-                x: {
-                    getEnd: () => player.x + Math.cos(angle + Math.PI * 2) * distance
-                },
-                y: {
-                    getEnd: () => player.y + Math.sin(angle + Math.PI * 2) * distance
-                },
-                duration: 2500,
-                repeat: 2,
-                ease: 'Linear',
-                onUpdate: (tween, target) => {
-                    const progress = tween.progress;
-                    const currentAngle = angle + progress * Math.PI * 2;
-                    target.x = player.x + Math.cos(currentAngle) * distance;
-                    target.y = player.y + Math.sin(currentAngle) * distance;
-                },
-                onComplete: () => ice.destroy()
-            });
-        }
-    }
-
-    // 🔥 創建火焰爆發特效
-    createFireBurstEffect() {
-        // 中心大爆炸
-        const burst = this.add.circle(400, 300, 50, 0xff4500, 0.8);
-        
-        this.tweens.add({
-            targets: burst,
-            scale: { from: 0, to: 3 },
-            alpha: { from: 0.8, to: 0 },
-            duration: 800,
-            ease: 'Power2',
-            onComplete: () => burst.destroy()
-        });
-        
-        // 火焰粒子四散
-        for (let i = 0; i < 16; i++) {
-            const angle = (i / 16) * Math.PI * 2;
-            const distance = 150 + Math.random() * 50;
-            
-            const fire = this.add.text(400, 300, '🔥', {
-                fontSize: '30px'
-            }).setOrigin(0.5);
-            
-            this.tweens.add({
-                targets: fire,
-                x: 400 + Math.cos(angle) * distance,
-                y: 300 + Math.sin(angle) * distance,
+                targets: venom,
+                scale: { from: 0, to: 2 },
                 alpha: 0,
-                scale: { from: 1, to: 0.3 },
                 rotation: Math.random() * Math.PI * 2,
-                duration: 1000,
-                ease: 'Power2',
-                onComplete: () => fire.destroy()
+                duration: 900,
+                delay: i * 40,
+                onComplete: () => venom.destroy()
             });
         }
         
-        // 玩家受擊閃爍
-        this.tweens.add({
-            targets: this.playerSprite,
-            tint: 0xff4500,
-            duration: 100,
-            yoyo: true,
-            repeat: 3,
-            onComplete: () => {
-                this.playerSprite.clearTint();
-                const playerColor = this.game.globals.playerColor || 0xffffff;
-                this.playerSprite.setTint(playerColor);
-            }
-        });
+        // 毒液濺射效果
+        for (let i = 0; i < 8; i++) {
+            const splash = this.add.circle(
+                this.playerSprite.x,
+                this.playerSprite.y,
+                Phaser.Math.Between(5, 15),
+                0x2ecc71,
+                0.7
+            );
+            
+            const angle = (i / 8) * Math.PI * 2;
+            const distance = Phaser.Math.Between(60, 100);
+            
+            this.tweens.add({
+                targets: splash,
+                x: this.playerSprite.x + Math.cos(angle) * distance,
+                y: this.playerSprite.y + Math.sin(angle) * distance,
+                alpha: 0,
+                scale: { from: 1, to: 0 },
+                duration: 700,
+                delay: 100 + i * 30,
+                onComplete: () => splash.destroy()
+            });
+        }
+        
+        // 傷害 + 必定中毒（增加層數）
+        const damage = Math.floor(this.enemyData.attack * 1.2);
+        this.playerData.hp = Math.max(0, this.playerData.hp - damage);
+        this.updatePlayerHpBar();
+        
+        // 必定附加中毒（疊加層數）
+        this.applyPoisonEffect(true); // true = 這是爆發攻擊，增加更多層數
+        
+        this.showMessage(`☠️ 毒液爆發！造成 ${damage} 點傷害並附加劇毒！`);
+        
+        // 檢查戰鬥結束
+        if (this.playerData.hp <= 0) {
+            this.time.delayedCall(1500, () => {
+                this.endBattle(false);
+            });
+        } else {
+            this.time.delayedCall(2500, () => {
+                this.playerTurn();
+            });
+        }
     }
 
     // 🔥 應用燃燒效果
     applyBurnEffect() {
-        const damage = Phaser.Math.Between(12, 20);
-        this.playerData.hp = Math.max(0, this.playerData.hp - damage);
-        this.updatePlayerHpBar();
-        
-        // 附加燃燒狀態
-        this.burnEffect = {
-            active: true,
-            duration: 3,
-            damagePerTurn: 8
-        };
+        this.burnEffect.active = true;
+        this.burnEffect.duration = 3; // 持續3回合
+        this.burnEffect.damagePerTurn = 5; // 每回合5點傷害
         
         this.showBurnIndicator();
-        
-        // 燃燒特效
-        this.createBurnEffect();
-        
-        this.showMessage(`🔥 受到了 ${damage} 點傷害並被點燃！每回合額外受到 8 點傷害！`);
-        
-        // 播放音效
-        this.audio.playHit();
-        
-        // 攻擊動畫
-        this.animateAttack(this.enemySprite, this.playerSprite);
-        
-        // 檢查玩家死亡
-        if (this.playerData.hp <= 0) {
-            this.time.delayedCall(1500, () => {
-                this.endBattle(false);
-            });
-        } else {
-            this.time.delayedCall(2500, () => {
-                this.playerTurn();
-            });
-        }
+        this.showMessage('🔥 你受到了燃燒效果！');
     }
 
-    // 🔥 創建燃燒特效
-    createBurnEffect() {
-        const player = this.playerSprite;
+    // ❄️ 應用冰凍效果
+    applyFreezeEffect() {
+        this.freezeEffect.active = true;
+        this.freezeEffect.duration = 2; // 持續2回合
+        this.freezeEffect.skipTurnChance = 0.35; // 35%機率跳過回合
         
-        // 火焰環繞
-        for (let i = 0; i < 8; i++) {
-            const angle = (i / 8) * Math.PI * 2;
-            const distance = 25;
-            
-            const flame = this.add.text(
-                player.x + Math.cos(angle) * distance,
-                player.y + Math.sin(angle) * distance,
-                '🔥',
-                { fontSize: '18px' }
-            ).setOrigin(0.5);
-            
-            // 旋轉動畫
-            this.tweens.add({
-                targets: flame,
-                x: {
-                    getEnd: () => player.x + Math.cos(angle + Math.PI * 2) * distance
-                },
-                y: {
-                    getEnd: () => player.y + Math.sin(angle + Math.PI * 2) * distance
-                },
-                duration: 2000,
-                repeat: 2,
-                ease: 'Linear',
-                onUpdate: (tween, target) => {
-                    const progress = tween.progress;
-                    const currentAngle = angle + progress * Math.PI * 2;
-                    target.x = player.x + Math.cos(currentAngle) * distance;
-                    target.y = player.y + Math.sin(currentAngle) * distance;
-                },
-                onComplete: () => flame.destroy()
-            });
-        }
+        this.showFreezeIndicator();
+        this.showMessage('❄️ 你受到了冰凍效果！');
     }
-    
-    // ⏱️ 創建凍結效果
-    createFrozenEffect() {
-        const enemy = this.enemySprite;
+
+    // ⚡ 應用麻痺效果
+    applyParalyzeEffect() {
+        this.paralyzeEffect.active = true;
+        this.paralyzeEffect.duration = this.enemyData.paralyzeDuration || 2;
+        this.paralyzeEffect.confused = true;
         
-        // 冰晶碎裂效果
-        for (let i = 0; i < 6; i++) {
-            const shard = this.add.text(enemy.x, enemy.y, '❄️', {
-                fontSize: '20px'
-            }).setOrigin(0.5);
-            
-            const angle = (i / 6) * Math.PI * 2;
-            const distance = 40;
-            
-            this.tweens.add({
-                targets: shard,
-                x: enemy.x + Math.cos(angle) * distance,
-                y: enemy.y + Math.sin(angle) * distance,
-                alpha: 0,
-                scale: { from: 1, to: 0 },
-                rotation: Math.random() * Math.PI,
-                duration: 800,
-                ease: 'Power2',
-                onComplete: () => shard.destroy()
-            });
+        this.showParalyzeIndicator();
+        this.showMessage('⚡ 你受到了麻痺效果！');
+    }
+
+    // 🕷️ 應用中毒效果
+    applyPoisonEffect(isBurst = false) {
+        this.poisonEffect.active = true;
+        this.poisonEffect.duration = 4; // 持續4回合
+        this.poisonEffect.damagePerTurn = isBurst ? 8 : 5; // 爆發攻擊傷害更高
+        
+        // 增加中毒層數（最多疊加3層）
+        const maxStacks = 3;
+        if (isBurst) {
+            this.poisonEffect.stackCount = Math.min(maxStacks, this.poisonEffect.stackCount + 2);
+        } else {
+            this.poisonEffect.stackCount = Math.min(maxStacks, this.poisonEffect.stackCount + 1);
         }
         
-        // 凍結文字提示
-        const frozenText = this.add.text(enemy.x, enemy.y - 80, '凍結！', {
-            fontSize: '24px',
-            fontFamily: 'Microsoft JhengHei',
-            fill: '#00ffff',
-            stroke: '#000080',
-            strokeThickness: 3
-        }).setOrigin(0.5);
+        this.showPoisonIndicator();
+        this.updatePoisonStackDisplay();
         
-        this.tweens.add({
-            targets: frozenText,
-            y: enemy.y - 120,
-            alpha: 0,
-            duration: 1000,
-            ease: 'Power2',
-            onComplete: () => frozenText.destroy()
-        });
-    }
-    
-    dealDamageToEnemy(damage) {
-        this.enemyData.hp = Math.max(0, this.enemyData.hp - damage);
-        
-        // 更新血條
-        const hpPercent = this.enemyData.hp / this.enemyData.maxHp;
-        this.enemyHpBar.setScale(hpPercent, 1);
-        
-        // 受傷閃爍效果
-        this.tweens.add({
-            targets: this.enemySprite,
-            alpha: 0.3,
-            duration: 100,
-            yoyo: true,
-            repeat: 3
-        });
+        if (isBurst) {
+            this.showMessage(`☠️ 你受到了劇毒效果！（層數: ${this.poisonEffect.stackCount}）`);
+        } else {
+            this.showMessage(`☠️ 你受到了中毒效果！（層數: ${this.poisonEffect.stackCount}）`);
+        }
     }
     
     updatePlayerHpBar() {
         const hpPercent = this.playerData.hp / this.playerData.maxHp;
         this.playerHpBar.setScale(hpPercent, 1);
-        
-        // 改變顏色
-        if (hpPercent < 0.3) {
-            this.playerHpBar.setFillStyle(0xe74c3c);
-        } else if (hpPercent < 0.6) {
-            this.playerHpBar.setFillStyle(0xf39c12);
-        } else {
-            this.playerHpBar.setFillStyle(0x2ecc71);
-        }
-    }
-    
-    animateAttack(attacker, target) {
-        // 攻擊者前移
-        const originalX = attacker.x;
-        const direction = attacker.x < target.x ? 1 : -1;
-        
-        this.tweens.add({
-            targets: attacker,
-            x: target.x - (50 * direction),
-            duration: 200,
-            ease: 'Power2',
-            yoyo: true,
-            onComplete: () => {
-                // 目標受擊震動
-                this.tweens.add({
-                    targets: target,
-                    x: target.x + 10,
-                    duration: 50,
-                    yoyo: true,
-                    repeat: 3
-                });
-                
-                // 播放攻擊特效
-                this.createAttackEffect(target.x, target.y);
-            }
-        });
-    }
-    
-    createAttackEffect(x, y) {
-        // 基礎攻擊特效 - 閃光
-        const flash = this.add.circle(x, y, 40, 0xffffff, 0.8);
-        
-        this.tweens.add({
-            targets: flash,
-            scale: { from: 0.5, to: 1.5 },
-            alpha: { from: 0.8, to: 0 },
-            duration: 300,
-            onComplete: () => flash.destroy()
-        });
-        
-        // 傷害數字效果
-        this.createDamageNumber(x, y, '💥');
-    }
-    
-    createSkillEffect(skillType, targetX, targetY) {
-        // 根據技能類型創建不同的特效
-        switch(skillType) {
-            case 'math':
-                this.createMathEffect(targetX, targetY);
-                break;
-            case 'science':
-                this.createScienceEffect(targetX, targetY);
-                break;
-            case 'english':
-                this.createEnglishEffect(targetX, targetY);
-                break;
-            case 'general':
-                this.createGeneralEffect(targetX, targetY);
-                break;
-            default:
-                this.createAttackEffect(targetX, targetY);
-        }
-    }
-    
-    createMathEffect(x, y) {
-        // 數學技能 - 計算符號和數字
-        const symbols = ['+', '-', '×', '÷', '=', '∑', '√'];
-        
-        for (let i = 0; i < 8; i++) {
-            const symbol = this.add.text(x, y, symbols[i % symbols.length], {
-                fontSize: '24px',
-                fill: '#3498db'
-            }).setOrigin(0.5);
-            
-            const angle = (i / 8) * Math.PI * 2;
-            const distance = 60;
-            
-            this.tweens.add({
-                targets: symbol,
-                x: x + Math.cos(angle) * distance,
-                y: y + Math.sin(angle) * distance,
-                alpha: 0,
-                scale: { from: 1, to: 0.5 },
-                duration: 600,
-                ease: 'Power2',
-                onComplete: () => symbol.destroy()
-            });
-        }
-        
-        // 中央閃光
-        const flash = this.add.circle(x, y, 50, 0x3498db, 0.6);
-        this.tweens.add({
-            targets: flash,
-            scale: { from: 0, to: 2 },
-            alpha: { from: 0.6, to: 0 },
-            duration: 500,
-            onComplete: () => flash.destroy()
-        });
-    }
-    
-    createScienceEffect(x, y) {
-        // 科學技能 - 元素和分子效果
-        const elements = ['⚗️', '🔬', '🧪', '⚛️', '💨', '🔥', '💧'];
-        
-        for (let i = 0; i < 6; i++) {
-            const element = this.add.text(x, y, elements[i % elements.length], {
-                fontSize: '28px'
-            }).setOrigin(0.5);
-            
-            const angle = Math.random() * Math.PI * 2;
-            const distance = 30 + Math.random() * 50;
-            
-            this.tweens.add({
-                targets: element,
-                x: x + Math.cos(angle) * distance,
-                y: y + Math.sin(angle) * distance,
-                rotation: Math.PI * 2,
-                alpha: 0,
-                duration: 800,
-                ease: 'Power2',
-                onComplete: () => element.destroy()
-            });
-        }
-        
-        // 能量爆發
-        const burst = this.add.circle(x, y, 30, 0x2ecc71, 0.7);
-        this.tweens.add({
-            targets: burst,
-            scale: { from: 1, to: 3 },
-            alpha: { from: 0.7, to: 0 },
-            duration: 600,
-            onComplete: () => burst.destroy()
-        });
-    }
-    
-    createEnglishEffect(x, y) {
-        // 英文技能 - 字母飛散效果
-        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        
-        for (let i = 0; i < 10; i++) {
-            const letter = this.add.text(x, y, letters[Math.floor(Math.random() * letters.length)], {
-                fontSize: '20px',
-                fill: '#f39c12'
-            }).setOrigin(0.5);
-            
-            const angle = (i / 10) * Math.PI * 2;
-            const distance = 50 + Math.random() * 30;
-            
-            this.tweens.add({
-                targets: letter,
-                x: x + Math.cos(angle) * distance,
-                y: y + Math.sin(angle) * distance,
-                alpha: 0,
-                scale: { from: 1, to: 1.5 },
-                duration: 700,
-                ease: 'Power2',
-                onComplete: () => letter.destroy()
-            });
-        }
-        
-        // 書本光環
-        const bookGlow = this.add.circle(x, y, 40, 0xf39c12, 0.5);
-        this.tweens.add({
-            targets: bookGlow,
-            scale: { from: 0.5, to: 2 },
-            alpha: { from: 0.5, to: 0 },
-            duration: 600,
-            onComplete: () => bookGlow.destroy()
-        });
-    }
-    
-    createGeneralEffect(x, y) {
-        // 常識技能 - 盾牌和防護效果
-        const shield = this.add.text(x, y, '🛡️', {
-            fontSize: '60px'
-        }).setOrigin(0.5);
-        
-        this.tweens.add({
-            targets: shield,
-            scale: { from: 0.5, to: 1.5 },
-            alpha: { from: 1, to: 0 },
-            rotation: Math.PI / 4,
-            duration: 800,
-            ease: 'Power2',
-            onComplete: () => shield.destroy()
-        });
-        
-        // 防護光環
-        for (let i = 0; i < 4; i++) {
-            const ring = this.add.circle(x, y, 30 + i * 20, 0x9b59b6, 0.3);
-            
-            this.tweens.add({
-                targets: ring,
-                scale: { from: 1, to: 1.5 },
-                alpha: { from: 0.3, to: 0 },
-                duration: 600,
-                delay: i * 100,
-                onComplete: () => ring.destroy()
-            });
-        }
-    }
-    
-    createDamageNumber(x, y, text) {
-        const damageText = this.add.text(x, y - 50, text, {
-            fontSize: '24px',
-            fontFamily: 'Microsoft JhengHei',
-            fill: '#e74c3c',
-            stroke: '#ffffff',
-            strokeThickness: 2
-        }).setOrigin(0.5);
-        
-        this.tweens.add({
-            targets: damageText,
-            y: y - 100,
-            alpha: 0,
-            duration: 1000,
-            ease: 'Power2',
-            onComplete: () => damageText.destroy()
-        });
-    }
-    
-    createHealEffect(x, y) {
-        // 治療特效
-        const healIcon = this.add.text(x, y, '💚', {
-            fontSize: '40px'
-        }).setOrigin(0.5);
-        
-        this.tweens.add({
-            targets: healIcon,
-            y: y - 60,
-            alpha: 0,
-            scale: { from: 1, to: 1.5 },
-            duration: 1000,
-            ease: 'Power2',
-            onComplete: () => healIcon.destroy()
-        });
-        
-        // 綠色粒子
-        for (let i = 0; i < 6; i++) {
-            const particle = this.add.circle(x, y, 5, 0x2ecc71);
-            
-            const angle = (i / 6) * Math.PI * 2;
-            
-            this.tweens.add({
-                targets: particle,
-                x: x + Math.cos(angle) * 40,
-                y: y + Math.sin(angle) * 40 - 30,
-                alpha: 0,
-                duration: 800,
-                delay: i * 50,
-                onComplete: () => particle.destroy()
-            });
-        }
-    }
-    
-    createCritEffect(x, y) {
-        // 暴擊特效 - 紅色光芒爆發
-        const critText = this.add.text(x, y - 80, '💥 CRIT!', {
-            fontSize: '32px',
-            fontFamily: 'Microsoft JhengHei',
-            fill: '#ff0000',
-            stroke: '#ffffff',
-            strokeThickness: 3
-        }).setOrigin(0.5);
-        
-        this.tweens.add({
-            targets: critText,
-            y: y - 150,
-            scale: { from: 0.5, to: 1.5 },
-            alpha: { from: 1, to: 0 },
-            duration: 1000,
-            ease: 'Power2',
-            onComplete: () => critText.destroy()
-        });
-        
-        // 紅色爆發光環
-        for (let i = 0; i < 3; i++) {
-            const ring = this.add.circle(x, y, 30 + i * 20, 0xff0000, 0.5);
-            
-            this.tweens.add({
-                targets: ring,
-                scale: { from: 1, to: 2.5 },
-                alpha: { from: 0.5, to: 0 },
-                duration: 600,
-                delay: i * 100,
-                onComplete: () => ring.destroy()
-            });
-        }
-        
-        // 火焰粒子
-        for (let i = 0; i < 8; i++) {
-            const flame = this.add.text(x, y, '🔥', {
-                fontSize: '24px'
-            }).setOrigin(0.5);
-            
-            const angle = (i / 8) * Math.PI * 2;
-            const distance = 50 + Math.random() * 30;
-            
-            this.tweens.add({
-                targets: flame,
-                x: x + Math.cos(angle) * distance,
-                y: y + Math.sin(angle) * distance - 30,
-                alpha: 0,
-                rotation: Math.PI * 2,
-                duration: 800,
-                delay: i * 50,
-                ease: 'Power2',
-                onComplete: () => flame.destroy()
-            });
-        }
-    }
-    
-    createVictoryEffect() {
-        // 勝利特效
-        for (let i = 0; i < 20; i++) {
-            const confetti = this.add.text(
-                Phaser.Math.Between(100, 700),
-                600,
-                ['🎉', '✨', '⭐', '🎊'][Math.floor(Math.random() * 4)],
-                { fontSize: '24px' }
-            ).setOrigin(0.5);
-            
-            this.tweens.add({
-                targets: confetti,
-                y: Phaser.Math.Between(100, 400),
-                x: confetti.x + Phaser.Math.Between(-100, 100),
-                rotation: Math.PI * 2,
-                duration: Phaser.Math.Between(1000, 2000),
-                ease: 'Power2',
-                onComplete: () => confetti.destroy()
-            });
-        }
     }
     
     tryEscape() {
         this.hideActionButtons();
         
-        // 🔥 逃跑重置連擊
-        this.resetCombo();
-        
-        const escapeChance = 0.6; // 60%逃跑成功率
+        // 逃跑機率計算
+        const escapeChance = 0.5;
         
         if (Math.random() < escapeChance) {
-            this.audio.playConfirm();
             this.showMessage('🏃 成功逃跑了！');
-            this.audio.stopBgm(500);
+            
             this.time.delayedCall(1500, () => {
-                this.scene.start(this.returnScene);
+                // 🔥 重置連擊
+                this.resetCombo();
+                
+                // 返回原場景
+                this.scene.start(this.returnScene, {
+                    playerX: this.game.globals.playerX || 400,
+                    playerY: this.game.globals.playerY || 300,
+                    player: this.playerData
+                });
             });
         } else {
-            this.audio.playMiss();
             this.showMessage('❌ 逃跑失敗！');
+            
             this.time.delayedCall(1500, () => {
+                // 🔥 逃跑失敗也重置連擊
+                this.resetCombo();
                 this.enemyTurn();
             });
         }
     }
     
-    endBattle(victory) {
+    endBattle(playerWon) {
         this.battleEnded = true;
-
-        if (victory) {
-            // 基礎經驗值
-            let expGain = 20;
-            let goldGain = 10;
-
-            // 🔥 連擊獎勵經驗值
-            const comboExpBonus = Math.floor(this.maxCombo * 2);
-            expGain += comboExpBonus;
-
-            // Boss戰獎勵加成
-            const isBoss = this.enemyData.isBoss || this.enemyData.type === 'boss' || this.enemyData.bossId;
-            if (isBoss) {
-                expGain = this.enemyData.exp || 100;  // Boss給大量經驗
-                goldGain = this.enemyData.gold || 200; // Boss給大量金幣
-                this.showMessage(`👑 擊敗Boss！獲得 ${expGain} 經驗值！最高連擊x${this.maxCombo}`);
-            } else {
-                // 🗡️ 暗影刺客有額外獎勵
-                if (this.enemyData.isAssassin) {
-                    expGain += 20; // 額外經驗
-                    goldGain += 15; // 額外金幣
-                    this.showMessage(`🗡️ 擊敗暗影刺客！獲得 ${expGain} 經驗值！最高連擊x${this.maxCombo}`);
-                } else if (this.enemyData.isFireElemental) {
-                    // 🔥 火焰元素額外獎勵
-                    expGain += 25;
-                    goldGain += 20;
-                    this.showMessage(`🔥 擊敗火焰元素！獲得 ${expGain} 經驗值！最高連擊x${this.maxCombo}`);
-                } else if (this.enemyData.isIceElemental) {
-                    // ❄️ 冰霜元素額外獎勵
-                    expGain += 30;
-                    goldGain += 25;
-                    this.showMessage(`❄️ 擊敗冰霜元素！獲得 ${expGain} 經驗值！最高連擊x${this.maxCombo}`);
-                } else if (this.maxCombo > 0) {
-                    this.showMessage(`🎉 戰鬥勝利！獲得 ${expGain} 經驗值！(連擊獎勵+${comboExpBonus})`);
-                } else {
-                    this.showMessage(`🎉 戰鬥勝利！獲得 ${expGain} 經驗值！`);
-                }
-            }
-
-            // 🧪 應用雙倍經驗加成
-            if (this.expBoostActive) {
-                const boostedExp = Math.floor(expGain * this.expBoostMultiplier);
-                const bonusExp = boostedExp - expGain;
-                expGain = boostedExp;
-                
-                // 清除雙倍經驗狀態
-                this.game.globals.expBoostActive = false;
-                this.game.globals.expBoostMultiplier = 1;
-                
-                this.showMessage(`📈 雙倍經驗加成！額外獲得 +${bonusExp} 經驗值！`);
-            }
-
-            // 播放勝利音效
-            this.audio.playVictory();
-
-            // 🏆 成就：首次勝利
+        
+        if (playerWon) {
+            // 🏆 戰鬥勝利成就
             AchievementSystem.checkAchievement(this.game, 'win_battle');
-            
-            // 🏆 成就：擊敗敵人
             AchievementSystem.checkAchievement(this.game, 'kill_enemy');
             
-            // 🏆 成就：擊敗Boss
-            if (isBoss) {
+            // 🔥 記錄最高連擊
+            if (this.maxCombo > 0) {
+                AchievementSystem.checkAchievement(this.game, 'combo', { combo: this.maxCombo });
+            }
+            
+            // 🏆 Boss戰成就
+            if (this.enemyData.isBoss || this.enemyData.type === 'boss') {
                 AchievementSystem.checkAchievement(this.game, 'kill_boss');
             }
             
-            // 🏆 成就：連擊記錄
-            AchievementSystem.checkAchievement(this.game, 'combo', { combo: this.maxCombo });
+            // 計算經驗值（使用雙倍經驗加成）
+            let expGain = this.enemyData.exp;
+            if (this.expBoostActive) {
+                expGain = Math.floor(expGain * this.expBoostMultiplier);
+                this.game.globals.expBoostActive = false; // 消耗掉雙倍經驗
+            }
             
-            // 🏆 成就：獲得金幣
+            // 計算金錢
+            const goldGain = this.enemyData.gold;
+            
+            // 顯示勝利畫面
+            this.showVictoryScreen(expGain, goldGain);
+            
+            // 🏆 獲得金錢成就
             AchievementSystem.checkAchievement(this.game, 'earn_gold', { amount: goldGain });
-
-            // 勝利動畫
-            this.tweens.add({
-                targets: this.enemySprite,
-                alpha: 0,
-                scale: 0,
-                duration: 500
-            });
-
-            // 檢查升級 - 使用新的100經驗值系統
-            const levelUpResult = LevelUpScene.checkLevelUp(this.playerData, expGain);
-
-            if (levelUpResult.leveledUp) {
-                this.playerData.level = levelUpResult.newLevel;
-
-                this.time.delayedCall(1500, () => {
-                    this.audio.playLevelUp();
-                    this.showMessage(`⭐ 升級了！達到等級 ${this.playerData.level}！最高連擊x${this.maxCombo}`);
-
-                    // 🏆 成就：升級
-                    AchievementSystem.checkAchievement(this.game, 'level_up', { level: this.playerData.level });
-
-                    // 延遲後進入升級場景
-                    this.time.delayedCall(2000, () => {
-                        this.scene.launch('LevelUpScene', {
-                            player: this.playerData,
-                            newLevel: this.playerData.level,
-                            onComplete: (result) => {
-                                this.scene.stop('LevelUpScene');
-                                this.returnToWorld();
-                            }
-                        });
-                    });
+        } else {
+            // 戰鬥失敗
+            this.showDefeatScreen();
+        }
+    }
+    
+    showVictoryScreen(expGain, goldGain) {
+        // 隱藏UI
+        this.uiPanel.setVisible(false);
+        this.comboContainer.setVisible(false);
+        
+        // 勝利背景
+        const victoryBg = this.add.rectangle(400, 300, 500, 350, 0x000000, 0.9);
+        victoryBg.setStrokeStyle(4, 0xf1c40f);
+        
+        // 勝利標題
+        const victoryTitle = this.add.text(400, 180, '🎉 勝利！', {
+            fontSize: '48px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#f1c40f',
+            stroke: '#000000',
+            strokeThickness: 4
+        }).setOrigin(0.5);
+        
+        // 經驗值
+        const expText = this.add.text(400, 250, `獲得 ${expGain} 經驗值`, {
+            fontSize: '24px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#3498db'
+        }).setOrigin(0.5);
+        
+        // 金錢
+        const goldText = this.add.text(400, 290, `獲得 ${goldGain} 金幣`, {
+            fontSize: '24px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#f1c40f'
+        }).setOrigin(0.5);
+        
+        // 最高連擊
+        const comboText = this.add.text(400, 330, `最高連擊: ${this.maxCombo}`, {
+            fontSize: '20px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#ff6600'
+        }).setOrigin(0.5);
+        
+        // 🎯 顯示連擊獎勵統計（v1.12.0 新增）
+        let rewardText = '';
+        if (this.claimedRewards.size > 0) {
+            rewardText = `連擊獎勵: ${this.claimedRewards.size} 個`;
+        }
+        const rewardStatText = this.add.text(400, 360, rewardText, {
+            fontSize: '14px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#9b59b6'
+        }).setOrigin(0.5);
+        
+        // 繼續按鈗
+        const continueBtn = this.add.container(400, 400);
+        const btnBg = this.add.rectangle(0, 0, 200, 50, 0x2ecc71);
+        btnBg.setInteractive({ useHandCursor: true });
+        const btnText = this.add.text(0, 0, '繼續', {
+            fontSize: '24px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#ffffff'
+        }).setOrigin(0.5);
+        continueBtn.add([btnBg, btnText]);
+        
+        btnBg.on('pointerover', () => btnBg.setFillStyle(0x27ae60));
+        btnBg.on('pointerout', () => btnBg.setFillStyle(0x2ecc71));
+        btnBg.on('pointerup', () => {
+            // 更新玩家數據
+            this.playerData.exp += expGain;
+            this.playerData.gold += goldGain;
+            this.game.globals.playerGold = this.playerData.gold;
+            
+            // 檢查升級
+            if (this.playerData.exp >= 100) {
+                this.playerData.exp -= 100;
+                this.playerData.level++;
+                
+                // 🏆 升級成就
+                AchievementSystem.checkAchievement(this.game, 'level_up', { level: this.playerData.level });
+                
+                // 增加最大HP和MP
+                this.playerData.maxHp += 10;
+                this.playerData.maxMp += 5;
+                this.playerData.hp = this.playerData.maxHp;
+                this.playerData.mp = this.playerData.maxMp;
+                
+                // 保存全局數據
+                this.game.globals.playerHP = this.playerData.hp;
+                this.game.globals.playerMaxHP = this.playerData.maxHp;
+                this.game.globals.playerMP = this.playerData.mp;
+                this.game.globals.playerMaxMP = this.playerData.maxMp;
+                this.game.globals.playerLevel = this.playerData.level;
+                this.game.globals.playerExp = this.playerData.exp;
+                
+                // 進入升級場景
+                this.scene.start('LevelUpScene', {
+                    player: this.playerData,
+                    returnScene: this.returnScene
                 });
             } else {
-                // 沒升級，直接返回
-                this.time.delayedCall(3000, () => {
-                    this.returnToWorld();
+                // 沒有升級，直接返回
+                this.game.globals.playerHP = this.playerData.hp;
+                this.game.globals.playerMP = this.playerData.mp;
+                this.game.globals.playerExp = this.playerData.exp;
+                
+                this.scene.start(this.returnScene, {
+                    playerX: this.game.globals.playerX || 400,
+                    playerY: this.game.globals.playerY || 300,
+                    player: this.playerData
                 });
             }
-        } else {
-            // 失敗
-            this.audio.playDefeat();
-            this.showMessage('💀 戰鬥失敗...');
-            this.playerData.hp = Math.floor(this.playerData.maxHp * 0.3); // 保留30% HP
-
-            this.time.delayedCall(3000, () => {
-                this.returnToWorld();
-            });
-        }
-
-        // 保存數據
-        this.game.globals.playerHP = this.playerData.hp;
-        this.game.globals.playerExp = this.playerData.exp;
-        this.game.globals.playerLevel = this.playerData.level;
+        });
     }
-
-    returnToWorld() {
-        // 返回世界地圖
-        this.scene.start(this.returnScene);
+    
+    showDefeatScreen() {
+        // 隱藏UI
+        this.uiPanel.setVisible(false);
+        this.comboContainer.setVisible(false);
+        
+        // 失敗背景
+        const defeatBg = this.add.rectangle(400, 300, 500, 300, 0x000000, 0.9);
+        defeatBg.setStrokeStyle(4, 0xe74c3c);
+        
+        // 失敗標題
+        const defeatTitle = this.add.text(400, 200, '💀 戰敗', {
+            fontSize: '48px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#e74c3c',
+            stroke: '#000000',
+            strokeThickness: 4
+        }).setOrigin(0.5);
+        
+        // 提示文字
+        const hintText = this.add.text(400, 270, '你的HP已歸零...', {
+            fontSize: '20px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#ffffff'
+        }).setOrigin(0.5);
+        
+        // 返回村莊按鈗
+        const returnBtn = this.add.container(400, 350);
+        const btnBg = this.add.rectangle(0, 0, 250, 50, 0x3498db);
+        btnBg.setInteractive({ useHandCursor: true });
+        const btnText = this.add.text(0, 0, '返回村莊', {
+            fontSize: '24px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#ffffff'
+        }).setOrigin(0.5);
+        returnBtn.add([btnBg, btnText]);
+        
+        btnBg.on('pointerover', () => btnBg.setFillStyle(0x2980b9));
+        btnBg.on('pointerout', () => btnBg.setFillStyle(0x3498db));
+        btnBg.on('pointerup', () => {
+            // 恢復部分HP
+            this.playerData.hp = Math.floor(this.playerData.maxHp * 0.5);
+            this.game.globals.playerHP = this.playerData.hp;
+            
+            // 返回村莊
+            this.scene.start('VillageScene', {
+                playerX: 400,
+                playerY: 400,
+                player: this.playerData
+            });
+        });
     }
     
     showMessage(text) {
         this.battleMessage.setText(text);
         
-        // 文字彈出效果
+        // 文字彈出動畫
         this.tweens.add({
             targets: this.battleMessage,
             scale: { from: 0.8, to: 1 },

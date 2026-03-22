@@ -1,7 +1,7 @@
 /**
  * ForestScene - 森林場景
  * 野外區域，有更強大的敵人
- * v1.9.0 - 新增冰霜元素敵人
+ * v1.11.0 - 新增毒液蜘蛛敵人
  */
 
 class ForestScene extends Phaser.Scene {
@@ -119,6 +119,9 @@ class ForestScene extends Phaser.Scene {
             this.createTree(x, y);
         }
         
+        // 🕷️ 創建毒液蜘蛛巢穴（新區域）
+        this.createVenomSpiderDen(1000, 800);
+
         // 特殊地點 - 古代遺跡入口
         this.createAncientRuin(600, 400);
 
@@ -135,6 +138,80 @@ class ForestScene extends Phaser.Scene {
             fontSize: '24px'
         }).setOrigin(0.5);
         treeTop.setDepth(5);
+    }
+
+    // 🕷️ 創建毒液蜘蛛巢穴
+    createVenomSpiderDen(x, y) {
+        // 巢穴基座（暗綠色調）
+        const den = this.add.rectangle(x, y, 120, 100, 0x1a3d1a);
+        den.setStrokeStyle(4, 0x2ecc71);
+        
+        // 巢穴圖標
+        const denIcon = this.add.text(x, y - 10, '🕸️', {
+            fontSize: '40px'
+        }).setOrigin(0.5);
+        
+        // 標籤
+        const denText = this.add.text(x, y + 40, '毒液蜘蛛巢穴', {
+            fontSize: '12px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#2ecc71',
+            backgroundColor: '#00000088',
+            padding: { x: 5, y: 2 }
+        }).setOrigin(0.5);
+        
+        // 警告標記
+        const warningText = this.add.text(x + 70, y - 30, '⚠️ 危險', {
+            fontSize: '10px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#e74c3c',
+            backgroundColor: '#00000088',
+            padding: { x: 3, y: 1 }
+        }).setOrigin(0.5);
+        
+        // 進入檢測區域
+        this.spiderDenEntrance = this.physics.add.staticSprite(x, y + 50, 'tile-wood');
+        this.spiderDenEntrance.setVisible(false);
+        
+        this.physics.add.overlap(this.player, this.spiderDenEntrance, this.onSpiderDenApproach, null, this);
+
+        // 🕷️ 添加毒液蜘蛛巢穴特效
+        const createVenomEffect = () => {
+            const venom = this.add.circle(
+                x + Phaser.Math.Between(-50, 50),
+                y + Phaser.Math.Between(-30, 30),
+                Phaser.Math.Between(3, 8),
+                0x2ecc71,
+                0.4
+            );
+            
+            this.tweens.add({
+                targets: venom,
+                alpha: 0,
+                scale: { from: 1, to: 0.5 },
+                duration: 1500,
+                onComplete: () => venom.destroy()
+            });
+            
+            this.time.delayedCall(800 + Math.random() * 600, createVenomEffect);
+        };
+        
+        this.time.delayedCall(500, createVenomEffect);
+    }
+
+    // 🕷️ 接近毒液蜘蛛巢穴
+    onSpiderDenApproach(player, den) {
+        if (!this.spiderDenPrompted) {
+            this.spiderDenPrompted = true;
+            
+            this.showDialog('🕸️ 你接近了毒液蜘蛛巢穴！
+這裡的毒液蜘蛛會讓你中毒，請務必小心！
+中毒效果會持續數回合，造成持續傷害！');
+            
+            this.time.delayedCall(6000, () => {
+                this.spiderDenPrompted = false;
+            });
+        }
     }
 
     createAncientRuin(x, y) {
@@ -191,9 +268,15 @@ class ForestScene extends Phaser.Scene {
         } else if (playerLevel <= 20) {
             // 🔥 等級 16+ 可遇到火焰元素
             enemyTypes = ['enemy-orc', 'enemy-spider', 'enemy-assassin', 'enemy-fire-elemental'];
-        } else {
+        } else if (playerLevel <= 25) {
             // ❄️ 等級 21+ 可遇到冰霜元素
             enemyTypes = ['enemy-orc', 'enemy-spider', 'enemy-assassin', 'enemy-fire-elemental', 'enemy-ice-elemental'];
+        } else if (playerLevel <= 30) {
+            // ⚡ 等級 26+ 可遇到雷電元素
+            enemyTypes = ['enemy-orc', 'enemy-spider', 'enemy-assassin', 'enemy-fire-elemental', 'enemy-ice-elemental', 'enemy-lightning-elemental'];
+        } else {
+            // 🕷️ 等級 31+ 可遇到毒液蜘蛛
+            enemyTypes = ['enemy-orc', 'enemy-spider', 'enemy-assassin', 'enemy-fire-elemental', 'enemy-ice-elemental', 'enemy-lightning-elemental', 'enemy-venom-spider'];
         }
         
         // 在森林中隨機放置敵人
@@ -223,6 +306,15 @@ class ForestScene extends Phaser.Scene {
                 this.createEnemy(x, y, type);
             }
         }
+
+        // 🕷️ 在毒液蜘蛛巢穴附近必定生成2-3隻毒液蜘蛛
+        if (playerLevel >= 30) {
+            for (let i = 0; i < Phaser.Math.Between(2, 3); i++) {
+                const x = 1000 + Phaser.Math.Between(-80, 80);
+                const y = 800 + Phaser.Math.Between(-60, 60);
+                this.createEnemy(x, y, 'enemy-venom-spider');
+            }
+        }
         
         // 敵人碰撞檢測
         this.physics.add.overlap(this.player, this.enemies, this.encounterEnemy, null, this);
@@ -248,7 +340,9 @@ class ForestScene extends Phaser.Scene {
             'enemy-spider': '🕷️',
             'enemy-assassin': '🗡️',
             'enemy-fire-elemental': '🔥',
-            'enemy-ice-elemental': '❄️'
+            'enemy-ice-elemental': '❄️',
+            'enemy-lightning-elemental': '⚡',
+            'enemy-venom-spider': '🕷️' // 🕷️ 毒液蜘蛛圖標
         };
         
         enemy.enemyEmoji = enemyEmojis[type] || '👾';
@@ -262,6 +356,12 @@ class ForestScene extends Phaser.Scene {
         } else if (type === 'enemy-ice-elemental') {
             // ❄️ 冰霜元素有特殊的冰霜巡邏行為
             this.createIceElementalAI(enemy);
+        } else if (type === 'enemy-lightning-elemental') {
+            // ⚡ 雷電元素有特殊的雷電巡邏行為
+            this.createLightningElementalAI(enemy);
+        } else if (type === 'enemy-venom-spider') {
+            // 🕷️ 毒液蜘蛛有特殊的毒液巡邏行為
+            this.createVenomSpiderAI(enemy);
         } else {
             // 簡單的巡邏AI
             this.tweens.add({
@@ -427,6 +527,148 @@ class ForestScene extends Phaser.Scene {
         });
     }
 
+    // ⚡ 創建雷電元素AI
+    createLightningElementalAI(enemy) {
+        // 雷電元素會發出紫藍色光芒
+        enemy.setTint(0x9400d3);
+        
+        // 快速閃爍動畫（比火焰和冰霜都快）
+        this.tweens.add({
+            targets: enemy,
+            alpha: { from: 0.7, to: 1 },
+            scale: { from: 1, to: 1.1 },
+            duration: 300,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+        
+        // 周圍閃電粒子效果
+        const createLightningParticles = () => {
+            if (!enemy || !enemy.active) return;
+            
+            for (let i = 0; i < 5; i++) {
+                const lightning = this.add.text(
+                    enemy.x + Phaser.Math.Between(-30, 30),
+                    enemy.y + Phaser.Math.Between(-30, 30),
+                    ['⚡', '✦', '⋆'][i % 3],
+                    { fontSize: '14px' }
+                ).setAlpha(0.7);
+                
+                this.tweens.add({
+                    targets: lightning,
+                    x: lightning.x + Phaser.Math.Between(-20, 20),
+                    y: lightning.y - 25,
+                    alpha: 0,
+                    scale: { from: 1, to: 0.5 },
+                    duration: 400,
+                    onComplete: () => lightning.destroy()
+                });
+            }
+            
+            this.time.delayedCall(500, createLightningParticles);
+        };
+        
+        this.time.delayedCall(300, createLightningParticles);
+        
+        // 雷電元素移動非常快且不可預測
+        const randomMove = () => {
+            if (!enemy || !enemy.active) return;
+            
+            this.tweens.add({
+                targets: enemy,
+                x: enemy.x + Phaser.Math.Between(-100, 100),
+                y: enemy.y + Phaser.Math.Between(-100, 100),
+                duration: 800 + Math.random() * 600,
+                ease: 'Sine.easeInOut'
+            });
+            
+            this.time.delayedCall(1000 + Math.random() * 500, randomMove);
+        };
+        
+        randomMove();
+    }
+
+    // 🕷️ 創建毒液蜘蛛AI
+    createVenomSpiderAI(enemy) {
+        // 毒液蜘蛛會發出綠色光芒
+        enemy.setTint(0x2ecc71);
+        
+        // 毒液脈動動畫
+        this.tweens.add({
+            targets: enemy,
+            alpha: { from: 0.85, to: 1 },
+            scale: { from: 1, to: 1.15 },
+            duration: 1000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+        
+        // 周圍毒液粒子效果
+        const createVenomParticles = () => {
+            if (!enemy || !enemy.active) return;
+            
+            for (let i = 0; i < 4; i++) {
+                const venom = this.add.text(
+                    enemy.x + Phaser.Math.Between(-25, 25),
+                    enemy.y + Phaser.Math.Between(-25, 25),
+                    ['☠️', '💀', '🧪'][i % 3],
+                    { fontSize: '12px' }
+                ).setAlpha(0.6);
+                
+                this.tweens.add({
+                    targets: venom,
+                    y: venom.y - 20,
+                    alpha: 0,
+                    scale: { from: 1, to: 0.5 },
+                    duration: 1000,
+                    onComplete: () => venom.destroy()
+                });
+            }
+            
+            this.time.delayedCall(700, createVenomParticles);
+        };
+        
+        this.time.delayedCall(500, createVenomParticles);
+        
+        // 毒液蜘蛛移動緩慢但穩定
+        this.tweens.add({
+            targets: enemy,
+            x: enemy.x + Phaser.Math.Between(-40, 40),
+            y: enemy.y + Phaser.Math.Between(-40, 40),
+            duration: 3500 + Math.random() * 1500,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+
+        // 毒液滴落效果
+        const createVenomDrop = () => {
+            if (!enemy || !enemy.active) return;
+            
+            const drop = this.add.circle(
+                enemy.x + Phaser.Math.Between(-10, 10),
+                enemy.y + 15,
+                Phaser.Math.Between(3, 6),
+                0x2ecc71,
+                0.6
+            );
+            
+            this.tweens.add({
+                targets: drop,
+                y: enemy.y + 50,
+                alpha: 0,
+                duration: 700,
+                onComplete: () => drop.destroy()
+            });
+            
+            this.time.delayedCall(500 + Math.random() * 700, createVenomDrop);
+        };
+        
+        this.time.delayedCall(300, createVenomDrop);
+    }
+
     getEnemyData(type) {
         const enemyDatabase = {
             'enemy-slime': { name: '史萊姆', hp: 40, maxHp: 40, attack: 8, exp: 15, gold: 10 },
@@ -467,6 +709,30 @@ class ForestScene extends Phaser.Scene {
                 freezeChance: 0.4,
                 iceBurstChance: 0.35,
                 freezeSkipChance: 0.35
+            },
+            'enemy-lightning-elemental': {
+                name: '雷電元素',
+                hp: 85,
+                maxHp: 85,
+                attack: 35,
+                exp: 110,
+                gold: 75,
+                isLightningElemental: true,
+                paralyzeChance: 0.45,
+                thunderStrikeChance: 0.4,
+                paralyzeDuration: 2
+            },
+            // 🕷️ 毒液蜘蛛數據
+            'enemy-venom-spider': {
+                name: '毒液蜘蛛',
+                hp: 110,
+                maxHp: 110,
+                attack: 28,
+                exp: 130,
+                gold: 85,
+                isVenomSpider: true,
+                poisonChance: 0.5,
+                venomBurstChance: 0.35
             }
         };
         
@@ -627,7 +893,9 @@ class ForestScene extends Phaser.Scene {
             // 🗡️ 暗影刺客有更遠的偵測範圍
             const detectRange = (enemy.enemyType === 'enemy-assassin') ? 150 : 
                                (enemy.enemyType === 'enemy-fire-elemental') ? 130 :
-                               (enemy.enemyType === 'enemy-ice-elemental') ? 120 : 100;
+                               (enemy.enemyType === 'enemy-ice-elemental') ? 120 :
+                               (enemy.enemyType === 'enemy-lightning-elemental') ? 140 :
+                               (enemy.enemyType === 'enemy-venom-spider') ? 135 : 100; // 🕷️ 毒液蜘蛛偵測範圍
             
             // 如果玩家在附近，加速朝向玩家
             if (distance < detectRange) {
@@ -636,10 +904,12 @@ class ForestScene extends Phaser.Scene {
                     this.player.x, this.player.y
                 );
                 
-                // 🗡️ 暗影刺客移動更快，❄️ 冰霜元素移動較慢
+                // 🗡️ 暗影刺客移動更快，❄️ 冰霜元素移動較慢，🕷️ 毒液蜘蛛移動中等
                 const chaseSpeed = (enemy.enemyType === 'enemy-assassin') ? 80 : 
                                   (enemy.enemyType === 'enemy-fire-elemental') ? 60 :
-                                  (enemy.enemyType === 'enemy-ice-elemental') ? 45 : 50;
+                                  (enemy.enemyType === 'enemy-ice-elemental') ? 45 :
+                                  (enemy.enemyType === 'enemy-lightning-elemental') ? 100 :
+                                  (enemy.enemyType === 'enemy-venom-spider') ? 55 : 50;
                 enemy.body.velocity.x = Math.cos(angle) * chaseSpeed;
                 enemy.body.velocity.y = Math.sin(angle) * chaseSpeed;
             }
@@ -673,7 +943,15 @@ class ForestScene extends Phaser.Scene {
             isIceElemental: enemy.enemyData.isIceElemental || false,
             freezeChance: enemy.enemyData.freezeChance || 0,
             iceBurstChance: enemy.enemyData.iceBurstChance || 0,
-            freezeSkipChance: enemy.enemyData.freezeSkipChance || 0
+            freezeSkipChance: enemy.enemyData.freezeSkipChance || 0,
+            isLightningElemental: enemy.enemyData.isLightningElemental || false,
+            paralyzeChance: enemy.enemyData.paralyzeChance || 0,
+            thunderStrikeChance: enemy.enemyData.thunderStrikeChance || 0,
+            paralyzeDuration: enemy.enemyData.paralyzeDuration || 0,
+            // 🕷️ 毒液蜘蛛數據
+            isVenomSpider: enemy.enemyData.isVenomSpider || false,
+            poisonChance: enemy.enemyData.poisonChance || 0,
+            venomBurstChance: enemy.enemyData.venomBurstChance || 0
         };
         
         // 停止玩家移動
@@ -762,7 +1040,11 @@ class ForestScene extends Phaser.Scene {
         const config = this.weather.weatherConfig[this.weather.weatherType];
         const weatherText = config.type !== 'clear' ? `\n\n${config.emoji} 當前天氣：${config.name}` : '';
         
-        const message = this.add.text(400, 200, `🌲 進入迷霧森林\n\n這裡的怪物比之前更強大！\n請小心行事${weatherText}`, {
+        // 🕷️ 檢查是否有毒液蜘蛛
+        const hasVenomSpider = this.playerData.level >= 30;
+        const venomWarning = hasVenomSpider ? '\n\n⚠️ 注意：毒液蜘蛛出沒！' : '';
+        
+        const message = this.add.text(400, 200, `🌲 進入迷霧森林\n\n這裡的怪物比之前更強大！\n請小心行事${weatherText}${venomWarning}`, {
             fontSize: '18px',
             fontFamily: 'Microsoft JhengHei',
             fill: '#ffffff',

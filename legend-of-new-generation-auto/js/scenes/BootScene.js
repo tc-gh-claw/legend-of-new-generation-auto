@@ -1,7 +1,7 @@
 /**
  * BootScene - 遊戲啟動場景
  * 負責載入所有遊戲素材 - 插畫風格版本
- * v1.8.0 - 新增火焰元素材質
+ * v1.10.0 - 新增雷電元素材質
  */
 
 class BootScene extends Phaser.Scene {
@@ -294,6 +294,34 @@ class BootScene extends Phaser.Scene {
         graphics.fillCircle(13, 18, 1);
         graphics.fillCircle(19, 18, 1);
         graphics.generateTexture('enemy-fire-elemental', 32, 36);
+        graphics.clear();
+        
+        // ===== 敵人 - 雷電元素 =====
+        // 主體（電球）
+        graphics.fillStyle(0x9400d3, 1);
+        graphics.fillCircle(16, 20, 12);
+        // 內層電光
+        graphics.fillStyle(0x00bfff, 0.8);
+        graphics.fillCircle(16, 20, 9);
+        // 核心（亮黃色）
+        graphics.fillStyle(0xffff00, 0.9);
+        graphics.fillCircle(16, 20, 5);
+        // 眼睛（發光紫色）
+        graphics.fillStyle(0xffffff, 1);
+        graphics.fillCircle(13, 18, 2);
+        graphics.fillCircle(19, 18, 2);
+        graphics.fillStyle(0x9400d3, 1);
+        graphics.fillCircle(13, 18, 1);
+        graphics.fillCircle(19, 18, 1);
+        // 雷電光芒效果
+        graphics.lineStyle(2, 0xffff00, 0.8);
+        graphics.beginPath();
+        graphics.moveTo(16, 4);
+        graphics.lineTo(13, 12);
+        graphics.lineTo(19, 12);
+        graphics.lineTo(16, 20);
+        graphics.strokePath();
+        graphics.generateTexture('enemy-lightning-elemental', 32, 36);
         graphics.clear();
         
         // ===== Boss - 森林守護者 =====
