@@ -1,7 +1,7 @@
 /**
  * ShopScene - 商店系統
  * 購買和出售道具
- * v1.6.0 - 新增雙倍經驗藥水
+ * v1.13.0 - 新增暴擊藥水
  */
 
 class ShopScene extends Phaser.Scene {
@@ -45,7 +45,7 @@ class ShopScene extends Phaser.Scene {
             fill: '#f1c40f'
         }).setOrigin(1, 0.5);
 
-        // 創建標籤頁按鈕
+        // 創建標籤頁按鈗
         this.createTabButtons();
 
         // 商品列表容器
@@ -58,7 +58,7 @@ class ShopScene extends Phaser.Scene {
         // 顯示購買列表
         this.showBuyList();
 
-        // 關閉按鈕
+        // 關閉按鈗
         this.createCloseButton();
     }
 
@@ -105,7 +105,7 @@ class ShopScene extends Phaser.Scene {
 
         this.currentTab = tab;
 
-        // 更新按鈕樣式
+        // 更新按鈗樣式
         this.updateTabStyle(this.buyTab, tab === 'buy');
         this.updateTabStyle(this.sellTab, tab === 'sell');
 
@@ -187,7 +187,7 @@ class ShopScene extends Phaser.Scene {
     }
 
     getShopItems() {
-        // 🧪 新增雙倍經驗藥水
+        // 🎯 新增暴擊藥水
         const shopInventory = [
             { id: 'potion_small', name: '小治療藥水', icon: '🧪', price: 50, sellPrice: 25, description: '恢復30點HP', type: 'consumable' },
             { id: 'potion_medium', name: '中治療藥水', icon: '🧪', price: 100, sellPrice: 50, description: '恢復60點HP', type: 'consumable' },
@@ -195,6 +195,7 @@ class ShopScene extends Phaser.Scene {
             { id: 'mana_small', name: '小魔力藥水', icon: '💧', price: 40, sellPrice: 20, description: '恢復20點MP', type: 'consumable' },
             { id: 'elixir', name: '萬靈藥', icon: '✨', price: 500, sellPrice: 250, description: '完全恢復HP和MP', type: 'consumable' },
             { id: 'exp_boost', name: '雙倍經驗藥水', icon: '📈', price: 300, sellPrice: 150, description: '下場戰鬥獲得2倍經驗值', type: 'consumable' },
+            { id: 'crit_boost', name: '暴擊藥水', icon: '🎯', price: 250, sellPrice: 125, description: '下場戰鬥暴擊率+30%', type: 'consumable' },
             { id: 'scroll_return', name: '回城卷軸', icon: '📜', price: 100, sellPrice: 50, description: '立即返回村莊', type: 'special' }
         ];
 
@@ -305,7 +306,7 @@ class ShopScene extends Phaser.Scene {
             fill: '#f1c40f'
         }).setOrigin(0.5);
 
-        // 確認按鈕
+        // 確認按鈗
         this.confirmButton = this.createConfirmButton(0, 110, '購買', () => {
             this.confirmTransaction();
         });
@@ -354,7 +355,7 @@ class ShopScene extends Phaser.Scene {
         const priceText = mode === 'buy' ? `💰 購買價格: ${price}G` : `💰 出售價格: ${price}G`;
         this.detailPrice.setText(priceText);
 
-        // 更新按鈕文字
+        // 更新按鈗文字
         this.confirmButton.list[1].setText(mode === 'buy' ? '購買' : '出售');
 
         // 檢查是否可以購買/出售

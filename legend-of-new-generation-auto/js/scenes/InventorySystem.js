@@ -1,7 +1,7 @@
 /**
  * InventorySystem - 道具系統
  * 管理玩家的背包、使用道具和裝備
- * v1.6.0 - 新增雙倍經驗藥水支援
+ * v1.13.0 - 新增暴擊藥水支援
  */
 
 class InventorySystem extends Phaser.Scene {
@@ -32,7 +32,8 @@ class InventorySystem extends Phaser.Scene {
         }).setOrigin(0.5);
 
         // 🧪 顯示雙倍經驗狀態
-        this.createExpBoostIndicator();
+        // 🎯 顯示暴擊加成狀態
+        this.createStatusIndicators();
 
         // 創建標籤頁
         this.createTabs();
@@ -51,20 +52,34 @@ class InventorySystem extends Phaser.Scene {
         // 顯示當前標籤的內容
         this.showCurrentTab();
 
-        // 關閉按鈕
+        // 關閉按鈗
         this.createCloseButton();
     }
 
-    // 🧪 創建雙倍經驗狀態指示器
-    createExpBoostIndicator() {
+    // 🧪🎯 創建狀態指示器（雙倍經驗 + 暴擊加成）
+    createStatusIndicators() {
         const width = this.cameras.main.width;
-        
+        let yOffset = 80;
+
+        // 雙倍經驗指示器
         if (this.game.globals.expBoostActive) {
-            this.expBoostIndicator = this.add.text(width - 20, 80, '📈 雙倍經驗啟用中!', {
+            this.expBoostIndicator = this.add.text(width - 20, yOffset, '📈 雙倍經驗啟用中!', {
                 fontSize: '14px',
                 fontFamily: 'Microsoft JhengHei',
                 fill: '#f1c40f',
                 backgroundColor: '#e74c3c88',
+                padding: { x: 10, y: 5 }
+            }).setOrigin(1, 0.5);
+            yOffset += 35;
+        }
+
+        // 🎯 暴擊加成指示器
+        if (this.game.globals.critBoostActive) {
+            this.critBoostIndicator = this.add.text(width - 20, yOffset, '🎯 暴擊加成啟用中!', {
+                fontSize: '14px',
+                fontFamily: 'Microsoft JhengHei',
+                fill: '#e74c3c',
+                backgroundColor: '#f1c40f88',
                 padding: { x: 10, y: 5 }
             }).setOrigin(1, 0.5);
         }
@@ -115,7 +130,7 @@ class InventorySystem extends Phaser.Scene {
     switchTab(tabId) {
         if (this.currentTab === tabId) return;
 
-        // 更新按鈕樣式
+        // 更新按鈗樣式
         Object.keys(this.tabButtons).forEach(key => {
             const isActive = key === tabId;
             this.tabButtons[key].bg.setFillStyle(isActive ? 0x3498db : 0x2c3e50);
@@ -253,10 +268,12 @@ class InventorySystem extends Phaser.Scene {
         bg.setStrokeStyle(2, 0x34495e);
         bg.setInteractive({ useHandCursor: true });
 
-        // 🧪 雙倍經驗藥水特殊標記
+        // 🧪🎯 特殊藥水圖標處理
         let iconText = item.icon || '📦';
         if (item.id === 'exp_boost') {
             iconText = '📈';
+        } else if (item.id === 'crit_boost') {
+            iconText = '🎯';
         }
         
         // 圖標
@@ -412,12 +429,12 @@ class InventorySystem extends Phaser.Scene {
             fill: '#2ecc71'
         }).setOrigin(0, 0.5);
 
-        // 使用按鈕
+        // 使用按鈗
         this.useButton = this.createActionButton(100, 0, '使用', 0x2ecc71, () => {
             this.useItem();
         });
 
-        // 裝備按鈕
+        // 裝備按鈗
         this.equipButton = this.createActionButton(100, 0, '裝備', 0x3498db, () => {
             this.equipItem();
         });
@@ -462,10 +479,12 @@ class InventorySystem extends Phaser.Scene {
     showItemDetail(item, isEquipment) {
         this.selectedItem = item;
 
-        // 🧪 雙倍經驗藥水特殊圖標
+        // 🧪🎯 特殊藥水圖標處理
         let iconText = item.icon || '📦';
         if (item.id === 'exp_boost') {
             iconText = '📈';
+        } else if (item.id === 'crit_boost') {
+            iconText = '🎯';
         }
         this.detailIcon.setText(iconText);
         this.detailName.setText(item.name);
@@ -487,7 +506,7 @@ class InventorySystem extends Phaser.Scene {
         }
         this.detailStats.setText(statsText);
 
-        // 顯示適當的按鈕
+        // 顯示適當的按鈗
         if (isEquipment) {
             this.useButton.setVisible(false);
             this.equipButton.setVisible(true);
@@ -548,6 +567,16 @@ class InventorySystem extends Phaser.Scene {
                     // 添加視覺效果
                     this.createExpBoostEffect();
                     break;
+
+                // 🎯 暴擊藥水效果
+                case 'crit_boost':
+                    this.game.globals.critBoostActive = true;
+                    this.game.globals.critBoostValue = item.effect.value || 0.3;
+                    this.showMessage(`🎯 暴擊藥水生效！下場戰鬥暴擊率+${Math.floor(this.game.globals.critBoostValue * 100)}%！`);
+                    
+                    // 添加視覺效果
+                    this.createCritBoostEffect();
+                    break;
             }
 
             // 減少物品數量
@@ -601,6 +630,49 @@ class InventorySystem extends Phaser.Scene {
             fontFamily: 'Microsoft JhengHei',
             fill: '#f1c40f',
             backgroundColor: '#e74c3c88',
+            padding: { x: 10, y: 5 }
+        }).setOrigin(1, 0.5);
+    }
+
+    // 🎯 暴擊藥水特效
+    createCritBoostEffect() {
+        const width = this.cameras.main.width;
+        const height = this.cameras.main.height;
+
+        // 紅色光芒效果
+        for (let i = 0; i < 12; i++) {
+            const particle = this.add.text(
+                width / 2,
+                height / 2,
+                ['🎯', '⚔️', '💥', '🔥'][i % 4],
+                { fontSize: '32px' }
+            ).setOrigin(0.5);
+
+            const angle = (i / 12) * Math.PI * 2;
+            const distance = 150 + Math.random() * 100;
+
+            this.tweens.add({
+                targets: particle,
+                x: width / 2 + Math.cos(angle) * distance,
+                y: height / 2 + Math.sin(angle) * distance,
+                alpha: 0,
+                scale: { from: 1, to: 2 },
+                rotation: Math.PI * 2,
+                duration: 1000,
+                ease: 'Power2',
+                onComplete: () => particle.destroy()
+            });
+        }
+
+        // 更新指示器
+        if (this.critBoostIndicator) {
+            this.critBoostIndicator.destroy();
+        }
+        this.critBoostIndicator = this.add.text(width - 20, 115, '🎯 暴擊加成啟用中!', {
+            fontSize: '14px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#e74c3c',
+            backgroundColor: '#f1c40f88',
             padding: { x: 10, y: 5 }
         }).setOrigin(1, 0.5);
     }

@@ -1,7 +1,7 @@
 /**
  * BattleScene - 戰鬥場景
  * 回合制戰鬥系統，結合問答機制
- * v1.12.0 - 新增連擊獎勵系統
+ * v1.13.0 - 新增暴擊藥水支援
  */
 
 class BattleScene extends Phaser.Scene {
@@ -22,7 +22,7 @@ class BattleScene extends Phaser.Scene {
         this.maxCombo = 0;
         this.comboMultiplier = 0.1; // 每連擊增加10%傷害
         
-        // 🎯 連擊獎勵系統（新增 v1.12.0）
+        // 🎯 連擊獎勵系統（v1.12.0）
         this.comboRewards = {
             5: { type: 'critBoost', value: 0.15, message: '🎯 連擊x5！暴擊率+15%' },
             10: { type: 'heal', value: 20, message: '💚 連擊x10！回復20HP' },
@@ -33,6 +33,10 @@ class BattleScene extends Phaser.Scene {
         this.claimedRewards = new Set();
         this.critChanceBoost = 0; // 連擊獎勵提供的暴擊率加成
         this.damageBoost = 0; // 連擊獎勵提供的額外傷害加成
+        
+        // 🎯 暴擊藥水加成（v1.13.0 新增）
+        this.critBoostActive = this.game.globals.critBoostActive || false;
+        this.critBoostValue = this.game.globals.critBoostValue || 0;
         
         // ⏱️ 時間凍結技能初始化
         this.timeFreezeSkill = new TimeFreezeSkill(this);
@@ -119,6 +123,11 @@ class BattleScene extends Phaser.Scene {
         // 🧪 顯示雙倍經驗狀態
         if (this.expBoostActive) {
             this.showExpBoostIndicator();
+        }
+        
+        // 🎯 顯示暴擊藥水狀態（v1.13.0 新增）
+        if (this.critBoostActive) {
+            this.showCritBoostIndicator();
         }
         
         // ⏱️ 創建時間凍結技能按鈗
@@ -385,6 +394,26 @@ class BattleScene extends Phaser.Scene {
         // 閃爍動畫
         this.tweens.add({
             targets: boostText,
+            alpha: { from: 1, to: 0.5 },
+            duration: 500,
+            yoyo: true,
+            repeat: -1
+        });
+    }
+
+    // 🎯 顯示暴擊藥水指示器（v1.13.0 新增）
+    showCritBoostIndicator() {
+        const critText = this.add.text(400, 80, `🎯 暴擊率+${Math.floor(this.critBoostValue * 100)}%!`, {
+            fontSize: '18px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#e74c3c',
+            stroke: '#000000',
+            strokeThickness: 3
+        }).setOrigin(0.5);
+
+        // 閃爍動畫
+        this.tweens.add({
+            targets: critText,
             alpha: { from: 1, to: 0.5 },
             duration: 500,
             yoyo: true,
@@ -1919,9 +1948,14 @@ class BattleScene extends Phaser.Scene {
                     this.showMessage(`⚡ 麻痺影響！攻擊打偏了！造成 ${damage} 點傷害！連擊x${this.comboCount}`);
                 }
                 
-                // 暴擊機率 (等級越高暴擊率越高 + 連擊獎勵加成)
+                // 🎯 暴擊機率計算（v1.13.0 更新：加入暴擊藥水加成）
                 const baseCritChance = Math.min(0.1 + (playerLevel * 0.02), 0.5);
-                const critChance = Math.min(baseCritChance + this.critChanceBoost, 0.8); // 最高80%暴擊率
+                // 基礎暴擊率 + 連擊獎勵加成 + 暴擊藥水加成
+                let totalCritBoost = this.critChanceBoost;
+                if (this.critBoostActive) {
+                    totalCritBoost += this.critBoostValue;
+                }
+                const critChance = Math.min(baseCritChance + totalCritBoost, 0.95); // 最高95%暴擊率
                 let isCrit = Math.random() < critChance;
                 
                 if (isCrit) {
@@ -2619,6 +2653,11 @@ class BattleScene extends Phaser.Scene {
                 // 🔥 重置連擊
                 this.resetCombo();
                 
+                // 🎯 消耗暴擊藥水（即使逃跑也會消耗）
+                if (this.critBoostActive) {
+                    this.game.globals.critBoostActive = false;
+                }
+                
                 // 返回原場景
                 this.scene.start(this.returnScene, {
                     playerX: this.game.globals.playerX || 400,
@@ -2673,6 +2712,12 @@ class BattleScene extends Phaser.Scene {
         } else {
             // 戰鬥失敗
             this.showDefeatScreen();
+        }
+        
+        // 🎯 戰鬥結束後清除暴擊藥水效果（v1.13.0 新增）
+        if (this.critBoostActive) {
+            this.game.globals.critBoostActive = false;
+            this.game.globals.critBoostValue = 0;
         }
     }
     
