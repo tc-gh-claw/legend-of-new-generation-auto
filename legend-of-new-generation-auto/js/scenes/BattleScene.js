@@ -1,7 +1,7 @@
 /**
  * BattleScene - 戰鬥場景
  * 回合制戰鬥系統，結合問答機制
- * v1.13.0 - 新增暴擊藥水支援
+ * v1.14.0 - 新增防禦藥水支援
  */
 
 class BattleScene extends Phaser.Scene {
@@ -37,6 +37,10 @@ class BattleScene extends Phaser.Scene {
         // 🎯 暴擊藥水加成（v1.13.0 新增）
         this.critBoostActive = this.game.globals.critBoostActive || false;
         this.critBoostValue = this.game.globals.critBoostValue || 0;
+        
+        // 🛡️ 防禦藥水加成（v1.14.0 新增）
+        this.defenseBoostActive = this.game.globals.defenseBoostActive || false;
+        this.defenseBoostValue = this.game.globals.defenseBoostValue || 0;
         
         // ⏱️ 時間凍結技能初始化
         this.timeFreezeSkill = new TimeFreezeSkill(this);
@@ -128,6 +132,11 @@ class BattleScene extends Phaser.Scene {
         // 🎯 顯示暴擊藥水狀態（v1.13.0 新增）
         if (this.critBoostActive) {
             this.showCritBoostIndicator();
+        }
+        
+        // 🛡️ 顯示防禦藥水狀態（v1.14.0 新增）
+        if (this.defenseBoostActive) {
+            this.showDefenseBoostIndicator();
         }
         
         // ⏱️ 創建時間凍結技能按鈗
@@ -414,6 +423,26 @@ class BattleScene extends Phaser.Scene {
         // 閃爍動畫
         this.tweens.add({
             targets: critText,
+            alpha: { from: 1, to: 0.5 },
+            duration: 500,
+            yoyo: true,
+            repeat: -1
+        });
+    }
+
+    // 🛡️ 顯示防禦藥水指示器（v1.14.0 新增）
+    showDefenseBoostIndicator() {
+        const defenseText = this.add.text(400, 110, `🛡️ 傷害減免${Math.floor(this.defenseBoostValue * 100)}%!`, {
+            fontSize: '18px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#3498db',
+            stroke: '#000000',
+            strokeThickness: 3
+        }).setOrigin(0.5);
+
+        // 閃爍動畫
+        this.tweens.add({
+            targets: defenseText,
             alpha: { from: 1, to: 0.5 },
             duration: 500,
             yoyo: true,
@@ -2334,9 +2363,15 @@ class BattleScene extends Phaser.Scene {
         const variation = Phaser.Math.Between(-3, 3);
         let damage = Math.max(1, baseDamage + variation);
         
-        // 防禦減傷（可以根據玩家防禦力調整）
+        // 🛡️ 防禦減傷（v1.14.0 新增：防禦藥水效果）
         const playerDefense = this.game.globals.playerDefense || 0;
         damage = Math.max(1, damage - playerDefense);
+        
+        // 🛡️ 防禦藥水傷害減免
+        if (this.defenseBoostActive) {
+            const reducedDamage = Math.floor(damage * this.defenseBoostValue);
+            damage = Math.max(1, damage - reducedDamage);
+        }
         
         this.playerData.hp = Math.max(0, this.playerData.hp - damage);
         
@@ -2363,7 +2398,12 @@ class BattleScene extends Phaser.Scene {
             this.applyPoisonEffect();
         }
         
-        this.showMessage(`${this.enemyData.name} 造成 ${damage} 點傷害！`);
+        // 🛡️ 顯示防禦藥水減傷提示
+        if (this.defenseBoostActive) {
+            this.showMessage(`${this.enemyData.name} 造成 ${damage} 點傷害！(防禦藥水減免 ${Math.floor(this.defenseBoostValue * 100)}%)`);
+        } else {
+            this.showMessage(`${this.enemyData.name} 造成 ${damage} 點傷害！`);
+        }
         
         // 檢查戰鬥結束
         if (this.playerData.hp <= 0) {
@@ -2399,14 +2439,25 @@ class BattleScene extends Phaser.Scene {
         }
         
         // 高傷害 + 必定燃燒
-        const damage = Math.floor(this.enemyData.attack * 1.5);
+        let damage = Math.floor(this.enemyData.attack * 1.5);
+        
+        // 🛡️ 防禦藥水傷害減免
+        if (this.defenseBoostActive) {
+            const reducedDamage = Math.floor(damage * this.defenseBoostValue);
+            damage = Math.max(1, damage - reducedDamage);
+        }
+        
         this.playerData.hp = Math.max(0, this.playerData.hp - damage);
         this.updatePlayerHpBar();
         
         // 必定附加燃燒
         this.applyBurnEffect();
         
-        this.showMessage(`🔥 火焰爆發！造成 ${damage} 點傷害並附加燃燒！`);
+        if (this.defenseBoostActive) {
+            this.showMessage(`🔥 火焰爆發！造成 ${damage} 點傷害並附加燃燒！(防禦藥水減免)`);
+        } else {
+            this.showMessage(`🔥 火焰爆發！造成 ${damage} 點傷害並附加燃燒！`);
+        }
         
         // 檢查戰鬥結束
         if (this.playerData.hp <= 0) {
@@ -2443,14 +2494,25 @@ class BattleScene extends Phaser.Scene {
         }
         
         // 傷害 + 必定冰凍
-        const damage = Math.floor(this.enemyData.attack * 1.3);
+        let damage = Math.floor(this.enemyData.attack * 1.3);
+        
+        // 🛡️ 防禦藥水傷害減免
+        if (this.defenseBoostActive) {
+            const reducedDamage = Math.floor(damage * this.defenseBoostValue);
+            damage = Math.max(1, damage - reducedDamage);
+        }
+        
         this.playerData.hp = Math.max(0, this.playerData.hp - damage);
         this.updatePlayerHpBar();
         
         // 必定附加冰凍
         this.applyFreezeEffect();
         
-        this.showMessage(`❄️ 冰霜爆發！造成 ${damage} 點傷害並附加冰凍！`);
+        if (this.defenseBoostActive) {
+            this.showMessage(`❄️ 冰霜爆發！造成 ${damage} 點傷害並附加冰凍！(防禦藥水減免)`);
+        } else {
+            this.showMessage(`❄️ 冰霜爆發！造成 ${damage} 點傷害並附加冰凍！`);
+        }
         
         // 檢查戰鬥結束
         if (this.playerData.hp <= 0) {
@@ -2491,14 +2553,25 @@ class BattleScene extends Phaser.Scene {
         });
         
         // 高傷害 + 必定麻痺
-        const damage = Math.floor(this.enemyData.attack * 1.6);
+        let damage = Math.floor(this.enemyData.attack * 1.6);
+        
+        // 🛡️ 防禦藥水傷害減免
+        if (this.defenseBoostActive) {
+            const reducedDamage = Math.floor(damage * this.defenseBoostValue);
+            damage = Math.max(1, damage - reducedDamage);
+        }
+        
         this.playerData.hp = Math.max(0, this.playerData.hp - damage);
         this.updatePlayerHpBar();
         
         // 必定附加麻痺
         this.applyParalyzeEffect();
         
-        this.showMessage(`⚡ 雷電打擊！造成 ${damage} 點傷害並附加麻痺！`);
+        if (this.defenseBoostActive) {
+            this.showMessage(`⚡ 雷電打擊！造成 ${damage} 點傷害並附加麻痺！(防禦藥水減免)`);
+        } else {
+            this.showMessage(`⚡ 雷電打擊！造成 ${damage} 點傷害並附加麻痺！`);
+        }
         
         // 檢查戰鬥結束
         if (this.playerData.hp <= 0) {
@@ -2560,14 +2633,25 @@ class BattleScene extends Phaser.Scene {
         }
         
         // 傷害 + 必定中毒（增加層數）
-        const damage = Math.floor(this.enemyData.attack * 1.2);
+        let damage = Math.floor(this.enemyData.attack * 1.2);
+        
+        // 🛡️ 防禦藥水傷害減免
+        if (this.defenseBoostActive) {
+            const reducedDamage = Math.floor(damage * this.defenseBoostValue);
+            damage = Math.max(1, damage - reducedDamage);
+        }
+        
         this.playerData.hp = Math.max(0, this.playerData.hp - damage);
         this.updatePlayerHpBar();
         
         // 必定附加中毒（疊加層數）
         this.applyPoisonEffect(true); // true = 這是爆發攻擊，增加更多層數
         
-        this.showMessage(`☠️ 毒液爆發！造成 ${damage} 點傷害並附加劇毒！`);
+        if (this.defenseBoostActive) {
+            this.showMessage(`☠️ 毒液爆發！造成 ${damage} 點傷害並附加劇毒！(防禦藥水減免)`);
+        } else {
+            this.showMessage(`☠️ 毒液爆發！造成 ${damage} 點傷害並附加劇毒！`);
+        }
         
         // 檢查戰鬥結束
         if (this.playerData.hp <= 0) {
@@ -2658,6 +2742,12 @@ class BattleScene extends Phaser.Scene {
                     this.game.globals.critBoostActive = false;
                 }
                 
+                // 🛡️ 消耗防禦藥水（即使逃跑也會消耗）
+                if (this.defenseBoostActive) {
+                    this.game.globals.defenseBoostActive = false;
+                    this.game.globals.defenseBoostValue = 0;
+                }
+                
                 // 返回原場景
                 this.scene.start(this.returnScene, {
                     playerX: this.game.globals.playerX || 400,
@@ -2718,6 +2808,12 @@ class BattleScene extends Phaser.Scene {
         if (this.critBoostActive) {
             this.game.globals.critBoostActive = false;
             this.game.globals.critBoostValue = 0;
+        }
+        
+        // 🛡️ 戰鬥結束後清除防禦藥水效果（v1.14.0 新增）
+        if (this.defenseBoostActive) {
+            this.game.globals.defenseBoostActive = false;
+            this.game.globals.defenseBoostValue = 0;
         }
     }
     

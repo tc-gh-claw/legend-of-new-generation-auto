@@ -1,7 +1,7 @@
 /**
  * ShopScene - 商店系統
  * 購買和出售道具
- * v1.13.0 - 新增暴擊藥水
+ * v1.14.0 - 新增防禦藥水
  */
 
 class ShopScene extends Phaser.Scene {
@@ -187,7 +187,7 @@ class ShopScene extends Phaser.Scene {
     }
 
     getShopItems() {
-        // 🎯 新增暴擊藥水
+        // 🛡️ 新增防禦藥水
         const shopInventory = [
             { id: 'potion_small', name: '小治療藥水', icon: '🧪', price: 50, sellPrice: 25, description: '恢復30點HP', type: 'consumable' },
             { id: 'potion_medium', name: '中治療藥水', icon: '🧪', price: 100, sellPrice: 50, description: '恢復60點HP', type: 'consumable' },
@@ -196,6 +196,7 @@ class ShopScene extends Phaser.Scene {
             { id: 'elixir', name: '萬靈藥', icon: '✨', price: 500, sellPrice: 250, description: '完全恢復HP和MP', type: 'consumable' },
             { id: 'exp_boost', name: '雙倍經驗藥水', icon: '📈', price: 300, sellPrice: 150, description: '下場戰鬥獲得2倍經驗值', type: 'consumable' },
             { id: 'crit_boost', name: '暴擊藥水', icon: '🎯', price: 250, sellPrice: 125, description: '下場戰鬥暴擊率+30%', type: 'consumable' },
+            { id: 'defense_boost', name: '防禦藥水', icon: '🛡️', price: 280, sellPrice: 140, description: '下場戰鬥受到傷害-40%', type: 'consumable' },
             { id: 'scroll_return', name: '回城卷軸', icon: '📜', price: 100, sellPrice: 50, description: '立即返回村莊', type: 'special' }
         ];
 

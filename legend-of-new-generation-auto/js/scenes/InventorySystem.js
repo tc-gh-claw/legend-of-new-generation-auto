@@ -1,7 +1,7 @@
 /**
  * InventorySystem - 道具系統
  * 管理玩家的背包、使用道具和裝備
- * v1.13.0 - 新增暴擊藥水支援
+ * v1.14.0 - 新增防禦藥水支援
  */
 
 class InventorySystem extends Phaser.Scene {
@@ -31,8 +31,7 @@ class InventorySystem extends Phaser.Scene {
             strokeThickness: 2
         }).setOrigin(0.5);
 
-        // 🧪 顯示雙倍經驗狀態
-        // 🎯 顯示暴擊加成狀態
+        // 🧪🎯🛡️ 顯示狀態指示器
         this.createStatusIndicators();
 
         // 創建標籤頁
@@ -56,7 +55,7 @@ class InventorySystem extends Phaser.Scene {
         this.createCloseButton();
     }
 
-    // 🧪🎯 創建狀態指示器（雙倍經驗 + 暴擊加成）
+    // 🧪🎯🛡️ 創建狀態指示器（雙倍經驗 + 暴擊加成 + 防禦加成）
     createStatusIndicators() {
         const width = this.cameras.main.width;
         let yOffset = 80;
@@ -80,6 +79,18 @@ class InventorySystem extends Phaser.Scene {
                 fontFamily: 'Microsoft JhengHei',
                 fill: '#e74c3c',
                 backgroundColor: '#f1c40f88',
+                padding: { x: 10, y: 5 }
+            }).setOrigin(1, 0.5);
+            yOffset += 35;
+        }
+
+        // 🛡️ 防禦加成指示器
+        if (this.game.globals.defenseBoostActive) {
+            this.defenseBoostIndicator = this.add.text(width - 20, yOffset, '🛡️ 防禦加成啟用中!', {
+                fontSize: '14px',
+                fontFamily: 'Microsoft JhengHei',
+                fill: '#3498db',
+                backgroundColor: '#9b59b688',
                 padding: { x: 10, y: 5 }
             }).setOrigin(1, 0.5);
         }
@@ -268,12 +279,14 @@ class InventorySystem extends Phaser.Scene {
         bg.setStrokeStyle(2, 0x34495e);
         bg.setInteractive({ useHandCursor: true });
 
-        // 🧪🎯 特殊藥水圖標處理
+        // 🧪🎯🛡️ 特殊藥水圖標處理
         let iconText = item.icon || '📦';
         if (item.id === 'exp_boost') {
             iconText = '📈';
         } else if (item.id === 'crit_boost') {
             iconText = '🎯';
+        } else if (item.id === 'defense_boost') {
+            iconText = '🛡️';
         }
         
         // 圖標
@@ -479,12 +492,14 @@ class InventorySystem extends Phaser.Scene {
     showItemDetail(item, isEquipment) {
         this.selectedItem = item;
 
-        // 🧪🎯 特殊藥水圖標處理
+        // 🧪🎯🛡️ 特殊藥水圖標處理
         let iconText = item.icon || '📦';
         if (item.id === 'exp_boost') {
             iconText = '📈';
         } else if (item.id === 'crit_boost') {
             iconText = '🎯';
+        } else if (item.id === 'defense_boost') {
+            iconText = '🛡️';
         }
         this.detailIcon.setText(iconText);
         this.detailName.setText(item.name);
@@ -576,6 +591,16 @@ class InventorySystem extends Phaser.Scene {
                     
                     // 添加視覺效果
                     this.createCritBoostEffect();
+                    break;
+
+                // 🛡️ 防禦藥水效果
+                case 'defense_boost':
+                    this.game.globals.defenseBoostActive = true;
+                    this.game.globals.defenseBoostValue = item.effect.value || 0.4;
+                    this.showMessage(`🛡️ 防禦藥水生效！下場戰鬥受到傷害-${Math.floor(this.game.globals.defenseBoostValue * 100)}%！`);
+                    
+                    // 添加視覺效果
+                    this.createDefenseBoostEffect();
                     break;
             }
 
@@ -673,6 +698,60 @@ class InventorySystem extends Phaser.Scene {
             fontFamily: 'Microsoft JhengHei',
             fill: '#e74c3c',
             backgroundColor: '#f1c40f88',
+            padding: { x: 10, y: 5 }
+        }).setOrigin(1, 0.5);
+    }
+
+    // 🛡️ 防禦藥水特效
+    createDefenseBoostEffect() {
+        const width = this.cameras.main.width;
+        const height = this.cameras.main.height;
+
+        // 藍色護盾效果
+        for (let i = 0; i < 12; i++) {
+            const particle = this.add.text(
+                width / 2,
+                height / 2,
+                ['🛡️', '💎', '✦', '🔷'][i % 4],
+                { fontSize: '32px' }
+            ).setOrigin(0.5);
+
+            const angle = (i / 12) * Math.PI * 2;
+            const distance = 150 + Math.random() * 100;
+
+            this.tweens.add({
+                targets: particle,
+                x: width / 2 + Math.cos(angle) * distance,
+                y: height / 2 + Math.sin(angle) * distance,
+                alpha: 0,
+                scale: { from: 1, to: 2 },
+                rotation: Math.PI * 2,
+                duration: 1000,
+                ease: 'Power2',
+                onComplete: () => particle.destroy()
+            });
+        }
+
+        // 護盾光環效果
+        const shieldRing = this.add.circle(width / 2, height / 2, 100, 0x3498db, 0.3);
+        this.tweens.add({
+            targets: shieldRing,
+            scale: { from: 0.5, to: 2 },
+            alpha: { from: 0.5, to: 0 },
+            duration: 1500,
+            ease: 'Power2',
+            onComplete: () => shieldRing.destroy()
+        });
+
+        // 更新指示器
+        if (this.defenseBoostIndicator) {
+            this.defenseBoostIndicator.destroy();
+        }
+        this.defenseBoostIndicator = this.add.text(width - 20, 150, '🛡️ 防禦加成啟用中!', {
+            fontSize: '14px',
+            fontFamily: 'Microsoft JhengHei',
+            fill: '#3498db',
+            backgroundColor: '#9b59b688',
             padding: { x: 10, y: 5 }
         }).setOrigin(1, 0.5);
     }
